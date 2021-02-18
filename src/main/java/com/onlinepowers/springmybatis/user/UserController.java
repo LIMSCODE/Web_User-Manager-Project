@@ -21,7 +21,7 @@ public class UserController {
 
     //목록
     @RequestMapping("/list")
-    public String list(Model model) {
+    public String getUserList(Model model) {
         List<UserDto> user = userService.getUserList();
         model.addAttribute("user", user);
         return "list";
@@ -42,7 +42,7 @@ public class UserController {
 
     // 수정 폼으로 이동
     @GetMapping(value="/edit/{no}")
-    public String editForm(@PathVariable("no") Integer id, UserDto user, Model model) {
+    public String edit(@PathVariable("no") Integer id, UserDto user, Model model) {
         UserDto user1 = userService.getUser(id);
         BeanUtils.copyProperties(user1, user);
         model.addAttribute("user" , user);
@@ -51,14 +51,14 @@ public class UserController {
 
     // 최종 수정 버튼 누름
     @GetMapping(value = "edit")
-    public String edit(@RequestParam String id, @Validated UserDto user, BindingResult result) {
+    public String updateUser(@RequestParam String id, @Validated UserDto user, BindingResult result) {
         userService.updateUser(user);
         return "redirect:/list";
     }
 
     //특정 고객정보 삭제
     @PostMapping(value = "delete/{no}")
-    String delete(@PathVariable("no") Integer id) {
+    String deleteUser(@PathVariable("no") Integer id) {
         userService.deleteUser(id);
         return "redirect:/list";
     }
