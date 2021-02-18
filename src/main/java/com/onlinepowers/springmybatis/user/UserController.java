@@ -22,8 +22,8 @@ public class UserController {
     //목록
     @RequestMapping("/list")
     public String getUserList(Model model) {
-        List<UserDto> user = userService.getUserList();
-        model.addAttribute("user", user);
+        List<UserDto> userList = userService.getUserList();
+        model.addAttribute("userList", userList);
         return "list";
     }
 
@@ -43,9 +43,9 @@ public class UserController {
     // 수정 폼으로 이동
     @GetMapping(value="/edit/{no}")
     public String edit(@PathVariable("no") Integer id, UserDto user, Model model) {
-        UserDto user1 = userService.getUser(id);
-        BeanUtils.copyProperties(user1, user);
-        model.addAttribute("user" , user);
+        UserDto userDto = userService.getUser(id);
+        BeanUtils.copyProperties(userDto, userDto);
+        model.addAttribute("userDto" , userDto);
         return "edit";
     }
 

@@ -7,9 +7,9 @@
 
 <body>
 <form th:action="@{/edit}"  >
-    <input type="hidden" name="id" th:value="${user.id}" />
-        이름 : <input type="text" name="userName" th:value="${user.userName}" > <br>
-        이메일 : <input type="text" name="userEmail" th:value="${user.userEmail}"> <br>
+    <input type="hidden" name="id" th:value="${userDto.id}" />
+        이름 : <input type="text" name="userName" th:value="${userDto.userName}" > <br>
+        이메일 : <input type="text" name="userEmail" th:value="${userDto.userEmail}"> <br>
 
     <input type="submit" value="수정">
 </form>

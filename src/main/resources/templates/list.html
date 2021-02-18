@@ -31,17 +31,17 @@
                 </thead>
 
                 <tbody>
-                <tr th:each="user : ${user}">
-                    <td th:text="${user.id}"></td>
-                    <td th:text="${user.userName}"></td>
-                    <td th:text="${user.userId}"></td>
-                    <td th:text="${user.userEmail}"></td>
-                    <td th:text="${user.userDate}"></td>
+                <tr th:each="userList : ${userList}">
+                    <td th:text="${userList.id}"></td>
+                    <td th:text="${userList.userName}"></td>
+                    <td th:text="${userList.userId}"></td>
+                    <td th:text="${userList.userEmail}"></td>
+                    <td th:text="${userList.userDate}"></td>
 
-                    <td><a th:href="'/edit/'+${user.id}" th:text="수정"></a></td>
+                    <td><a th:href="'/edit/'+${userList.id}" th:text="수정"></a></td>
                     <td>
                         <!-- 삭제 -->
-                        <form id="delete-form" th:action="@{'/delete/'+${user.id}}" method="post">
+                        <form id="delete-form" th:action="@{'/delete/'+${userList.id}}" method="post">
                             <button id="delete-btn">삭제</button>
                         </form>
                     </td>
