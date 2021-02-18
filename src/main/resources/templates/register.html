@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <title>회원등록</title>
+</head>
+
+<body>
+
+<form method="post" th:action="@{/registerUser}" th:object="${user}" >
+    이름 <input type="text" name="userName"> <br>
+    아이디 <input type="text" name="userId"> <br>
+    비밀번호 <input type="text" name="userPw"> <br>
+    이메일 <input type="text" name="userEmail"> <br>
+    <input type="submit">
+</form>
+
+<input type="button" class="btn btn-default"  onclick="location.href='return'" value="돌아가기"/>
+
+</body>
+</html>

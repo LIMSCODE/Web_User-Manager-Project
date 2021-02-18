@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <title>게시판</title>
+</head>
+
+<body>
+<form th:action="@{/edit}"  >
+    <input type="hidden" name="id" th:value="${user.id}" />
+        이름 : <input type="text" name="userName" th:value="${user.userName}" > <br>
+        이메일 : <input type="text" name="userEmail" th:value="${user.userEmail}"> <br>
+
+    <input type="submit" value="수정">
+</form>
+</body>
+<input type="button" class="btn btn-default"  onclick="location.href='return'" value="돌아가기"/>
+
+</html>
