@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="board/layout/basic">
 <head>
     <meta charset="UTF-8">
     <title>회원 목록</title>
 </head>
+<style>
+    ul {
+        list-style:none;
+    }
+    li {
+        float: left;
+    }
+</style>
 <body>
 <div class="container" >
     <div class="page-header">
@@ -14,6 +23,12 @@
         <a href="/register" class="btn btn-primary btn-block">등록</a>
     </div>
     <br /> <br /> <br />
+
+    <!--검색영역-->
+    <th:block layout:fragment="search">
+        <nav th:replace="board/fragments/common :: search"></nav>
+    </th:block>
+
 
     <div class="container-fluid">
         <div class="row">
@@ -38,19 +53,34 @@
                     <td th:text="${userList.userEmail}"></td>
                     <td th:text="${userList.userDate}"></td>
 
-                    <td><a th:href="'/edit/'+${userList.id}" th:text="수정"></a></td>
+                    <td><a th:href="'/edit/'+${userList.id}" th:text="수정"></a>
+                    </td>
                     <td>
-                        <!-- 삭제 -->
                         <form id="delete-form" th:action="@{'/delete/'+${userList.id}}" method="post">
                             <button id="delete-btn">삭제</button>
                         </form>
+
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <!--페이징영역-->
+    <th:block layout:fragment="paging">
+        <nav th:replace="board/fragments/common :: pagination"></nav>
+    </th:block>
+
+
 </div>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        function movePage(uri, queryString) {
+            location.href = uri + queryString;
+        }
+    </script>
+</th:block>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
@@ -58,9 +88,9 @@
         if(confirm("정말 삭제하시겠습니까 ?") == true){
             alert("삭제되었습니다.");
         }
-        else if(confirm("정말 삭제하시겠습니까 ?") == false){
+        else{
             alert("취소하였습니다.");
-            return;
+            return false;
         }
     });
 </script>

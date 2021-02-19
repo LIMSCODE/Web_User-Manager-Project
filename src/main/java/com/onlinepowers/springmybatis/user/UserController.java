@@ -1,5 +1,6 @@
 package com.onlinepowers.springmybatis.user;
 
+import com.onlinepowers.springmybatis.paging.Criteria;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +22,8 @@ public class UserController {
 
     //목록
     @RequestMapping("/list")
-    public String getUserList(Model model) {
-        List<UserDto> userList = userService.getUserList();
+    public String getUserList(@ModelAttribute("user") UserDto user, Model model) {
+        List<UserDto> userList = userService.getUserList(user);
         model.addAttribute("userList", userList);
         return "list";
     }

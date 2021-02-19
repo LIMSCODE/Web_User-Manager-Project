@@ -12,14 +12,53 @@
         <result column="USER_DATE" property="userDate" />
     </resultMap>
 
-    <select id="getCount" resultType="int">
+    <select id="getCount" resultType="int"
+            parameterType="com.onlinepowers.springmybatis.user.UserDto">
         SELECT COUNT(*) FROM OP_USER
+        <include refid="search" />
     </select>
 
-    <select id="getUserList" resultMap="userMap">
+    <select id="getUserList" resultMap="userMap"
+            parameterType="com.onlinepowers.springmybatis.user.UserDto">
         SELECT ID, USER_NAME, USER_ID, USER_PW, USER_EMAIL,
         DATE_FORMAT(USER_DATE, '%Y/%m/%d %H:%i:%s') USER_DATE FROM OP_USER
+        <include refid="search" />
+        <include refid="paging" />
     </select>
+
+    <!--include sql문들-->
+    <sql id="paging">
+        LIMIT
+        #{paginationInfo.firstRecordIndex}, #{recordsPerPage}
+    </sql>
+
+    <sql id="search">
+    <if test="searchKeyword != null and searchKeyword != ''">
+        <choose>
+            <when test="searchType != null and searchType != ''">
+                <choose>
+                    <when test="'userName'.equals(searchType)">
+                        WHERE USER_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="'userId'.equals(searchType)">
+                        WHERE USER_ID LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="'userEmail'.equals(searchType)">
+                        WHERE USER_EMAIL LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                </choose>
+            </when>
+            <otherwise>
+                WHERE
+                (
+                USER_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+                OR USER_ID LIKE CONCAT('%', #{searchKeyword}, '%')
+                OR USER_EMAIL LIKE CONCAT('%', #{searchKeyword}, '%')
+                )
+            </otherwise>
+        </choose>
+    </if>
+    </sql>
 
     <select id="getUser"  resultMap="userMap">
         SELECT ID, USER_NAME, USER_ID, USER_PW, USER_EMAIL, USER_DATE FROM OP_USER
