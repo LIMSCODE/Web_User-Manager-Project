@@ -53,14 +53,11 @@
                     <td th:text="${userList.userEmail}"></td>
                     <td th:text="${userList.userDate}"></td>
 
-                    <td><a th:href="'/edit/'+${userList.id}" th:text="수정"></a>
-                    </td>
-                    <td>
-                        <form id="delete-form" th:action="@{'/delete/'+${userList.id}}" method="post">
-                            <button id="delete-btn">삭제</button>
-                        </form>
+                    <div class="" th:object="${user}">
+                        <td><a th:href="|@{/edit/}${userList.id}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="수정"></a> </td>
+                        <td><a th:href="|@{/delete/}${userList.id}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="삭제"></a> </td>
+                    </div>
 
-                    </td>
                 </tr>
                 </tbody>
             </table>

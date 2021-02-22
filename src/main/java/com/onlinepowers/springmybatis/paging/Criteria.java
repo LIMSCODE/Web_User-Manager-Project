@@ -9,22 +9,22 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Setter
 public class Criteria {
 
-    /** 페이징 정보 */
+    //페이징 정보
     public PaginationInfo paginationInfo;
 
-    /** 현재 페이지 번호 */
+    //현재 페이지 번호
     public int currentPageNo;
 
-    /** 페이지당 출력할 데이터 개수 */
+    //페이지당 출력 개수
     public int recordsPerPage;
 
-    /** 화면 하단에 출력할 페이지 사이즈 */
+    //화면 하단에 출력할 페이지 개수
     public int pageSize;
 
-    /** 검색 키워드 */
+    //검색 키워드
     public String searchKeyword;
 
-    /** 검색 유형 */
+    //검색 유형
     public String searchType;
 
     public Criteria() {

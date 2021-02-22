@@ -7,14 +7,21 @@
 
 <body>
 <form th:action="@{/edit}"  >
-    <input type="hidden" name="id" th:value="${userDto.id}" />
-        이름 : <input type="text" name="userName" th:value="${userDto.userName}" > <br>
-        이메일 : <input type="text" name="userEmail" th:value="${userDto.userEmail}"> <br>
+    <input type="hidden" name="id" th:value="${user.id}" />
+    <input type="hidden" id="currentPageNo" name="currentPageNo" th:value="${cri.currentPageNo} ">
+    <input type="hidden" id="recordsPerPage" name="recordsPerPage" th:value="${cri.recordsPerPage}"/>
+    <input type="hidden" id="pageSize" name="pageSize" th:value="${cri.pageSize}"/>
+    <input type="hidden" id="searchType" name="searchType" th:value="${cri.searchType}"/>
+    <input type="hidden" id="searchKeyword" name="searchKeyword" th:value="${cri.searchKeyword}"/>
+
+    이름 : <input type="text" name="userName" th:value="${user.userName}" > <br>
+        이메일 : <input type="text" name="userEmail" th:value="${user.userEmail}"> <br>
 
     <input type="submit" value="수정">
 </form>
 </body>
 
-<input type="button" class="btn btn-default"  onclick="location.href='return'" value="돌아가기"/>
-
+<div class="" th:object="${cri}">
+    <a th:href="|@{/return}*{makeQueryString(currentPageNo)}|" class="">뒤로가기</a>
+</div>
 </html>
