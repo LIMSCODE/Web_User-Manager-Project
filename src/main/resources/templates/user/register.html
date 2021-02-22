@@ -9,9 +9,15 @@
 
 <form method="post" th:action="@{/registerUser}" th:object="${user}" >
     이름 <input type="text" name="userName"> <br>
-    아이디 <input type="text" name="userId"> <br>
+    아이디 <input type="text" name="loginId"> <br>
     비밀번호 <input type="text" name="userPw"> <br>
     이메일 <input type="text" name="userEmail"> <br>
+
+    우편번호 <input type="text" name="zipcode"> <br>
+    주소 <input type="text" name="address"> <br>
+    상세주소 <input type="text" name="addressDetail"> <br>
+    전화번호 <input type="text" name="phoneNumber"> <br>
+    SNS수신여부 <input type="text" name="receiveSms"> <br>
     <input type="submit">
 </form>
 

@@ -14,41 +14,40 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping("/test")
-	public String hello() {
-		return "list";
-	}
 
 	//목록
-	@RequestMapping("/list")
+	@RequestMapping("/user/list")
 	public String getUserList(@ModelAttribute("user") UserDto user, Model model) {
 		List<UserDto> userList = userService.getUserList(user);
+
+
 		model.addAttribute("userList", userList);
-		return "list";
+
+		return "/user/list";
 	}
 
 	//글쓰기 폼으로 이동
-	@RequestMapping("/register")
+	@RequestMapping("/user/register")
 	public String register() {
-		return "register";
+		return "/user/register";
 	}
 
 	//게시글 등록
 	@RequestMapping("/registerUser")
 	public String registerUser(UserDto user) {
 		userService.insertUser(user);
-		return "redirect:/list";
+		return "redirect:/user/list";
 	}
 
 	// 수정 폼으로 이동
-	@GetMapping(value = "/edit/{no}")
+	@GetMapping(value = "/user/edit/{no}")
 	public String edit(@PathVariable("no") Integer id, UserDto user,
 	                   @ModelAttribute("cri") Criteria cri, Model model) {
 		UserDto user1 = userService.getUser(id);
 		BeanUtils.copyProperties(user1, user);       //User1를 user에 복사
 		model.addAttribute("user", user);
 
-		return "edit";
+		return "/user/edit";
 	}
 
 	/*
@@ -67,7 +66,7 @@ public class UserController {
 		rttr.addAttribute("searchType", cri.getSearchType());
 		rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
 
-		return "redirect:/list";
+		return "redirect:/user/list";
 	}
 
 	/*
@@ -84,7 +83,7 @@ public class UserController {
 		rttr.addAttribute("searchType", cri.getSearchType());
 		rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
 
-		return "redirect:/list";
+		return "redirect:/user/list";
 	}
 
 
@@ -101,7 +100,7 @@ public class UserController {
 		rttr.addAttribute("searchType", cri.getSearchType());
 		rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
 
-		return "redirect:/list";
+		return "redirect:/user/list";
 	}
 
 }

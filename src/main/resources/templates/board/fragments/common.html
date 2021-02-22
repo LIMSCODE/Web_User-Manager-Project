@@ -29,47 +29,4 @@
     </ul>
 </div>
 
-<div th:fragment="search" id="adv-search" class="input-group">
-    <div class="input-group-btn">
-        <div class="btn-group" role="group">
-            <div class="dropdown dropdown-lg">
-                <div class="dropdown-menu dropdown-menu-right" role="menu">
-                    <!--/* 검색 form */-->
-                    <form id="searchForm" th:action="@{/list}" method="get" th:onsubmit="return searchBoard(this)"
-                          class="form-horizontal" role="form">
-                        <!-- /* 현재 페이지 번호, 페이지당 출력할 데이터 개수, 페이지 하단에 출력할 페이지 개수 Hidden 파라미터 */ -->
-                        <input type="hidden" name="currentPageNo" value="1"/>
-                        <input type="hidden" name="recordsPerPage" th:value="${user.recordsPerPage}"/>
-                        <input type="hidden" name="pageSize" th:value="${user.pageSize}"/>
-
-
-                        <div class="form-group">
-                            <label for="filter">검색 유형</label>
-                            <select name="searchType" class="form-control">
-                                <option value="" th:selected="${#strings.isEmpty( user.searchType )}">전체</option>
-                                <option value="userName" th:selected="${#strings.equals( user.searchType, 'userName' )}">
-                                    이름
-                                </option>
-                                <option value="userId"
-                                        th:selected="${#strings.equals( user.searchType, 'userId' )}">아이디
-                                </option>
-                                <option value="userEmail"
-                                        th:selected="${#strings.equals( user.searchType, 'userEmail' )}">이메일
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <input type="text" name="searchKeyword" class="form-control"
-                                   th:value="${user.searchKeyword}"/>
-                            <button type="submit" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-search" aria-hidden="true"></span>검색하기
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 </html>
