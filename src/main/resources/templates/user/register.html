@@ -38,6 +38,9 @@
 		var loginId= $("#loginId").val();
 		var phoneNumber= $("#phoneNumber").val();
 
+		var pw = $("#userPw").val();
+		var confirmPW = $("#userPwConfirm").val();
+
 		if(userName == "") {
 			alert("이름을 입력해주세요");
 			return false;
@@ -50,6 +53,10 @@
 			alert("전화번호 입력해주세요");
 			return false;
 		};
+		if (pw != confirmPW) {
+			alert("비밀번호 일치하지 않음");
+			return false;
+		}
 	});
 
     //비밀번호 확인
