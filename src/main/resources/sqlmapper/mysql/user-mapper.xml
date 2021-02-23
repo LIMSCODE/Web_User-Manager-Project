@@ -137,5 +137,10 @@
         WHERE USER_ID=#{id};
     </update>
 
+    <select id="idCheck" resultType = "INT">
+        SELECT COUNT(*) FROM OP_USER
+        WHERE LOGIN_ID = #{loginId}
+    </select>
+
 
 </mapper>

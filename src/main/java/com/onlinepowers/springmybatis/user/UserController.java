@@ -1,6 +1,7 @@
 package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
+import org.apache.catalina.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -167,7 +168,24 @@ public class UserController {
 		return "redirect:/user/list";
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/user/idCheck", method = RequestMethod.POST)
+	public int postIdCheck(HttpServletRequest request, UserDto user) throws Exception {
+		System.out.print("에이젝스");
+		String loginId = request.getParameter("loginId");
+		System.out.println(loginId);   //넘어옴
 
+		int idCheck = userService.idCheck(loginId); //오류
+
+		int result = 0;
+
+		//MEMBERDTO를 반환.  있으면 1으로 반환
+		if(idCheck != 0) {
+			result = 1;
+		}
+
+		return result;
+	}
 
 
 

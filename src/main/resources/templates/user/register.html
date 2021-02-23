@@ -11,7 +11,8 @@
 
     이름<input type="text" name="userName" id="userName" th:value="${user.userName}"> <br>
     아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}"> <br>
-
+    <button type ="button" class="idCheck" id="idCheck"> 아이디중복확인 </button>
+    <span class="msg" id="msg"> 아이디를 확인해주세요. </span>
 
     비밀번호 <input type="text" name="userPw"  id="userPw" th:value="${user.userPw}" > <br>
     비밀번호 확인 <input type="text" name="userPwConfirm"  id="userPwConfirm" th:value="${user.userPw}" > <br>
@@ -72,6 +73,36 @@
 				return false;
 			}
     });
+
+
+	    $("#idCheck").click(function(){
+	    	var loginId = $("#loginId").val();
+		    var query = {"loginId" : loginId };
+		    alert(JSON.stringify(query));    //[Object object] 말고 id값으로 출력되도록
+
+		    $.ajax({
+			    url : "idCheck",
+			    type : "post",
+			    data : query,
+			    datatype: "json",
+			    success : function(data) {
+				    alert("성공!");
+
+				    if(data == 1) {
+					    $("#msg").text("사용 불가");
+					    $("#msg").attr("style", "color:#f00");
+					    $(".submit").attr("disabled", "disabled");
+				    } else {
+					    $("#msg").text("사용 가능");
+					    $("#msg").attr("style", "color:#00f");
+					    $(".submit").removeAttr("disabled");
+				    }
+			    },
+			    error:function(){
+				    alert("실패");
+			    }
+		    });
+	    });
 
 
 

@@ -13,5 +13,6 @@ public interface UserMapper {
 	public void deleteUser(int id);
 	public void insertUser(UserDto user);
 	public void updateUser(UserDto user);
-	public int idCheck(int id);
+	public int idCheck(String loginId);
+
 }
