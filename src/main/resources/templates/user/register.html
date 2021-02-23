@@ -8,20 +8,68 @@
 <body>
 
 <form method="post" th:action="@{/registerUser}" th:object="${user}" >
-    이름 <input type="text" name="userName"> <br>
-    아이디 <input type="text" name="loginId"> <br>
-    비밀번호 <input type="text" name="userPw"> <br>
-    이메일 <input type="text" name="userEmail"> <br>
 
-    우편번호 <input type="text" name="zipcode"> <br>
-    주소 <input type="text" name="address"> <br>
-    상세주소 <input type="text" name="addressDetail"> <br>
-    전화번호 <input type="text" name="phoneNumber"> <br>
-    SNS수신여부 <input type="text" name="receiveSms"> <br>
-    <input type="submit">
+    이름<input type="text" name="userName" id="userName" th:value="${user.userName}"> <br>
+    아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}"> <br>
+
+
+    비밀번호 <input type="text" name="userPw"  id="userPw" th:value="${user.userPw}" > <br>
+    비밀번호 확인 <input type="text" name="userPwConfirm"  id="userPwConfirm" th:value="${user.userPw}" > <br>
+    <button id="same">비밀번호 확인하기</button>
+    <span id="isSame" class="same"></span>
+    이메일 <input type="text" name="userEmail" id="userEmail" th:value="${user.userEmail}"> <br>
+
+    우편번호 <input type="text" name="zipcode" id="zipcode" th:value="${user.zipcode}"> <br>
+    주소 <input type="text" name="address"  id="address" th:value="${user.address}"> <br>
+    상세주소 <input type="text" name="addressDetail" id="addressDetail"  th:value="${user.addressDetail}"> <br>
+    전화번호 <input type="text" name="phoneNumber" id="phoneNumber" th:value="${user.phoneNumber}" > <br>
+    SNS수신여부 <input type="text" name="receiveSms" id="receiveSms" th:value="${user.receiveSms}"> <br>
+    <input type="submit" class="submit">
 </form>
 
 <input type="button" class="btn btn-default"  onclick="location.href='return'" value="돌아가기"/>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+
+    //유효성검사
+	$('.submit').click(function(){
+		var userName= $("#userName").val();
+		var loginId= $("#loginId").val();
+		var phoneNumber= $("#phoneNumber").val();
+
+		if(userName == "") {
+			alert("이름을 입력해주세요");
+			return false;
+		};
+		if(loginId == "") {
+			alert("아이디 입력해주세요");
+			return false;
+		};
+		if(phoneNumber == "") {
+			alert("전화번호 입력해주세요");
+			return false;
+		};
+	});
+
+    //비밀번호 확인
+	$('#same').click(function(){
+		var pw = $("#userPw").val();
+		var confirmPW = $("#userPwConfirm").val();
+
+			if (pw == confirmPW) {
+				alert("비밀번호 일치");
+				return false;
+			} else {
+				alert("비밀번호 일치하지 않음");
+				return false;
+			}
+    });
+
+
+
+</script>
+
 
 </body>
 </html>

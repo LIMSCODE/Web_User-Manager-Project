@@ -21,7 +21,10 @@
 
     <select id="getCount" resultType="int"
             parameterType="com.onlinepowers.springmybatis.user.UserDto">
-        SELECT COUNT(*) FROM OP_USER
+        SELECT COUNT(*)
+        FROM OP_USER AS A
+        JOIN OP_USER_DETAIL AS B
+        ON A.ID = B.USER_ID
         <include refid="search" />
     </select>
 
@@ -33,8 +36,8 @@
         FROM OP_USER AS A
         JOIN OP_USER_DETAIL AS B
         ON A.ID = B.USER_ID
-        ORDER BY ID DESC
         <include refid="search" />
+        ORDER BY ID DESC
         <include refid="paging" />
 
     </select>
@@ -59,6 +62,19 @@
                     <when test="'userEmail'.equals(searchType)">
                         WHERE EMAIL LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
+
+                    <when test="'zipcode'.equals(searchType)">
+                        WHERE ZIPCODE LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="'address'.equals(searchType)">
+                        WHERE ADDRESS LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="'addressDetail'.equals(searchType)">
+                        WHERE ADDRESS_DETAIL LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="'phoneNumber'.equals(searchType)">
+                        WHERE PHONE_NUMBER LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
                 </choose>
             </when>
             <otherwise>
@@ -67,6 +83,10 @@
                 NAME LIKE CONCAT('%', #{searchKeyword}, '%')
                 OR LOGIN_ID LIKE CONCAT('%', #{searchKeyword}, '%')
                 OR EMAIL LIKE CONCAT('%', #{searchKeyword}, '%')
+                OR ZIPCODE LIKE CONCAT('%', #{searchKeyword}, '%')
+                OR ADDRESS LIKE CONCAT('%', #{searchKeyword}, '%')
+                OR ADDRESS_DETAIL LIKE CONCAT('%', #{searchKeyword}, '%')
+                OR PHONE_NUMBER LIKE CONCAT('%', #{searchKeyword}, '%')
                 )
             </otherwise>
         </choose>
@@ -107,8 +127,15 @@
 
     <update id="updateUser"
             parameterType="com.onlinepowers.springmybatis.user.UserDto">
-        UPDATE OP_USER SET NAME=#{userName},EMAIL=#{userEmail}
-        WHERE ID=#{id}
+
+        UPDATE OP_USER
+        SET NAME=#{userName},EMAIL=#{userEmail}
+        WHERE ID=#{id};
+
+        UPDATE OP_USER_DETAIL
+        SET ZIPCODE=#{zipcode}, ADDRESS=#{address}, ADDRESS_DETAIL=#{addressDetail}, PHONE_NUMBER=#{phoneNumber}, RECEIVE_SMS=#{receiveSms}
+        WHERE USER_ID=#{id};
     </update>
+
 
 </mapper>

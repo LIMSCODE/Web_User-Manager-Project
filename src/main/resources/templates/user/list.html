@@ -19,9 +19,13 @@
     <div class="page-header">
         <h1>회원 목록</h1>
     </div>
-    <div class="pull-right" style="width: 100px; margin: 10px 0;">
-        <a href="/user/register" class="btn btn-primary btn-block">등록</a>
-    </div>
+
+    <!--등록 성공-->
+    <form th:action="@{/user/register}" th:object="${user}" >
+        <input type="hidden" name="id" th:value="${user.id}" />
+
+        <input type="submit" value="등록하기">
+    </form>
     <br /> <br /> <br />
 
     <!--검색영역-->
@@ -46,11 +50,25 @@
                                         이름
                                     </option>
                                     <option value="loginId"
-                                            th:selected="${#strings.equals( user.searchType, 'userId' )}">아이디
+                                            th:selected="${#strings.equals( user.searchType, 'loginId' )}">아이디
                                     </option>
                                     <option value="userEmail"
                                             th:selected="${#strings.equals( user.searchType, 'userEmail' )}">이메일
                                     </option>
+
+                                    <option value="zipcode"
+                                            th:selected="${#strings.equals( user.searchType, 'zipcode' )}">우편번호
+                                    </option>
+                                    <option value="address"
+                                            th:selected="${#strings.equals( user.searchType, 'address' )}">주소
+                                    </option>
+                                    <option value="addressDetail"
+                                            th:selected="${#strings.equals( user.searchType, 'addressDetail' )}">상세주소
+                                    </option>
+                                    <option value="phoneNumber"
+                                            th:selected="${#strings.equals( user.searchType, 'phoneNumber' )}">전화번호
+                                    </option>
+
                                 </select>
                             </div>
 
@@ -72,7 +90,7 @@
 
     <div class="container-fluid">
         <div class="row">
-            <table class="table table-hover">
+            <table class="table table-hover type09" >
                 <thead>
                 <tr class="warning">
                     <th class="col-sm-1">No</th>
@@ -107,12 +125,18 @@
                     <td th:text="${userList.receiveSms}"></td>
 
 
+                    <!--수정 아이디 넘어감 성공
+                    <form th:action="@{/user/register}" th:object="${user}" th:value="수정">
+                        <input type="hidden" name="id" th:value="${userList.id}" />
+                        <input type="submit">
+                    </form>
+                    -->
 
                     <div class="" th:object="${user}">
-                        <td><a th:href="|@{/user/edit/}${userList.id}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="수정"></a> </td>
+                        <!--수정  아이디 넘어감 성공-->
+                        <td><a th:href="|@{/user/register}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="수정"></a> </td>
                         <td><a class="delete" th:href="|@{/delete/}${userList.id}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="삭제"></a> </td>
                     </div>
-
                 </tr>
                 </tbody>
             </table>
@@ -146,6 +170,35 @@
         }
     });
 </script>
+
+<style>
+    table.type09 {
+        border-collapse: collapse;
+        text-align: left;
+        line-height: 1.5;
+    }
+    table.type09 thead th {
+        padding: 10px;
+        font-weight: bold;
+        vertical-align: top;
+        color: #369;
+        border-bottom: 3px solid #036;
+    }
+    table.type09 tbody th {
+        width: 150px;
+        padding: 10px;
+        font-weight: bold;
+        vertical-align: top;
+        border-bottom: 1px solid #ccc;
+        background: #f3f6f7;
+    }
+    table.type09 td {
+        width: 350px;
+        padding: 10px;
+        vertical-align: top;
+        border-bottom: 1px solid #ccc;
+    }
+</style>
 
 </body>
 </html>
