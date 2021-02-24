@@ -6,9 +6,7 @@
 </head>
 
 <body>
-
 <form method="post" th:action="@{/registerUser}" th:object="${user}" >
-
     이름<input type="text" name="userName" id="userName" th:value="${user.userName}"> <br>
     아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}"> <br>
     <button type ="button" class="idCheck" id="idCheck"> 아이디중복확인 </button>
@@ -20,11 +18,11 @@
     <span id="isSame" class="same"></span>
     이메일 <input type="text" name="userEmail" id="userEmail" th:value="${user.userEmail}"> <br>
 
-    우편번호 <input type="text" name="zipcode" id="zipcode" th:value="${user.zipcode}"> <br>
-    주소 <input type="text" name="address"  id="address" th:value="${user.address}"> <br>
-    상세주소 <input type="text" name="addressDetail" id="addressDetail"  th:value="${user.addressDetail}"> <br>
-    전화번호 <input type="text" name="phoneNumber" id="phoneNumber" th:value="${user.phoneNumber}" > <br>
-    SNS수신여부 <input type="text" name="receiveSms" id="receiveSms" th:value="${user.receiveSms}"> <br>
+    우편번호 <input type="text" name="zipcode" id="zipcode" th:value="${userDetail.zipcode}"> <br>
+    주소 <input type="text" name="address"  id="address" th:value="${userDetail.address}"> <br>
+    상세주소 <input type="text" name="addressDetail" id="addressDetail"  th:value="${userDetail.addressDetail}"> <br>
+    전화번호 <input type="text" name="phoneNumber" id="phoneNumber" th:value="${userDetail.phoneNumber}" > <br>
+    SNS수신여부 <input type="text" name="receiveSms" id="receiveSms" th:value="${userDetail.receiveSms}"> <br>
     <input type="submit" class="submit">
 </form>
 
@@ -103,9 +101,6 @@
 			    }
 		    });
 	    });
-
-
-
 </script>
 
 

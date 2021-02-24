@@ -21,7 +21,7 @@
     </div>
 
     <!--등록 성공-->
-    <form th:action="@{/user/register}" th:object="${user}" >
+    <form th:action="@{/user/form}" th:object="${user}" >
         <input type="hidden" name="id" th:value="${user.id}" />
 
         <input type="submit" value="등록하기">
@@ -114,15 +114,15 @@
                 <tr th:each="userList : ${userList}">
                     <td th:text="${userList.id}"></td>
                     <td th:text="${userList.userName}"></td>
-                    <td th:text="${userList.userId}"></td>
+                    <td th:text="${userList.loginId}"></td>
                     <td th:text="${userList.userEmail}"></td>
                     <td th:text="${userList.userDate}"></td>
 
-                    <td th:text="${userList.zipcode}"></td>
-                    <td th:text="${userList.address}"></td>
-                    <td th:text="${userList.addressDetail}"></td>
-                    <td th:text="${userList.phoneNumber}"></td>
-                    <td th:text="${userList.receiveSms}"></td>
+                    <td th:text="${userList.userDetail.zipcode}"></td>
+                    <td th:text="${userList.userDetail.address}"></td>
+                    <td th:text="${userList.userDetail.addressDetail}"></td>
+                    <td th:text="${userList.userDetail.phoneNumber}"></td>
+                    <td th:text="${userList.userDetail.receiveSms}"></td>
 
 
                     <!--수정 아이디 넘어감 성공
@@ -134,7 +134,7 @@
 
                     <div class="" th:object="${user}">
                         <!--수정  아이디 넘어감 성공-->
-                        <td><a th:href="|@{/user/register}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="수정"></a> </td>
+                        <td><a th:href="|@{/user/form}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="수정"></a> </td>
                         <td><a class="delete" th:href="|@{/delete/}${userList.id}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="삭제"></a> </td>
                     </div>
                 </tr>

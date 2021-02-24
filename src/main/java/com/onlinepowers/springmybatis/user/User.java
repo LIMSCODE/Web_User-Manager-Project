@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto extends Criteria {
+public class User extends Criteria {
 
     private Integer id ;
     private String userName;
@@ -17,12 +17,7 @@ public class UserDto extends Criteria {
     private String userEmail;
     private String userDate;
 
-    private long userId;
-    private String zipcode;
-    private String address;
-    private String addressDetail;
-    private String phoneNumber;
-    private int receiveSms;
+    public UserDetail userDetail;
 
 }
 

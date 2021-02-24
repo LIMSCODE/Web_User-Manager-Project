@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.onlinepowers.springmybatis.user.UserMapper">
-    <resultMap id="userMap" type="com.onlinepowers.springmybatis.user.UserDto">
+    <resultMap id="userMap" type="com.onlinepowers.springmybatis.user.User">
         <id column="ID" property="id" />
         <result column="NAME" property="userName" />
         <result column="LOGIN_ID" property="loginId" />
         <result column="PASSWORD" property="userPw" />
         <result column="EMAIL" property="userEmail" />
         <result column="CREATED_DATE" property="userDate" />
+        <association property="userDetail" resultMap="userDetailMap" />
+    </resultMap>
 
+    <resultMap id="userDetailMap" type="com.onlinepowers.springmybatis.user.UserDetail">
+        <id column="USER_ID" property="userId" />
         <result column="ZIPCODE" property="zipcode" />
         <result column="ADDRESS" property="address" />
         <result column="ADDRESS_DETAIL" property="addressDetail" />
@@ -18,9 +21,8 @@
         <result column="RECEIVE_SMS" property="receiveSms" />
     </resultMap>
 
-
     <select id="getCount" resultType="int"
-            parameterType="com.onlinepowers.springmybatis.user.UserDto">
+            parameterType="com.onlinepowers.springmybatis.user.User">
         SELECT COUNT(*)
         FROM OP_USER AS A
         JOIN OP_USER_DETAIL AS B
@@ -29,7 +31,7 @@
     </select>
 
     <select id="getUserList" resultMap="userMap"
-            parameterType="com.onlinepowers.springmybatis.user.UserDto">
+            parameterType="com.onlinepowers.springmybatis.user.User">
         SELECT ID, NAME, LOGIN_ID,PASSWORD, EMAIL,
         DATE_FORMAT(CREATED_DATE, '%Y/%m/%d %H:%i:%s') CREATED_DATE,
         ZIPCODE, ADDRESS, ADDRESS_DETAIL,PHONE_NUMBER, RECEIVE_SMS
@@ -39,7 +41,6 @@
         <include refid="search" />
         ORDER BY ID DESC
         <include refid="paging" />
-
     </select>
 
     <!--include sql문들-->
@@ -104,29 +105,39 @@
     </select>
 
     <delete id="deleteUser"
-            parameterType="com.onlinepowers.springmybatis.user.UserDto">
+            parameterType="com.onlinepowers.springmybatis.user.User">
         DELETE FROM OP_USER
         WHERE id =#{id}
     </delete>
 
     <insert id="insertUser"
-            parameterType="com.onlinepowers.springmybatis.user.UserDto"
+            parameterType="com.onlinepowers.springmybatis.user.User"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO OP_USER VALUES (0, #{userName}, #{userId} , #{userPw},
+        INSERT INTO OP_USER VALUES (0,
+                                    #{userName},
+                                    #{loginId} ,
+                                    #{userPw},
                                     #{userEmail},
                                     DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
                                     );
-        INSERT INTO OP_USER_DETAIL VALUES ( 0,
-                                             #{zipcode},
-                                             #{address},
-                                             #{addressDetail},
-                                             #{phoneNumber},
-                                             #{receiveSms}
-                                         );
+    </insert>
+    <insert id="insertUserDetail"
+            parameterType="com.onlinepowers.springmybatis.user.UserDetail">
+        <selectKey resultType="int" keyProperty="userId" order="BEFORE">
+        SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO OP_USER_DETAIL VALUES (0,
+                                            #{zipcode},
+                                            #{address},
+                                            #{addressDetail},
+                                            #{phoneNumber},
+                                            #{receiveSms}
+                                          );
+
     </insert>
 
     <update id="updateUser"
-            parameterType="com.onlinepowers.springmybatis.user.UserDto">
+            parameterType="com.onlinepowers.springmybatis.user.User">
 
         UPDATE OP_USER
         SET NAME=#{userName},EMAIL=#{userEmail}

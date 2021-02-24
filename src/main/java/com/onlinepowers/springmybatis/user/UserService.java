@@ -1,17 +1,18 @@
 package com.onlinepowers.springmybatis.user;
 
-import com.onlinepowers.springmybatis.paging.Criteria;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public interface UserService {
 
-    public List<UserDto> getUserList(UserDto user) ;
-    public UserDto getUser(Integer id);
+    public List<User> getUserList(User user) ;
+    public User getUser(Integer id);
     public void deleteUser(int id);
-    public void insertUser(UserDto user);
-    public void updateUser(UserDto user);
+
+    public void insertUser(User user, UserDetail userDetail);
+
+    public void updateUser(User user);
     public int idCheck(String loginId);
 
 

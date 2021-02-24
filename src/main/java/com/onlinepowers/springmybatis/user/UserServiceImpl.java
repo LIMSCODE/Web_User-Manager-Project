@@ -1,9 +1,10 @@
 package com.onlinepowers.springmybatis.user;
 
-import com.onlinepowers.springmybatis.paging.Criteria;
 import com.onlinepowers.springmybatis.paging.PaginationInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,9 +15,9 @@ public class UserServiceImpl implements UserService{
     UserMapper userMapper;
 
     @Override
-    public List<UserDto> getUserList(UserDto user) {
+    public List<User> getUserList(User user) {
 
-        List<UserDto> userList = Collections.emptyList();
+        List<User> userList = Collections.emptyList();
         int userCount = userMapper.getCount(user);
 
         PaginationInfo paginationInfo = new PaginationInfo(user);
@@ -30,21 +31,26 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDto getUser(Integer id) { return userMapper.getUser(id); }
+    public User getUser(Integer id) { return userMapper.getUser(id); }
     @Override
     public void deleteUser(int id) {
         userMapper.deleteUser(id);
     }
 
+
     @Override
-    public void insertUser(UserDto user) {
+
+    public void insertUser(User user, UserDetail userDetail) {
+
         userMapper.insertUser(user);
-    }
-    @Override
-    public void updateUser(UserDto user) {
-        userMapper.updateUser(user);
+        userMapper.insertUserDetail(userDetail);
+
     }
 
+    @Override
+    public void updateUser(User user) {
+        userMapper.updateUser(user);
+    }
 
     @Override
     public int idCheck(String loginId)  {
