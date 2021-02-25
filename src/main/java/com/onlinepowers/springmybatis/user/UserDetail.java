@@ -15,7 +15,7 @@ public class UserDetail extends Criteria {
     public String address;
     public String addressDetail;
     public String phoneNumber;
-    public int receiveSms;
+    public String receiveSms;
 
 
 }

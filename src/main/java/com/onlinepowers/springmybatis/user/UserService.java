@@ -12,8 +12,8 @@ public interface UserService {
 
     public void insertUser(User user, UserDetail userDetail);
 
-    public void updateUser(User user);
-    public int idCheck(String loginId);
+    public void updateUser(User user, UserDetail userDetail);
+    public int checkId(String loginId);
 
 
 }

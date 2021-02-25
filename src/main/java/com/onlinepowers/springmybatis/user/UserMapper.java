@@ -14,6 +14,8 @@ public interface UserMapper {
 	public void insertUserDetail(UserDetail userDetail);
 
 	public void updateUser(User user);
-	public int idCheck(String loginId);
+	public void updateUserDetail(UserDetail userDetail);
+
+	public int checkId(String loginId);
 
 }

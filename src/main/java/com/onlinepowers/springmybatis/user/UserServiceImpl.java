@@ -24,9 +24,22 @@ public class UserServiceImpl implements UserService{
         paginationInfo.setTotalRecordCount(userCount);
         user.setPaginationInfo(paginationInfo);
 
+
         if (userCount > 0) {
             userList = userMapper.getUserList(user);
+
+            //receiveSms 컬럼 값을 한글로 치환
+            for (int i=0; i<userList.size(); i++) {
+                String receiveSms = userList.get(i).getUserDetail().getReceiveSms();
+                System.out.print(receiveSms);
+                if (receiveSms == "1") {
+                    userList.get(i).getUserDetail().setReceiveSms("수신");
+                }else {
+                    userList.get(i).getUserDetail().setReceiveSms("수신x");
+                }
+            }
         }
+
         return userList;
     }
 
@@ -37,24 +50,23 @@ public class UserServiceImpl implements UserService{
         userMapper.deleteUser(id);
     }
 
-
+    @Transactional
     @Override
-
     public void insertUser(User user, UserDetail userDetail) {
-
         userMapper.insertUser(user);
         userMapper.insertUserDetail(userDetail);
-
     }
 
+    @Transactional
     @Override
-    public void updateUser(User user) {
+    public void updateUser(User user , UserDetail userDetail) {
         userMapper.updateUser(user);
+        userMapper.updateUserDetail(userDetail);
     }
 
     @Override
-    public int idCheck(String loginId)  {
-        int result = userMapper.idCheck(loginId);
+    public int checkId(String loginId)  {
+        int result = userMapper.checkId(loginId);
         return result;
     }
 

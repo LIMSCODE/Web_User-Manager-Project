@@ -23,21 +23,30 @@
 
     <select id="getCount" resultType="int"
             parameterType="com.onlinepowers.springmybatis.user.User">
-        SELECT COUNT(*)
-        FROM OP_USER AS A
-        JOIN OP_USER_DETAIL AS B
-        ON A.ID = B.USER_ID
+        SELECT
+        COUNT(*)
+        FROM OP_USER U
+        LEFT JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
         <include refid="search" />
     </select>
 
     <select id="getUserList" resultMap="userMap"
             parameterType="com.onlinepowers.springmybatis.user.User">
-        SELECT ID, NAME, LOGIN_ID,PASSWORD, EMAIL,
+        SELECT
+        ID,
+        NAME,
+        LOGIN_ID,
+        PASSWORD,
+        EMAIL,
         DATE_FORMAT(CREATED_DATE, '%Y/%m/%d %H:%i:%s') CREATED_DATE,
-        ZIPCODE, ADDRESS, ADDRESS_DETAIL,PHONE_NUMBER, RECEIVE_SMS
-        FROM OP_USER AS A
-        JOIN OP_USER_DETAIL AS B
-        ON A.ID = B.USER_ID
+        ZIPCODE,
+        ADDRESS,
+        ADDRESS_DETAIL,
+        PHONE_NUMBER,
+        RECEIVE_SMS
+        FROM
+        OP_USER AS U
+        LEFT JOIN OP_USER_DETAIL AS UD ON U.ID = UD.USER_ID
         <include refid="search" />
         ORDER BY ID DESC
         <include refid="paging" />
@@ -50,105 +59,129 @@
     </sql>
 
     <sql id="search">
-    <if test="searchKeyword != null and searchKeyword != ''">
-        <choose>
-            <when test="searchType != null and searchType != ''">
-                <choose>
-                    <when test="'userName'.equals(searchType)">
-                        WHERE NAME LIKE CONCAT('%', #{searchKeyword}, '%')
-                    </when>
-                    <when test="'loginId'.equals(searchType)">
-                        WHERE LOGIN_ID LIKE CONCAT('%', #{searchKeyword}, '%')
-                    </when>
-                    <when test="'userEmail'.equals(searchType)">
-                        WHERE EMAIL LIKE CONCAT('%', #{searchKeyword}, '%')
-                    </when>
+        <if test="searchKeyword != null and searchKeyword != ''">
+            <choose>
+                <when test="searchType != null and searchType != ''">
+                    <choose>
+                        <when test="'userName'.equals(searchType)">
+                            WHERE NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+                        </when>
+                        <when test="'loginId'.equals(searchType)">
+                            WHERE LOGIN_ID LIKE CONCAT('%', #{searchKeyword}, '%')
+                        </when>
+                        <when test="'userEmail'.equals(searchType)">
+                            WHERE EMAIL LIKE CONCAT('%', #{searchKeyword}, '%')
+                        </when>
 
-                    <when test="'zipcode'.equals(searchType)">
-                        WHERE ZIPCODE LIKE CONCAT('%', #{searchKeyword}, '%')
-                    </when>
-                    <when test="'address'.equals(searchType)">
-                        WHERE ADDRESS LIKE CONCAT('%', #{searchKeyword}, '%')
-                    </when>
-                    <when test="'addressDetail'.equals(searchType)">
-                        WHERE ADDRESS_DETAIL LIKE CONCAT('%', #{searchKeyword}, '%')
-                    </when>
-                    <when test="'phoneNumber'.equals(searchType)">
-                        WHERE PHONE_NUMBER LIKE CONCAT('%', #{searchKeyword}, '%')
-                    </when>
-                </choose>
-            </when>
-            <otherwise>
-                WHERE
-                (
-                NAME LIKE CONCAT('%', #{searchKeyword}, '%')
-                OR LOGIN_ID LIKE CONCAT('%', #{searchKeyword}, '%')
-                OR EMAIL LIKE CONCAT('%', #{searchKeyword}, '%')
-                OR ZIPCODE LIKE CONCAT('%', #{searchKeyword}, '%')
-                OR ADDRESS LIKE CONCAT('%', #{searchKeyword}, '%')
-                OR ADDRESS_DETAIL LIKE CONCAT('%', #{searchKeyword}, '%')
-                OR PHONE_NUMBER LIKE CONCAT('%', #{searchKeyword}, '%')
-                )
-            </otherwise>
-        </choose>
-    </if>
+                        <when test="'zipcode'.equals(searchType)">
+                            WHERE ZIPCODE LIKE CONCAT('%', #{searchKeyword}, '%')
+                        </when>
+                        <when test="'address'.equals(searchType)">
+                            WHERE ADDRESS LIKE CONCAT('%', #{searchKeyword}, '%')
+                        </when>
+                        <when test="'addressDetail'.equals(searchType)">
+                            WHERE ADDRESS_DETAIL LIKE CONCAT('%', #{searchKeyword}, '%')
+                        </when>
+                        <when test="'phoneNumber'.equals(searchType)">
+                            WHERE PHONE_NUMBER LIKE CONCAT('%', #{searchKeyword}, '%')
+                        </when>
+                    </choose>
+                </when>
+                <otherwise>
+                    WHERE
+                    (
+                    NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+                    OR LOGIN_ID LIKE CONCAT('%', #{searchKeyword}, '%')
+                    OR EMAIL LIKE CONCAT('%', #{searchKeyword}, '%')
+                    OR ZIPCODE LIKE CONCAT('%', #{searchKeyword}, '%')
+                    OR ADDRESS LIKE CONCAT('%', #{searchKeyword}, '%')
+                    OR ADDRESS_DETAIL LIKE CONCAT('%', #{searchKeyword}, '%')
+                    OR PHONE_NUMBER LIKE CONCAT('%', #{searchKeyword}, '%')
+                    )
+                </otherwise>
+            </choose>
+        </if>
     </sql>
 
     <select id="getUser"  resultMap="userMap">
-        SELECT ID, NAME, LOGIN_ID,PASSWORD, EMAIL,
-        DATE_FORMAT(CREATED_DATE, '%Y/%m/%d %H:%i:%s') CREATED_DATE,
-        ZIPCODE, ADDRESS, ADDRESS_DETAIL,PHONE_NUMBER, RECEIVE_SMS
-        FROM OP_USER AS A
-        JOIN OP_USER_DETAIL AS B
-        ON A.ID = B.USER_ID
+        SELECT
+            ID,
+            NAME,
+            LOGIN_ID,
+            PASSWORD,
+            EMAIL,
+            DATE_FORMAT(CREATED_DATE, '%Y/%m/%d %H:%i:%s') AS CREATED_DATE,
+            ZIPCODE,
+            ADDRESS,
+            ADDRESS_DETAIL,
+            PHONE_NUMBER,
+            RECEIVE_SMS
+        FROM OP_USER U
+                 LEFT JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
         WHERE ID=#{ID}
     </select>
 
     <delete id="deleteUser"
             parameterType="com.onlinepowers.springmybatis.user.User">
-        DELETE FROM OP_USER
+        DELETE
+        FROM OP_USER
         WHERE id =#{id}
     </delete>
 
     <insert id="insertUser"
             parameterType="com.onlinepowers.springmybatis.user.User"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO OP_USER VALUES (0,
-                                    #{userName},
-                                    #{loginId} ,
-                                    #{userPw},
-                                    #{userEmail},
-                                    DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
-                                    );
+        INSERT INTO OP_USER
+            (ID,
+            NAME,
+            LOGIN_ID,
+            PASSWORD,
+            EMAIL,
+            CREATED_DATE)
+        VALUES
+            (0,
+            #{userName},
+            #{loginId} ,
+            #{userPw},
+            #{userEmail},
+            DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'));
     </insert>
     <insert id="insertUserDetail"
-            parameterType="com.onlinepowers.springmybatis.user.UserDetail">
+            parameterType="com.onlinepowers.springmybatis.user.User"
+            useGeneratedKeys="true" keyProperty="id">
         <selectKey resultType="int" keyProperty="userId" order="BEFORE">
-        SELECT LAST_INSERT_ID()
+            SELECT LAST_INSERT_ID()
         </selectKey>
-        INSERT INTO OP_USER_DETAIL VALUES (0,
-                                            #{zipcode},
-                                            #{address},
-                                            #{addressDetail},
-                                            #{phoneNumber},
-                                            #{receiveSms}
-                                          );
-
+        INSERT INTO OP_USER_DETAIL
+            (USER_ID,
+            ZIPCODE,
+            ADDRESS,
+            ADDRESS_DETAIL,
+            PHONE_NUMBER,
+            RECEIVE_SMS)
+        VALUES
+            (#{userId},
+            #{zipcode},
+            #{address},
+            #{addressDetail},
+            #{phoneNumber},
+            #{receiveSms});
     </insert>
 
     <update id="updateUser"
             parameterType="com.onlinepowers.springmybatis.user.User">
-
         UPDATE OP_USER
         SET NAME=#{userName},EMAIL=#{userEmail}
         WHERE ID=#{id};
-
+    </update>
+    <update id="updateUserDetail"
+            parameterType="com.onlinepowers.springmybatis.user.UserDetail">
         UPDATE OP_USER_DETAIL
         SET ZIPCODE=#{zipcode}, ADDRESS=#{address}, ADDRESS_DETAIL=#{addressDetail}, PHONE_NUMBER=#{phoneNumber}, RECEIVE_SMS=#{receiveSms}
-        WHERE USER_ID=#{id};
+        WHERE USER_ID=#{userId};
     </update>
 
-    <select id="idCheck" resultType = "INT">
+    <select id="checkId" resultType = "INT">
         SELECT COUNT(*) FROM OP_USER
         WHERE LOGIN_ID = #{loginId}
     </select>
