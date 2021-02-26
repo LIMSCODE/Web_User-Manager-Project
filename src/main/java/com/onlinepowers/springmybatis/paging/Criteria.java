@@ -50,4 +50,6 @@ public class Criteria {
         return (currentPageNo - 1) * recordsPerPage;
     }
 
+
+
 }

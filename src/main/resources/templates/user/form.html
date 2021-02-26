@@ -3,38 +3,57 @@
 <head lang="en">
     <meta charset="UTF-8"/>
     <title>회원등록</title>
-</head>
+    <style>
+        input[type=text],input[type=password] {
+            width: 45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
+            padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
+            box-sizing: border-box; }
 
+        input[type=submit] {
+            width: 50%; background-color: darkslategrey; color: white;
+            padding: 14px 20px; margin: 8px 0; border: none;
+            border-radius: 4px; cursor: pointer; text-decoration: none;
+        }
+        input[type=button], button[type=button] {
+            width: 20%; background-color: darkslategrey; color: white;
+            padding: 14px 20px; margin: 8px 0; border: none;
+            border-radius: 4px; cursor: pointer; text-decoration: none;
+        }
+        .btn{
+            width: 20%; background-color: darkslategrey; color: white;
+            padding: 14px 20px; margin: 8px 0; border: none;
+            border-radius: 4px; cursor: pointer; text-decoration: none;
+        }
+    </style>
+</head>
 <body>
 
 <form method="post" id="target" th:action="@{/registerUser}" th:object="${user}" >
-    <span th:if="${edit} == 1">
+    <span th:if="${id} != null">
         <input type="hidden" name="create" value="0"/>
         <input type="hidden" name="edit" value="1"/>
         <input type="hidden" name="id" th:value="${user.id}"/>
     </span>
-    <span th:if="${create} == 1">
-        <input type="hidden" name="create" value="1"/>
-        <input type="hidden" name="edit" value="0"/>
-    </span>
 
-    <span th:if="${edit} == 1">
+    <span th:if="${id} != null">
     이름<input type="text" name="userName" id="userName" th:value="${user.userName}" maxlength="8" readonly> <br>
     아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="8" readonly>
     </span>
-    <span th:if="${create} == 1">
+    <span th:if="${id} == null">
     이름<input type="text" name="userName" id="userName" th:value="${user.userName}" maxlength="8"> <br>
     아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="8">
     </span>
 
+    <span th:if="${id} == null">
     <button type ="button" class="checkId" id="checkId"> 아이디중복확인 </button>
     <span class="msg" id="msg"> </span>
+    </span>
     <br>
-    <span th:if="${edit} == 1">
+    <span th:if="${id} != null">
     비밀번호 <input type="password" name="userPw"  th:value="${user.userPw}" maxlength="8" > <br>
     비밀번호 확인 <input type="password" name="userPwConfirm"  th:value="${user.userPw}" maxlength="8"> <br>
     </span>
-    <span th:if="${create} == 1">
+    <span  th:if="${id} == null">
         비밀번호 <input type="password" name="userPw"  id="userPw" th:value="${user.userPw}" maxlength="8" > <br>
     비밀번호 확인 <input type="password" name="userPwConfirm"  id="userPwConfirm" th:value="${user.userPw}" maxlength="8"> <br>
     </span>
@@ -46,18 +65,22 @@
     상세주소 <input type="text" name="addressDetail" id="addressDetail"  th:value="${user.userDetail?.addressDetail}"> <br>
     전화번호 <input type="text" name="phoneNumber" id="phoneNumber" th:value="${user.userDetail?.phoneNumber}" > <br>
     SNS수신여부
-    <input type="radio" name="receiveSms" value="1" onclick='checkSns()' checked>수신
-    <input type="radio" name="receiveSms" value="0" onclick='checkSns()' >수신x
+    <input type="radio" name="receiveSms" value="1" checked>수신
+    <input type="radio" name="receiveSms" value="0">수신x
 
     <br>
-    <span th:if="${edit} == 1">
+    <span th:if="${id} != null">
     <input type="submit" class="submit" value="수정">
     </span>
-    <span th:if="${create} == 1">
+    <span th:if="${id} == null">
     <input type="submit" class="submit" value="등록">
     </span>
 </form>
-<input type="button" class="btn btn-default"  onclick="location.href='return'" value="돌아가기"/>
+
+<br><br>
+<div class="" th:object="${user}">
+    <td><a class="btn" th:href="|@{/user/list}*{makeQueryString(currentPageNo)}|" th:text="목록"></a> </td>
+</div>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
@@ -66,45 +89,51 @@
 	$("#target").on("submit", function() {
 
 		//모두 입력되도록
-		let userName= $("#userName").val();
-		let loginId= $("#loginId").val();
-		let userPw = $("#userPw").val();
-		let userPwConfirm = $("#userPwConfirm").val();
-		let userEmail = $("#userEmail").val();
-		let receiveSms = $("#receiveSms").val();
+		let $userName= $("#userName");
+		let $loginId= $("#loginId");
+		let $userPw = $("#userPw");
+		let $userPwConfirm = $("#userPwConfirm");
+		let $userEmail = $("#userEmail");
+		let $receiveSms = $("#receiveSms");
 
-		if (userName == "") {
+		if ($userName.val() == "") {
 			alert("이름을 입력해주세요");
+			$userName.focus();
 			return false;
 		};
-		if (loginId == "") {
+		if ($loginId.val() == "") {
 			alert("아이디 입력해주세요");
+			$loginId.focus();
 			return false;
 		};
-		if (userPw == "") {
+		if ($userPw.val() == "") {
 			alert("비밀번호 입력해주세요");
+			$userPw.focus();
 			return false;
 		};
-		if (userEmail == "") {
+		if ($userEmail.val() == "") {
 			alert("이메일 입력해주세요");
+			$userEmail.focus();
 			return false;
 		};
-		if (receiveSms == "") {
+		if ($receiveSms.val() == "") {
 			alert("sns수신여부 체크");
+			$receiveSms.focus();
 			return false;
 		};
 
-		if (userPw != userPwConfirm) {
+		if ($userPw.val() != $userPwConfirm.val()) {
 			alert("비밀번호 일치하지 않음");
+			$userPw.focus();
 			return false;
 		};
 
 		//이메일 정규식
-		let email = $("#userEmail").val();
+		let $email = $("#userEmail");
 		let exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 
 		//이메일 형식이 알파벳+숫자@알파벳+숫자.알파벳+숫자 형식이 아닐 경우
-		if (exptext.test(email) == false) {
+		if (exptext.test($email.val()) == false) {
 			alert("이메일 형식이 올바르지 않습니다.");
 			return false;
 		}
@@ -154,27 +183,6 @@
 
 
 </script>
-
-<style>
-    input[type=text],input[type=password] {
-        width: 45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
-        padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
-        box-sizing: border-box; }
-
-    input[type=submit] {
-        width: 50%; background-color: darkslategrey; color: white;
-        padding: 14px 20px; margin: 8px 0; border: none;
-        border-radius: 4px; cursor:
-            pointer;
-    }
-    input[type=button], button[type=button] {
-        width: 20%; background-color: darkslategrey; color: white;
-        padding: 14px 20px; margin: 8px 0; border: none;
-        border-radius: 4px; cursor:
-            pointer;
-    }
-</style>
-
 
 </body>
 </html>

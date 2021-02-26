@@ -17,6 +17,12 @@ public class UserDetail extends Criteria {
     public String phoneNumber;
     public String receiveSms;
 
+    public String getReceiveSmsTitle() {
+        if (this.receiveSms == null) {
+            return " ";
+        } else {
+            return "1".equals(this.receiveSms) ? "수신" : "수신안함";
+        }
+    }
 
 }
-
