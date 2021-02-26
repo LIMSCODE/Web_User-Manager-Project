@@ -30,8 +30,14 @@
     <button type ="button" class="checkId" id="checkId"> 아이디중복확인 </button>
     <span class="msg" id="msg"> </span>
     <br>
-    비밀번호 <input type="password" name="userPw"  id="userPw" th:value="${user.userPw}" maxlength="8" > <br>
+    <span th:if="${edit} == 1">
+    비밀번호 <input type="password" name="userPw"  th:value="${user.userPw}" maxlength="8" > <br>
+    비밀번호 확인 <input type="password" name="userPwConfirm"  th:value="${user.userPw}" maxlength="8"> <br>
+    </span>
+    <span th:if="${create} == 1">
+        비밀번호 <input type="password" name="userPw"  id="userPw" th:value="${user.userPw}" maxlength="8" > <br>
     비밀번호 확인 <input type="password" name="userPwConfirm"  id="userPwConfirm" th:value="${user.userPw}" maxlength="8"> <br>
+    </span>
     <span id="isSame" class="same"></span>
     이메일 <input type="text" name="userEmail" id="userEmail" th:value="${user.userEmail}"> <br>
 
@@ -94,8 +100,8 @@
 		};
 
 		//이메일 정규식
-		var email = $("#userEmail").val();
-		var exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+		let email = $("#userEmail").val();
+		let exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 
 		//이메일 형식이 알파벳+숫자@알파벳+숫자.알파벳+숫자 형식이 아닐 경우
 		if (exptext.test(email) == false) {
@@ -104,11 +110,11 @@
 		}
 
 		//라디오 버튼 복수 체크 안되도록
-		var obj = $('input:radio[name="receiveSms"]');
+		let obj = $('input:radio[name="receiveSms"]');
 		if (obj.checked) {
 			obj.checked = false;
 		}
-    });
+	});
 
 	//아이디 중복 체크
 	$("#checkId").click (function() {
@@ -157,9 +163,9 @@
 
     input[type=submit] {
         width: 50%; background-color: darkslategrey; color: white;
-                                            padding: 14px 20px; margin: 8px 0; border: none;
+        padding: 14px 20px; margin: 8px 0; border: none;
         border-radius: 4px; cursor:
-                pointer;
+            pointer;
     }
     input[type=button], button[type=button] {
         width: 20%; background-color: darkslategrey; color: white;

@@ -32,9 +32,10 @@ public class UserServiceImpl implements UserService{
             for (int i=0; i<userList.size(); i++) {
                 String receiveSms = userList.get(i).getUserDetail().getReceiveSms();
                 System.out.print(receiveSms);
-                if (receiveSms == "1") {
+                int receiveSms1 = Integer.parseInt(receiveSms);
+                if (receiveSms1 >0) {
                     userList.get(i).getUserDetail().setReceiveSms("수신");
-                }else {
+                } else {
                     userList.get(i).getUserDetail().setReceiveSms("수신x");
                 }
             }
@@ -69,7 +70,5 @@ public class UserServiceImpl implements UserService{
         int result = userMapper.checkId(loginId);
         return result;
     }
-
-
 
 }

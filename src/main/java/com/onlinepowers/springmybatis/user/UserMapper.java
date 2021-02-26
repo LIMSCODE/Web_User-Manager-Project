@@ -8,14 +8,14 @@ public interface UserMapper {
 
 	int getCount(User user);
 	List<User> getUserList(User user);
-	public User getUser(Integer id);
-	public void deleteUser(int id);
-	public void insertUser(User user);
-	public void insertUserDetail(UserDetail userDetail);
+	User getUser(Integer id);
+	void deleteUser(int id);
+	void insertUser(User user);
+	void insertUserDetail(UserDetail userDetail);
 
-	public void updateUser(User user);
-	public void updateUserDetail(UserDetail userDetail);
+	void updateUser(User user);
+	void updateUserDetail(UserDetail userDetail);
 
-	public int checkId(String loginId);
+	int checkId(String loginId);
 
 }

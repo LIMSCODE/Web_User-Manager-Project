@@ -26,7 +26,6 @@ public class UserController {
 		return "/user/list";
 	}
 
-
 	//글쓰기 폼으로 이동
 	@RequestMapping("/user/create")
 	public String registerForm(HttpServletRequest request, User user,
@@ -68,13 +67,17 @@ public class UserController {
 		String edit= request.getParameter("edit");
 		int edit1 = Integer.parseInt(edit);
 
-		if(create1==1) {
+		if (create1==1) {
 			userService.insertUser(user, userDetail);
 		}
-		if(edit1==1) {
+		if (edit1==1) {
 			userDetail.setUserId(user.getId());     //Detail테이블 수정안되는 현상 해결
 
-			userService.updateUser(user, userDetail);
+			if (user.getUserPw() == "") {	//Db에서 수정 회피
+			}else {
+				userService.updateUser(user, userDetail);
+			}
+
 			model.addAttribute("user", user);
 		}
 
@@ -91,7 +94,6 @@ public class UserController {
 	삭제
 	redirect : 컨트롤러에서 뷰로 주소창에 연결된 값 보낼때 사용
 	*/
-
 	@RequestMapping(value = "/delete" ,method = RequestMethod.POST)
 	String deleteUser(@RequestParam("id") String id, @ModelAttribute("user") User user,
 	                  @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr, Model model) {
@@ -139,7 +141,6 @@ public class UserController {
 
 		int result = 0;
 
-		//MEMBERDTO를 반환.  있으면 1으로 반환
 		if(idCheck != 0) {
 			result = 1;
 		}
