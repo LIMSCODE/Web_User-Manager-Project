@@ -28,10 +28,8 @@
 </head>
 <body>
 
-<form method="post" id="target" th:action="@{/registerUser}" th:object="${user}" >
+<form method="post" id="target" th:object="${user}" >
     <span th:if="${id} != null">
-        <input type="hidden" name="create" value="0"/>
-        <input type="hidden" name="edit" value="1"/>
         <input type="hidden" name="id" th:value="${user.id}"/>
     </span>
 
@@ -50,7 +48,7 @@
     </span>
     <br>
     <span th:if="${id} != null">
-    비밀번호 <input type="password" name="userPw"  th:value="${user.userPw}" maxlength="8" > <br>
+        비밀번호 <input type="password" name="userPw"  th:value="${user.userPw}" maxlength="8" > <br>
     비밀번호 확인 <input type="password" name="userPwConfirm"  th:value="${user.userPw}" maxlength="8"> <br>
     </span>
     <span  th:if="${id} == null">
@@ -65,15 +63,15 @@
     상세주소 <input type="text" name="addressDetail" id="addressDetail"  th:value="${user.userDetail?.addressDetail}"> <br>
     전화번호 <input type="text" name="phoneNumber" id="phoneNumber" th:value="${user.userDetail?.phoneNumber}" > <br>
     SNS수신여부
-    <input type="radio" name="receiveSms" value="1" checked>수신
-    <input type="radio" name="receiveSms" value="0">수신x
+    <label> <input type="radio" name="receiveSms" value="1" checked>수신 </label>
+    <label> <input type="radio" name="receiveSms" value="0">수신x </label>
 
     <br>
     <span th:if="${id} != null">
-    <input type="submit" class="submit" value="수정">
+    <input type="submit" class="submit" value="수정"  formaction="/edit">
     </span>
     <span th:if="${id} == null">
-    <input type="submit" class="submit" value="등록">
+    <input type="submit" class="submit" value="등록" formaction="/create">
     </span>
 </form>
 
@@ -138,29 +136,26 @@
 			return false;
 		}
 
-		//라디오 버튼 복수 체크 안되도록
-		let obj = $('input:radio[name="receiveSms"]');
-		if (obj.checked) {
-			obj.checked = false;
-		}
+
 	});
 
 	//아이디 중복 체크
 	$("#checkId").click (function() {
-		let loginId = $("#loginId").val();
-		let loginMessage = $("#msg").val();
-		if (loginId=="") {
+
+		let $loginId = $("#loginId");
+		let $loginMessage = $("#msg");
+		if ($loginId.val() == "") {
 			alert("아이디를 입력해주세요");
 			return false;
 		}  // [Object object] 말고 id값으로 출력되도록
 
-		if (loginMessage=="사용 불가") {
+		if ($loginMessage.val() == "사용 불가") {
 			return false;
 		}
-		let query = {"loginId" : loginId };
+		let query = {"loginId" : $loginId.val() };
 		//alert(JSON.stringify(query));
 		$.ajax({
-			url : "checkId",
+			url : "check-id",
 			type : "post",
 			data : query,
 			datatype: "json",
@@ -180,8 +175,6 @@
 			}
 		});
 	});
-
-
 </script>
 
 </body>

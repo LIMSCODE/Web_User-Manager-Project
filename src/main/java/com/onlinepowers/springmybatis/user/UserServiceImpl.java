@@ -15,15 +15,21 @@ public class UserServiceImpl implements UserService{
     UserMapper userMapper;
 
     @Override
+    public int getCountByParam(User user){
+
+        int userCount = userMapper.getCountByParam(user);
+        return userCount;
+    }
+
+    @Override
     public List<User> getUserList(User user) {
 
         List<User> userList = Collections.emptyList();
-        int userCount = userMapper.getCount(user);
+        int userCount = userMapper.getCountByParam(user);
 
         PaginationInfo paginationInfo = new PaginationInfo(user);
         paginationInfo.setTotalRecordCount(userCount);
         user.setPaginationInfo(paginationInfo);
-
 
         if (userCount > 0) {
             userList = userMapper.getUserList(user);
@@ -32,30 +38,30 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User getUser(Integer id) { return userMapper.getUser(id); }
+    public User getUserById(long id) { return userMapper.getUserById(id); }
     @Override
-    public void deleteUser(int id) {
-        userMapper.deleteUser(id);
+    public void deleteUserById(long id) {
+        userMapper.deleteUserById(id);
     }
 
     @Transactional
     @Override
-    public void insertUser(User user, UserDetail userDetail) {
+    public void insertUser(User user) {
         userMapper.insertUser(user);
-        userMapper.insertUserDetail(userDetail);
+        userMapper.insertUserDetail(user.userDetail);
     }
 
     @Transactional
     @Override
-    public void updateUser(User user , UserDetail userDetail) {
+    public void updateUser(User user) {
         userMapper.updateUser(user);
-        userMapper.updateUserDetail(userDetail);
+        userMapper.updateUserDetail(user);
     }
 
     @Override
-    public int checkId(String loginId)  {
-        int result = userMapper.checkId(loginId);
-        return result;
+    public int getUserCountByLoginId(String loginId)  {
+        int userCount = userMapper.getUserCountByLoginId(loginId);
+        return userCount;
     }
 
 }

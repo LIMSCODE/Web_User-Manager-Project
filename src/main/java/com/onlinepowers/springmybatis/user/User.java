@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User extends Criteria {
 
-    private Integer id ;
+    private long id ;
     private String userName;
     private String loginId;
     private String userPw;
@@ -20,4 +20,3 @@ public class User extends Criteria {
     public UserDetail userDetail;
 
 }
-

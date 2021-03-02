@@ -6,14 +6,14 @@ import java.util.List;
 @Service
 public interface UserService {
 
+    int getCountByParam(User user);
     List<User> getUserList(User user) ;
-    User getUser(Integer id);
-    void deleteUser(int id);
+    User getUserById(long id);
 
-    void insertUser(User user, UserDetail userDetail);
-
-    void updateUser(User user, UserDetail userDetail);
-    int checkId(String loginId);
+    void deleteUserById(long id);
+    void insertUser(User user);
+    void updateUser(User user);
+    int getUserCountByLoginId(String loginId);
 
 
 }

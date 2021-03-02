@@ -13,11 +13,11 @@
     li {
         float: left;
     }
-     table.type09 {
-         border-collapse: collapse;
-         text-align: left;
-         line-height: 1.5;
-     }
+    table.type09 {
+        border-collapse: collapse;
+        text-align: left;
+        line-height: 1.5;
+    }
     table.type09 thead th {
         padding: 10px;
         font-weight: bold;
@@ -52,6 +52,13 @@
         border-radius: 3px; cursor:
             pointer;
     }
+    #edit {
+        width:25px; background-color: darkslategrey; color: white;
+        padding: 10px 10px; margin: 10px 0; border: none;
+        border-radius: 3px; cursor: pointer; text-decoration:none;
+        position: relative; top:10px;
+    }
+
     button[type=submit] {
         width:100px; background-color: darkslategrey; color: white;
         padding: 10px 10px; margin: 5px 0; border: none;
@@ -172,7 +179,7 @@
 
                 <tbody>
                 <tr th:each="userList : ${userList}">
-                    <c:forEach var="aa" items="${cri}" varStatus="i">
+
                     <td th:text="${userList.id}"></td>
                     <td th:text="${userList.userName}"></td>
                     <td th:text="${userList.loginId}"></td>
@@ -185,9 +192,9 @@
                     <td th:text="${userList.userDetail?.phoneNumber}"></td>
                     <td th:text="${userList.UserDetail?.getReceiveSmsTitle()}"></td>
 
-                    <div class="" th:object="${user}">
+                    <div class=""  th:object="${user}">
                         <!--수정  아이디 넘어감 성공-->
-                        <td><a th:href="|@{/user/edit}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="수정"></a> </td>
+                        <td><a id="edit" th:href="|@{/user/edit}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="수정"></a> </td>
                     </div>
 
                     <form method="post"  th:object="${user}" action="/delete">
@@ -217,7 +224,7 @@
 </div>
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-		function movePage(uri, queryString) {
+		function movePage (uri, queryString) {
 			location.href = uri + queryString;
 		}
     </script>

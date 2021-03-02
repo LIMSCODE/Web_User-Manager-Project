@@ -6,16 +6,17 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-	int getCount(User user);
+	int getCountByParam(User user);
 	List<User> getUserList(User user);
-	User getUser(Integer id);
-	void deleteUser(int id);
+	User getUserById(long id);
+	void deleteUserById(long id);
+
 	void insertUser(User user);
 	void insertUserDetail(UserDetail userDetail);
 
 	void updateUser(User user);
-	void updateUserDetail(UserDetail userDetail);
+	void updateUserDetail(User user);
 
-	int checkId(String loginId);
+	int getUserCountByLoginId(String loginId);
 
 }
