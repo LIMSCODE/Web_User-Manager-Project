@@ -1,6 +1,7 @@
 package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.PaginationInfo;
+import com.onlinepowers.springmybatis.util.SHA256Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -47,8 +48,18 @@ public class UserServiceImpl implements UserService{
     @Transactional
     @Override
     public void insertUser(User user) {
+
+        String salt = SHA256Util.generateSalt();
+        user.setSalt(salt);
+
+        String password = user.getUserPw();
+        password = SHA256Util.getEncrypt(password, salt);
+        user.setUserPw(password);
+
         userMapper.insertUser(user);
         userMapper.insertUserDetail(user.userDetail);
+
+
     }
 
     @Transactional

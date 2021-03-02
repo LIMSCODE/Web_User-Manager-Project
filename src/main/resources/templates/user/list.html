@@ -197,7 +197,7 @@
                         <td><a id="edit" th:href="|@{/user/edit}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="수정"></a> </td>
                     </div>
 
-                    <form method="post"  th:object="${user}" th:action="|@{/delete}*{makeQueryString(currentPageNo)}|">
+                    <form method="post"  th:object="${user}" action="/delete">
                         <input type="hidden" name="id" th:value="${userList.id}">
                         <td>
                             <!--<a class="delete" th:href="|@{/delete}|" th:text="삭제"></a> href는 get으로 처리된다.-->

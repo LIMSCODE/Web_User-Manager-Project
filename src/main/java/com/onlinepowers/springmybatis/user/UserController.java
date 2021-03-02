@@ -38,39 +38,15 @@ public class UserController {
 
 	/**
 	 * 글쓰기 폼으로 이동
-	 * @param request
 	 * @param user
 	 * @param cri
 	 * @param model
 	 * @return
 	 */
 	@GetMapping("/user/create")
-	public String registerForm(HttpServletRequest request, User user,
-	                           @ModelAttribute("cri") Criteria cri, Model model) {
+	public String registerForm(User user, @ModelAttribute("cri") Criteria cri, Model model) {
 
 		model.addAttribute("user", user);
-
-		return "/user/form";
-	}
-
-	/**
-	 * 수정 폼으로 이동
-	 * @param request
-	 * @param userDetail
-	 * @param cri
-	 * @param model
-	 * @return
-	 */
-	@GetMapping("/user/edit")
-	public String editForm(HttpServletRequest request,  UserDetail userDetail,
-	                       @ModelAttribute("cri") Criteria cri, Model model) {
-
-		String stringId = request.getParameter("id");
-		long id = Integer.parseInt(stringId);
-		model.addAttribute("id", id);
-
-		User user = userService.getUserById(id);
-		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
 
 		return "/user/form";
 	}
@@ -99,6 +75,27 @@ public class UserController {
 		return "redirect:/user/list";
 	}
 
+
+	/**
+	 * 수정 폼으로 이동
+	 * @param userDetail
+	 * @param cri
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/user/edit")
+	public String editForm( User user, UserDetail userDetail,
+	                        @ModelAttribute("cri") Criteria cri, Model model) {
+
+		long id = user.getId();
+
+		user = userService.getUserById(id);
+		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
+		model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
+
+		return "/user/form";
+	}
+
 	/**
 	 * 수정 버튼 누름
 	 * @param request
@@ -110,18 +107,14 @@ public class UserController {
 	 * @return
 	 */
 	@PostMapping("/edit")
-	public String editUser(HttpServletRequest request, @ModelAttribute("cri") Criteria cri,
+	public String editUser(@ModelAttribute("cri") Criteria cri,
 	                       @ModelAttribute("user") User user,@ModelAttribute("userDetail") UserDetail userDetail, Model model, RedirectAttributes rttr) {
 
-		String stringId = request.getParameter("id");
-		long id = Integer.parseInt(stringId);
 
-		if (stringId != null) {
-			userDetail.setUserId(user.getId());     //Detail테이블 수정안되는 현상 해결
-			user.setUserDetail(userDetail);
+		userDetail.setUserId(user.getId());     //Detail테이블 수정안되는 현상 해결
+		user.setUserDetail(userDetail);
 
-			userService.updateUser(user);
-		}
+		userService.updateUser(user);
 
 		rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
 		rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
@@ -131,11 +124,10 @@ public class UserController {
 
 		return "redirect:/user/list";
 	}
-
 	/**
 	 * 삭제
 	 * 	redirect : 컨트롤러에서 뷰로 주소창에 연결된 값 보낼때 사용
-	 * @param id
+
 	 * @param cri
 	 * @param rttr
 	 * @param model
@@ -145,7 +137,7 @@ public class UserController {
 	String deleteUser(@RequestParam("id") String stringId,
 	                  @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr, Model model) {
 
-		long id= Integer.parseInt(stringId);
+		int id= Integer.parseInt(stringId);
 		userService.deleteUserById(id);
 
 		rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
@@ -156,7 +148,6 @@ public class UserController {
 
 		return "redirect:/user/list";
 	}
-
 
 	@ResponseBody
 	@PostMapping(value = "/user/check-id")

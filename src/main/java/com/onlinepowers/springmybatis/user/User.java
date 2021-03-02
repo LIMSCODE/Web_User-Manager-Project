@@ -15,6 +15,7 @@ public class User extends Criteria {
     private String userName;
     private String loginId;
     private String userPw;
+    private String salt;
     private String userEmail;
     private String userDate;
 
