@@ -24,9 +24,9 @@
     <select id="getCountByParam" resultType="int"
             parameterType="com.onlinepowers.springmybatis.user.User">
         SELECT
-        COUNT(*)
+            COUNT(*)
         FROM
-        OP_USER U
+            OP_USER U
         INNER JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
         <include refid="search" />
     </select>
@@ -34,19 +34,20 @@
     <select id="getUserList" resultMap="userMap"
             parameterType="com.onlinepowers.springmybatis.user.User">
         SELECT
-        ID,
-        NAME,
-        LOGIN_ID,
-        PASSWORD,
-        EMAIL,
-        DATE_FORMAT(CREATED_DATE, '%Y/%m/%d %H:%i:%s') CREATED_DATE,
-        ZIPCODE,
-        ADDRESS,
-        ADDRESS_DETAIL,
-        PHONE_NUMBER,
-        RECEIVE_SMS
+            ID,
+            PAGING_ID,
+            NAME,
+            LOGIN_ID,
+            PASSWORD,
+            EMAIL,
+            DATE_FORMAT(CREATED_DATE, '%Y/%m/%d %H:%i:%s') CREATED_DATE,
+            ZIPCODE,
+            ADDRESS,
+            ADDRESS_DETAIL,
+            PHONE_NUMBER,
+            RECEIVE_SMS
         FROM
-        OP_USER AS U
+            OP_USER AS U
         INNER JOIN OP_USER_DETAIL AS UD ON U.ID = UD.USER_ID
         <include refid="search" />
         ORDER BY ID DESC
@@ -135,20 +136,20 @@
             parameterType="com.onlinepowers.springmybatis.user.User"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO OP_USER
-        (ID,
-         NAME,
-         LOGIN_ID,
-         PASSWORD,
-         EMAIL,
-         CREATED_DATE)
+            (ID,
+            NAME,
+            LOGIN_ID,
+            PASSWORD,
+            EMAIL,
+            CREATED_DATE)
         VALUES
-        (0,
-         #{userName},
-         #{loginId} ,
-         #{userPw},
-         #{userEmail},
-         DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
-        );
+            (0,
+            #{userName},
+            #{loginId} ,
+            #{userPw},
+             #{userEmail},
+             DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+            );
     </insert>
 
     <insert id="insertUserDetail"
@@ -158,20 +159,20 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
         INSERT INTO OP_USER_DETAIL
-        (USER_ID,
-        ZIPCODE,
-        ADDRESS,
-        ADDRESS_DETAIL,
-        PHONE_NUMBER,
-        RECEIVE_SMS)
+            (USER_ID,
+            ZIPCODE,
+            ADDRESS,
+            ADDRESS_DETAIL,
+            PHONE_NUMBER,
+            RECEIVE_SMS)
         VALUES
-        (#{userId},
-        #{zipcode},
-        #{address},
-        #{addressDetail},
-        #{phoneNumber},
-        #{receiveSms}
-        );
+            (#{userId},
+            #{zipcode},
+            #{address},
+            #{addressDetail},
+            #{phoneNumber},
+            #{receiveSms}
+            );
     </insert>
 
     <update id="updateUser"
@@ -180,16 +181,15 @@
 
             UPDATE OP_USER
             SET
-            PASSWORD=#{userPw},
-            EMAIL=#{userEmail},
-            CREATED_DATE=#{userDate}
+                PASSWORD=#{userPw},
+                EMAIL=#{userEmail}
             WHERE ID=#{id};
         </if>
 
         <if test='userPw == ""'>
             UPDATE OP_USER
             SET
-            ID=#{id}
+                ID=#{id}
             WHERE ID=#{id};
         </if>
     </update>
@@ -199,18 +199,18 @@
         <if test='userPw != ""'>
             UPDATE OP_USER_DETAIL
             SET
-            ZIPCODE=#{userDetail.zipcode},
-            ADDRESS=#{userDetail.address},
-            ADDRESS_DETAIL=#{userDetail.addressDetail},
-            PHONE_NUMBER=#{userDetail.phoneNumber},
-            RECEIVE_SMS=#{userDetail.receiveSms}
+                ZIPCODE=#{userDetail.zipcode},
+                ADDRESS=#{userDetail.address},
+                ADDRESS_DETAIL=#{userDetail.addressDetail},
+                PHONE_NUMBER=#{userDetail.phoneNumber},
+                RECEIVE_SMS=#{userDetail.receiveSms}
             WHERE USER_ID=#{userDetail.userId};
         </if>
 
         <if test='userPw == ""'>
             UPDATE OP_USER_DETAIL
             SET
-            USER_ID=#{userDetail.userId}
+                USER_ID=#{userDetail.userId}
             WHERE USER_ID=#{userDetail.userId};
         </if>
     </update>

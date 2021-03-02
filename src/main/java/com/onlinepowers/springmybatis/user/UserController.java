@@ -23,14 +23,14 @@ public class UserController {
 	public String getUserList(@ModelAttribute("user") User user, Model model) {
 		List<User> userList = userService.getUserList(user);
 
-/*
+
 		for (int i=0; i<userList.size(); i++) {
 			int startPage = user.getStartPage();
 			int currentNo = userList.size() - startPage - i ;
-			userList.get(i).setId(currentNo);
+			userList.get(i).setPagingId(currentNo);
 			System.out.println(userList.get(i));
 		}
-*/
+
 		model.addAttribute("userList", userList);
 
 		return "/user/list";
@@ -96,12 +96,6 @@ public class UserController {
 			userService.insertUser(user);	//user에 userDetail 포함시켜서 매퍼로 넘김.
 		}
 
-		rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
-		rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
-		rttr.addAttribute("pageSize", cri.getPageSize());
-		rttr.addAttribute("searchType", cri.getSearchType());
-		rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
-
 		return "redirect:/user/list";
 	}
 
@@ -166,7 +160,7 @@ public class UserController {
 
 	@ResponseBody
 	@PostMapping(value = "/user/check-id")
-	public int IdCheck(HttpServletRequest request, User user) throws Exception {
+	public int checkId(HttpServletRequest request, User user) throws Exception {
 
 		String loginId = request.getParameter("loginId");
 		log.debug(loginId);

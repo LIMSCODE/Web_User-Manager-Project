@@ -180,7 +180,7 @@
                 <tbody>
                 <tr th:each="userList : ${userList}">
 
-                    <td th:text="${userList.id}"></td>
+                    <td th:text="${userList.pagingId}"></td>
                     <td th:text="${userList.userName}"></td>
                     <td th:text="${userList.loginId}"></td>
                     <td th:text="${userList.userEmail}"></td>
@@ -197,7 +197,7 @@
                         <td><a id="edit" th:href="|@{/user/edit}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="수정"></a> </td>
                     </div>
 
-                    <form method="post"  th:object="${user}" action="/delete">
+                    <form method="post"  th:object="${user}" th:action="|@{/delete}*{makeQueryString(currentPageNo)}|">
                         <input type="hidden" name="id" th:value="${userList.id}">
                         <td>
                             <!--<a class="delete" th:href="|@{/delete}|" th:text="삭제"></a> href는 get으로 처리된다.-->
@@ -216,8 +216,7 @@
     </th:block>
 
     <!--등록 성공-->
-    <form th:action="@{/user/create}" th:object="${user}" >
-        <input type="hidden" name="id" th:value="${user.id}" />
+    <form th:action="|@{/user/create}|" th:object="${user}" >
         <input type="submit" value="등록" style="float:right">
     </form>
 

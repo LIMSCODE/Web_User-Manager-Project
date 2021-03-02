@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class User extends Criteria {
 
     private long id ;
+    private long pagingId;
     private String userName;
     private String loginId;
     private String userPw;

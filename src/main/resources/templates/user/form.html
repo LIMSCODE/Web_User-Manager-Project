@@ -34,12 +34,12 @@
     </span>
 
     <span th:if="${id} != null">
-    이름<input type="text" name="userName" id="userName" th:value="${user.userName}" maxlength="8" readonly> <br>
-    아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="8" readonly>
+    이름<input type="text" name="userName" id="userName" th:value="${user.userName}" maxlength="12" readonly> <br>
+    아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="12" readonly>
     </span>
     <span th:if="${id} == null">
-    이름<input type="text" name="userName" id="userName" th:value="${user.userName}" maxlength="8"> <br>
-    아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="8">
+    이름<input type="text" name="userName" id="userName" th:value="${user.userName}" maxlength="12"> <br>
+    아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="12">
     </span>
 
     <span th:if="${id} == null">
@@ -48,8 +48,8 @@
     </span>
     <br>
     <span th:if="${id} != null">
-        비밀번호 <input type="password" name="userPw"  th:value="${user.userPw}" maxlength="8" > <br>
-    비밀번호 확인 <input type="password" name="userPwConfirm"  th:value="${user.userPw}" maxlength="8"> <br>
+        비밀번호 <input type="password" name="userPw"   maxlength="8" > <br>
+    비밀번호 확인 <input type="password" name="userPwConfirm"   maxlength="8"> <br>
     </span>
     <span  th:if="${id} == null">
         비밀번호 <input type="password" name="userPw"  id="userPw" th:value="${user.userPw}" maxlength="8" > <br>
