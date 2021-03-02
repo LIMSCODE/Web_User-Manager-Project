@@ -66,7 +66,7 @@ public class UserController {
 	                       @ModelAttribute("cri") Criteria cri, Model model) {
 
 		String stringId = request.getParameter("id");
-		int id = Integer.parseInt(stringId);
+		long id = Integer.parseInt(stringId);
 		model.addAttribute("id", id);
 
 		User user = userService.getUserById(id);
@@ -114,7 +114,7 @@ public class UserController {
 	                       @ModelAttribute("user") User user,@ModelAttribute("userDetail") UserDetail userDetail, Model model, RedirectAttributes rttr) {
 
 		String stringId = request.getParameter("id");
-		int id = Integer.parseInt(stringId);
+		long id = Integer.parseInt(stringId);
 
 		if (stringId != null) {
 			userDetail.setUserId(user.getId());     //Detail테이블 수정안되는 현상 해결
@@ -145,7 +145,7 @@ public class UserController {
 	String deleteUser(@RequestParam("id") String stringId,
 	                  @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr, Model model) {
 
-		int id= Integer.parseInt(stringId);
+		long id= Integer.parseInt(stringId);
 		userService.deleteUserById(id);
 
 		rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
