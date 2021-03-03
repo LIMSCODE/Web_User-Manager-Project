@@ -1,6 +1,7 @@
 package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
+import com.onlinepowers.springmybatis.paging.PaginationInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +21,9 @@ public class UserController {
 	private UserService userService;
 
 	@GetMapping("/user/list")
-	public String getUserList(@ModelAttribute("user") User user, Model model) {
-		List<User> userList = userService.getUserList(user);
+	public String getUserList(@ModelAttribute("user") User user, @ModelAttribute("cri") Criteria cri, Model model) {
 
-
-		for (int i=0; i<userList.size(); i++) {
-			int startPage = user.getStartPage();
-			int currentNo = userList.size() - startPage - i ;
-			userList.get(i).setPagingId(currentNo);
-			System.out.println(userList.get(i));
-		}
+		List<User> userList = userService.getUserList(user, cri);
 
 		model.addAttribute("userList", userList);
 
@@ -61,7 +55,7 @@ public class UserController {
 	 * @param rttr
 	 * @return
 	 */
-	@PostMapping("/create")
+	@PostMapping("/user/create")
 	public String createUser(HttpServletRequest request, @ModelAttribute("cri") Criteria cri,
 	                         @ModelAttribute("user") User user,@ModelAttribute("userDetail") UserDetail userDetail, Model model, RedirectAttributes rttr) {
 
@@ -98,7 +92,6 @@ public class UserController {
 
 	/**
 	 * 수정 버튼 누름
-	 * @param request
 	 * @param cri
 	 * @param user
 	 * @param userDetail
@@ -106,7 +99,7 @@ public class UserController {
 	 * @param rttr
 	 * @return
 	 */
-	@PostMapping("/edit")
+	@PostMapping("/user/edit")
 	public String editUser(@ModelAttribute("cri") Criteria cri,
 	                       @ModelAttribute("user") User user,@ModelAttribute("userDetail") UserDetail userDetail, Model model, RedirectAttributes rttr) {
 

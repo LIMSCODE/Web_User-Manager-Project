@@ -68,10 +68,10 @@
 
     <br>
     <span th:if="${id} != null">
-    <input type="submit" class="submit" value="수정"  formaction="/edit">
+    <input type="submit" class="submit" value="수정"  formaction="/user/edit">
     </span>
     <span th:if="${id} == null">
-    <input type="submit" class="submit" value="등록" formaction="/create">
+    <input type="submit" class="submit" value="등록" formaction="/user/create">
     </span>
 </form>
 

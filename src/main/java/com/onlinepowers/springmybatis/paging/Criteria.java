@@ -1,12 +1,11 @@
 package com.onlinepowers.springmybatis.paging;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 public class Criteria {
 
     //페이징 정보
@@ -29,7 +28,7 @@ public class Criteria {
 
     public Criteria() {
         this.currentPageNo = 1;
-        this.recordsPerPage = 10;
+        this.recordsPerPage = 2;
         this.pageSize = 10;
     }
 
@@ -45,11 +44,6 @@ public class Criteria {
 
         return uriComponents.toUriString();
     }
-
-    public int getStartPage() {
-        return (currentPageNo - 1) * recordsPerPage;
-    }
-
 
 
 }

@@ -31,11 +31,16 @@
         <include refid="search" />
     </select>
 
+    <select id="getPassword" resultType="String"
+            parameterType="com.onlinepowers.springmybatis.user.User">
+        SELECT
+               PASSWORD FROM OP_USER
+    </select>
+
     <select id="getUserList" resultMap="userMap"
             parameterType="com.onlinepowers.springmybatis.user.User">
         SELECT
             ID,
-            PAGING_ID,
             NAME,
             LOGIN_ID,
             PASSWORD,
@@ -177,42 +182,30 @@
 
     <update id="updateUser"
             parameterType="com.onlinepowers.springmybatis.user.User">
-        <if test='userPw != ""'>
 
-            UPDATE OP_USER
-            SET
-                PASSWORD=#{userPw},
+        UPDATE OP_USER
+        SET
+            <if test='userPw != ""'>
                 EMAIL=#{userEmail}
-            WHERE ID=#{id};
-        </if>
+            </if>
+        WHERE ID=#{id};
 
-        <if test='userPw == ""'>
-            UPDATE OP_USER
-            SET
-                ID=#{id}
-            WHERE ID=#{id};
-        </if>
     </update>
 
     <update id="updateUserDetail"
             parameterType="com.onlinepowers.springmybatis.user.User">
-        <if test='userPw != ""'>
-            UPDATE OP_USER_DETAIL
-            SET
-                ZIPCODE=#{userDetail.zipcode},
-                ADDRESS=#{userDetail.address},
-                ADDRESS_DETAIL=#{userDetail.addressDetail},
-                PHONE_NUMBER=#{userDetail.phoneNumber},
-                RECEIVE_SMS=#{userDetail.receiveSms}
-            WHERE USER_ID=#{userDetail.userId};
-        </if>
 
-        <if test='userPw == ""'>
-            UPDATE OP_USER_DETAIL
-            SET
-                USER_ID=#{userDetail.userId}
-            WHERE USER_ID=#{userDetail.userId};
-        </if>
+        UPDATE OP_USER_DETAIL
+        SET
+            <if test='userPw != ""'>
+            ZIPCODE=#{userDetail.zipcode},
+            ADDRESS=#{userDetail.address},
+            ADDRESS_DETAIL=#{userDetail.addressDetail},
+            PHONE_NUMBER=#{userDetail.phoneNumber},
+            RECEIVE_SMS=#{userDetail.receiveSms}
+            </if>
+        WHERE USER_ID=#{userDetail.userId};
+
     </update>
 
     <select id="getUserCountByLoginId" resultType = "INT">
