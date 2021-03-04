@@ -1,16 +1,12 @@
 package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
-import com.onlinepowers.springmybatis.paging.PaginationInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -26,6 +22,8 @@ public class UserController {
 		List<User> userList = userService.getUserList(user, cri);
 
 		model.addAttribute("userList", userList);
+
+		log.debug("테스트");
 
 		return "/user/list";
 	}
@@ -69,19 +67,14 @@ public class UserController {
 		return "redirect:/user/list";
 	}
 
-
 	/**
 	 * 수정 폼으로 이동
-	 * @param userDetail
 	 * @param cri
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("/user/edit")
-	public String editForm( User user, UserDetail userDetail,
-	                        @ModelAttribute("cri") Criteria cri, Model model) {
-
-		long id = user.getId();
+	@GetMapping("/user/edit/{id}")
+	public String editForm(@PathVariable("id") long id, User user, @ModelAttribute("cri") Criteria cri, Model model) {
 
 		user = userService.getUserById(id);
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
@@ -99,10 +92,9 @@ public class UserController {
 	 * @param rttr
 	 * @return
 	 */
-	@PostMapping("/user/edit")
+	@PostMapping("/user/edit/{id}")
 	public String editUser(@ModelAttribute("cri") Criteria cri,
 	                       @ModelAttribute("user") User user,@ModelAttribute("userDetail") UserDetail userDetail, Model model, RedirectAttributes rttr) {
-
 
 		userDetail.setUserId(user.getId());     //Detail테이블 수정안되는 현상 해결
 		user.setUserDetail(userDetail);
@@ -117,22 +109,21 @@ public class UserController {
 
 		return "redirect:/user/list";
 	}
+
 	/**
 	 * 삭제
-	 * 	redirect : 컨트롤러에서 뷰로 주소창에 연결된 값 보낼때 사용
-
 	 * @param cri
 	 * @param rttr
 	 * @param model
 	 * @return
 	 */
-	@PostMapping(value = "/delete")
-	String deleteUser(@RequestParam("id") String stringId,
+	@PostMapping(value = "/delete/{id}")
+	String deleteUser(@PathVariable("id") long id,
 	                  @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr, Model model) {
 
-		int id= Integer.parseInt(stringId);
 		userService.deleteUserById(id);
 
+		//redirect : 컨트롤러에서 뷰로 주소창에 연결된 값 보낼때 사용
 		rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
 		rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
 		rttr.addAttribute("pageSize", cri.getPageSize());

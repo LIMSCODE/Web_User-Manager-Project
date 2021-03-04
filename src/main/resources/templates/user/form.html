@@ -67,8 +67,9 @@
     <label> <input type="radio" name="receiveSms" value="0">수신x </label>
 
     <br>
+
     <span th:if="${id} != null">
-    <input type="submit" class="submit" value="수정"  formaction="/user/edit">
+    <input type="submit" class="submit" value="수정"  formaction="/user/edit/${id}">
     </span>
     <span th:if="${id} == null">
     <input type="submit" class="submit" value="등록" formaction="/user/create">
@@ -98,33 +99,32 @@
 			alert("이름을 입력해주세요");
 			$userName.focus();
 			return false;
-		};
+		}
 		if ($loginId.val() == "") {
 			alert("아이디 입력해주세요");
 			$loginId.focus();
 			return false;
-		};
+		}
 		if ($userPw.val() == "") {
 			alert("비밀번호 입력해주세요");
 			$userPw.focus();
 			return false;
-		};
+		}
 		if ($userEmail.val() == "") {
 			alert("이메일 입력해주세요");
 			$userEmail.focus();
 			return false;
-		};
+		}
 		if ($receiveSms.val() == "") {
 			alert("sns수신여부 체크");
 			$receiveSms.focus();
 			return false;
-		};
-
+		}
 		if ($userPw.val() != $userPwConfirm.val()) {
 			alert("비밀번호 일치하지 않음");
 			$userPw.focus();
 			return false;
-		};
+		}
 
 		//이메일 정규식
 		let $email = $("#userEmail");
@@ -135,8 +135,6 @@
 			alert("이메일 형식이 올바르지 않습니다.");
 			return false;
 		}
-
-
 	});
 
 	//아이디 중복 체크
@@ -154,6 +152,7 @@
 		}
 		let query = {"loginId" : $loginId.val() };
 		//alert(JSON.stringify(query));
+
 		$.ajax({
 			url : "check-id",
 			type : "post",

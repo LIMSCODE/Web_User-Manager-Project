@@ -18,5 +18,6 @@ public interface UserMapper {
 	void updateUserDetail(User user);
 
 	int getUserCountByLoginId(String loginId);
+	String getPasswordById(long id);
 
 }

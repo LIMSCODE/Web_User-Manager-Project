@@ -3,7 +3,6 @@ package com.onlinepowers.springmybatis.user;
 import com.onlinepowers.springmybatis.paging.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
 import java.util.List;
 
 @Service

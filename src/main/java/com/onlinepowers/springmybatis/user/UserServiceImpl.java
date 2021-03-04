@@ -3,14 +3,15 @@ package com.onlinepowers.springmybatis.user;
 import com.onlinepowers.springmybatis.paging.Criteria;
 import com.onlinepowers.springmybatis.paging.PaginationInfo;
 import com.onlinepowers.springmybatis.util.SHA256Util;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService{
     @Autowired
@@ -84,14 +85,25 @@ public class UserServiceImpl implements UserService{
     @Override
     public void updateUser(User user) {
 
+        String salt = SHA256Util.generateSalt();
+        user.setSalt(salt);
 
-        //해시함수로 가져온 것과 입력한것을 해시함수로 변환한 것이 일치하면,
-        //수정작업에 들어간다.
-        if ( user.getUserPw() ==
+        String password = user.getUserPw();
+        password = SHA256Util.getEncrypt(password, salt);
 
+        log.debug(password);
+        log.debug(userMapper.getPasswordById(user.getId()));
 
-        userMapper.updateUser(user);
-        userMapper.updateUserDetail(user);
+        //해시함수로 가져온 것과 입력한것을 해시함수로 변환한 것이 일치하면 수정한다.
+        if ( password == userMapper.getPasswordById(user.getId())) {
+
+            user.setUserPw(password);
+            userMapper.updateUser(user);
+            userMapper.updateUserDetail(user);
+        } else {
+            //에러처리 해야함  model.addAttribute("msg" , "비밀번호 일치하지않음");
+            //공백상태로 제출하면 쿼리문에서 수정회피
+        }
     }
 
     @Override

@@ -45,5 +45,8 @@ public class Criteria {
         return uriComponents.toUriString();
     }
 
+    public int getStartPage() {
+        return (currentPageNo - 1) * recordsPerPage;
+    }
 
 }

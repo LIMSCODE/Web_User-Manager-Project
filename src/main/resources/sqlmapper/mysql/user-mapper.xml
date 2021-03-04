@@ -31,10 +31,9 @@
         <include refid="search" />
     </select>
 
-    <select id="getPassword" resultType="String"
+    <select id="getPasswordById" resultType="String"
             parameterType="com.onlinepowers.springmybatis.user.User">
-        SELECT
-               PASSWORD FROM OP_USER
+        SELECT PASSWORD FROM OP_USER WHERE ID = #{id}
     </select>
 
     <select id="getUserList" resultMap="userMap"
@@ -134,7 +133,7 @@
             parameterType="com.onlinepowers.springmybatis.user.User">
         DELETE
         FROM OP_USER
-        WHERE id =#{id}
+        WHERE id = #{id}
     </delete>
 
     <insert id="insertUser"
@@ -182,14 +181,12 @@
 
     <update id="updateUser"
             parameterType="com.onlinepowers.springmybatis.user.User">
-
         UPDATE OP_USER
         SET
-            <if test='userPw != ""'>
-                EMAIL=#{userEmail}
-            </if>
-        WHERE ID=#{id};
 
+                EMAIL=#{userEmail}
+
+        WHERE ID=#{id};
     </update>
 
     <update id="updateUserDetail"
@@ -197,13 +194,13 @@
 
         UPDATE OP_USER_DETAIL
         SET
-            <if test='userPw != ""'>
+
             ZIPCODE=#{userDetail.zipcode},
             ADDRESS=#{userDetail.address},
             ADDRESS_DETAIL=#{userDetail.addressDetail},
             PHONE_NUMBER=#{userDetail.phoneNumber},
             RECEIVE_SMS=#{userDetail.receiveSms}
-            </if>
+
         WHERE USER_ID=#{userDetail.userId};
 
     </update>

@@ -46,17 +46,23 @@
         border-radius: 3px; cursor:
             pointer;
     }
+
     td button[type=submit] {
         width:50px; background-color: darkslategrey; color: white;
         padding: 10px 10px; margin: 5px 0; border: none;
         border-radius: 3px; cursor:
             pointer;
     }
+
     #edit {
         width:25px; background-color: darkslategrey; color: white;
         padding: 10px 10px; margin: 10px 0; border: none;
         border-radius: 3px; cursor: pointer; text-decoration:none;
         position: relative; top:10px;
+    }
+
+    #search {
+        float:left;
     }
 
     button[type=submit] {
@@ -66,15 +72,28 @@
             pointer;
     }
 
+    .reset {
+        width:70px; background-color: darkslategrey; color: white;
+        padding: 10px 10px; margin: 5px 0; border: none;
+        border-radius: 3px; cursor: pointer; display: inline-block;
+    }
+
+    #reset {
+        text-decoration: none; color: white;  font-size: 13px;
+        text-align:center;
+    }
+
     input[type=text],input[type=password] {
         width: 15%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
         padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
-        box-sizing: border-box; }
+        box-sizing: border-box;
+    }
 
     select,option {
         width: 10X%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
         padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
-        box-sizing: border-box; }
+        box-sizing: border-box;
+    }
 
     .pagination .hide {
         display:block;height:0;width:0;font-size:0;line-height:0;margin:0;padding:0;overflow:hidden;}
@@ -92,8 +111,8 @@
     .pagination .on{padding-top:1px;height:22px;color:#fff;font-weight:bold;background:#000;}
 
     .pagination .on:hover{text-decoration:none;}
-
 </style>
+
 <body>
 <div class="container" >
     <div class="page-header">
@@ -103,11 +122,12 @@
     <br /> <br /> <br />
 
     <!--검색영역-->
-    <div th:fragment="search" id="adv-search" class="input-group">
+    <div th:fragment="search" id="adv-search" class="input-group" >
         <div class="input-group-btn">
             <div class="btn-group" role="group">
-                <div class="dropdown dropdown-lg">
-                    <div class="dropdown-menu dropdown-menu-right" role="menu">
+                <div class="dropdown dropdown-lg" >
+                    <div class="dropdown-menu dropdown-menu-right" role="menu"   >
+
                         <!--/* 검색 form */-->
                         <form id="searchForm" th:action="@{/user/list}" method="get" th:onsubmit="return searchBoard(this)"
                               class="form-horizontal" role="form">
@@ -117,7 +137,8 @@
                             <input type="hidden" name="pageSize" th:value="${user.pageSize}"/>
 
                             <div class="form-group">
-                                <label for="filter">검색 유형</label>
+                                <label>검색 유형</label>
+
                                 <select name="searchType" class="form-control">
                                     <option value="" th:selected="${#strings.isEmpty( user.searchType )}">전체</option>
                                     <option value="userName" th:selected="${#strings.equals( user.searchType, 'userName' )}">
@@ -142,11 +163,18 @@
                                             th:selected="${#strings.equals( user.searchType, 'phoneNumber' )}">전화번호
                                     </option>
                                 </select>
+
                                 <input type="text" name="searchKeyword" class="form-control"
                                        th:value="${user.searchKeyword}"/>
+
                                 <button type="submit" class="btn btn-primary"><span
                                         class="glyphicon glyphicon-search" aria-hidden="true"></span>검색
                                 </button>
+
+                                <div th:object="${user}"  class="reset">
+                                    <td><a id="reset" th:href="|@{/user/list}|">검색 초기화</a> </td>
+                                </div>
+
                             </div>
                         </form>
                     </div>
@@ -194,10 +222,10 @@
 
                     <div class=""  th:object="${user}">
                         <!--수정  아이디 넘어감 성공-->
-                        <td><a id="edit" th:href="|@{/user/edit}*{makeQueryString(currentPageNo)}&id=${userList.id}|" th:text="수정"></a> </td>
+                        <td><a id="edit" th:href="|@{/user/edit/}${userList.id}*{makeQueryString(currentPageNo)}|" th:text="수정"></a> </td>
                     </div>
 
-                    <form method="post"  th:object="${user}" action="/delete">
+                    <form method="post"  th:object="${user}" th:action="|@{/delete/}${userList.id}|">
                         <input type="hidden" name="id" th:value="${userList.id}">
                         <td>
                             <!--<a class="delete" th:href="|@{/delete}|" th:text="삭제"></a> href는 get으로 처리된다.-->
