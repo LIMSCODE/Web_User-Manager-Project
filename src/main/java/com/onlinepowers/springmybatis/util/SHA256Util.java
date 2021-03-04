@@ -4,21 +4,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
-/**
- * SHA-256 암호화
- *
- * @author Minchang Jang
- *
- */
 public class SHA256Util {
 
-	/**
-	 * SHA-256 암호화 함
-	 * @param source 원본
-	 * @param salt(String) SALT 값
-	 * @return
-	 */
 	public static String getEncrypt(String source, String salt) {
+
 		return getEncrypt(source, salt.getBytes());
 	}
 

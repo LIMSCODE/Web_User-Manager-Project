@@ -20,4 +20,7 @@ public interface UserMapper {
 	int getUserCountByLoginId(String loginId);
 	String getPasswordById(long id);
 
+	String getSaltById(long id);
+
+
 }

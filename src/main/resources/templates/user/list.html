@@ -140,27 +140,27 @@
                                 <label>검색 유형</label>
 
                                 <select name="searchType" class="form-control">
-                                    <option value="" th:selected="${#strings.isEmpty( user.searchType )}">전체</option>
-                                    <option value="userName" th:selected="${#strings.equals( user.searchType, 'userName' )}">
+                                    <option value="" th:selected="${#strings.isEmpty (user.searchType) }">전체</option>
+                                    <option value="userName" th:selected="${#strings.equals (user.searchType, 'userName') }">
                                         이름
                                     </option>
                                     <option value="loginId"
-                                            th:selected="${#strings.equals( user.searchType, 'loginId' )}">아이디
+                                            th:selected="${#strings.equals(user.searchType, 'loginId')}">아이디
                                     </option>
                                     <option value="userEmail"
-                                            th:selected="${#strings.equals( user.searchType, 'userEmail' )}">이메일
+                                            th:selected="${#strings.equals(user.searchType, 'userEmail')}">이메일
                                     </option>
                                     <option value="zipcode"
-                                            th:selected="${#strings.equals( user.searchType, 'zipcode' )}">우편번호
+                                            th:selected="${#strings.equals(user.searchType, 'zipcode')}">우편번호
                                     </option>
                                     <option value="address"
-                                            th:selected="${#strings.equals( user.searchType, 'address' )}">주소
+                                            th:selected="${#strings.equals(user.searchType, 'address')}">주소
                                     </option>
                                     <option value="addressDetail"
-                                            th:selected="${#strings.equals( user.searchType, 'addressDetail' )}">상세주소
+                                            th:selected="${#strings.equals(user.searchType, 'addressDetail')}">상세주소
                                     </option>
                                     <option value="phoneNumber"
-                                            th:selected="${#strings.equals( user.searchType, 'phoneNumber' )}">전화번호
+                                            th:selected="${#strings.equals(user.searchType, 'phoneNumber')}">전화번호
                                     </option>
                                 </select>
 

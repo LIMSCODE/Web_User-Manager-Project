@@ -144,6 +144,7 @@
             NAME,
             LOGIN_ID,
             PASSWORD,
+            SALT,
             EMAIL,
             CREATED_DATE)
         VALUES
@@ -151,6 +152,7 @@
             #{userName},
             #{loginId} ,
             #{userPw},
+             #{salt},
              #{userEmail},
              DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
             );
@@ -183,26 +185,22 @@
             parameterType="com.onlinepowers.springmybatis.user.User">
         UPDATE OP_USER
         SET
-
-                EMAIL=#{userEmail}
-
+        <if test="userPw != null">
+            EMAIL=#{userEmail}
+        </if>
         WHERE ID=#{id};
     </update>
 
     <update id="updateUserDetail"
             parameterType="com.onlinepowers.springmybatis.user.User">
-
         UPDATE OP_USER_DETAIL
         SET
-
             ZIPCODE=#{userDetail.zipcode},
             ADDRESS=#{userDetail.address},
             ADDRESS_DETAIL=#{userDetail.addressDetail},
             PHONE_NUMBER=#{userDetail.phoneNumber},
             RECEIVE_SMS=#{userDetail.receiveSms}
-
         WHERE USER_ID=#{userDetail.userId};
-
     </update>
 
     <select id="getUserCountByLoginId" resultType = "INT">
@@ -212,5 +210,11 @@
         WHERE LOGIN_ID = #{loginId}
     </select>
 
+    <select id="getSaltById" resultType = "STRING">
+        SELECT
+            SALT
+        FROM OP_USER
+        WHERE ID = #{id}
+    </select>
 
 </mapper>

@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
 import java.util.List;
 
 @Slf4j
@@ -20,21 +21,11 @@ public class UserController {
 	public String getUserList(@ModelAttribute("user") User user, @ModelAttribute("cri") Criteria cri, Model model) {
 
 		List<User> userList = userService.getUserList(user, cri);
-
 		model.addAttribute("userList", userList);
-
-		log.debug("테스트");
 
 		return "/user/list";
 	}
 
-	/**
-	 * 글쓰기 폼으로 이동
-	 * @param user
-	 * @param cri
-	 * @param model
-	 * @return
-	 */
 	@GetMapping("/user/create")
 	public String registerForm(User user, @ModelAttribute("cri") Criteria cri, Model model) {
 
@@ -45,36 +36,23 @@ public class UserController {
 
 	/**
 	 * 등록 버튼 누름
-	 * @param request
 	 * @param cri
 	 * @param user
 	 * @param userDetail
-	 * @param model
-	 * @param rttr
 	 * @return
 	 */
 	@PostMapping("/user/create")
-	public String createUser(HttpServletRequest request, @ModelAttribute("cri") Criteria cri,
-	                         @ModelAttribute("user") User user,@ModelAttribute("userDetail") UserDetail userDetail, Model model, RedirectAttributes rttr) {
+	public String createUser(@ModelAttribute("cri") Criteria cri,
+	                         @ModelAttribute("user") User user,@ModelAttribute("userDetail") UserDetail userDetail) {
 
-		String id = request.getParameter("id");
-
-		if (id == null) {
-			user.setUserDetail(userDetail);
-			userService.insertUser(user);	//user에 userDetail 포함시켜서 매퍼로 넘김.
-		}
+		user.setUserDetail(userDetail);
+		userService.insertUser(user);	//user에 userDetail 포함시켜서 매퍼로 넘김.
 
 		return "redirect:/user/list";
 	}
 
-	/**
-	 * 수정 폼으로 이동
-	 * @param cri
-	 * @param model
-	 * @return
-	 */
 	@GetMapping("/user/edit/{id}")
-	public String editForm(@PathVariable("id") long id, User user, @ModelAttribute("cri") Criteria cri, Model model) {
+	public String updateForm(@PathVariable("id") long id, User user, @ModelAttribute("cri") Criteria cri, Model model) {
 
 		user = userService.getUserById(id);
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
@@ -93,21 +71,29 @@ public class UserController {
 	 * @return
 	 */
 	@PostMapping("/user/edit/{id}")
-	public String editUser(@ModelAttribute("cri") Criteria cri,
-	                       @ModelAttribute("user") User user,@ModelAttribute("userDetail") UserDetail userDetail, Model model, RedirectAttributes rttr) {
+	public String updateUser(@ModelAttribute("cri") Criteria cri, @ModelAttribute("user") User user,
+							 @ModelAttribute("userDetail") UserDetail userDetail, Model model, RedirectAttributes rttr) {
 
 		userDetail.setUserId(user.getId());     //Detail테이블 수정안되는 현상 해결
 		user.setUserDetail(userDetail);
 
-		userService.updateUser(user);
+		if (userService.updateUser(user) == 1) {
+			log.debug("비밀번호 일치 컨트롤러");
+			userService.updateUser(user);
 
-		rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
-		rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
-		rttr.addAttribute("pageSize", cri.getPageSize());
-		rttr.addAttribute("searchType", cri.getSearchType());
-		rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
+			rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
+			rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
+			rttr.addAttribute("pageSize", cri.getPageSize());
+			rttr.addAttribute("searchType", cri.getSearchType());
+			rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
 
-		return "redirect:/user/list";
+			return "redirect:/user/list" ;
+
+		} else {
+			log.debug("비밀번호 일치하지않음 컨트롤러");
+
+			return "redirect:/user/edit/" + user.getId();
+		}
 	}
 
 	/**

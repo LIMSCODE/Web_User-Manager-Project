@@ -21,7 +21,7 @@ public class UserDetail extends Criteria {
         if (this.receiveSms == null) {
             return " ";
         } else {
-            return "1".equals (this.receiveSms) ? "수신" : "수신안함";
+            return "1".equals (this.receiveSms) ? "수신" : "수신안함" ;
         }
     }
 

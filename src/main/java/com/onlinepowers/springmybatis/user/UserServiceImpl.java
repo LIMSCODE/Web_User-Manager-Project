@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -83,26 +84,26 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public void updateUser(User user) {
+    public int updateUser(User user) {
 
-        String salt = SHA256Util.generateSalt();
-        user.setSalt(salt);
+        String salt = userMapper.getSaltById(user.getId());
 
         String password = user.getUserPw();
         password = SHA256Util.getEncrypt(password, salt);
 
-        log.debug(password);
-        log.debug(userMapper.getPasswordById(user.getId()));
-
         //해시함수로 가져온 것과 입력한것을 해시함수로 변환한 것이 일치하면 수정한다.
-        if ( password == userMapper.getPasswordById(user.getId())) {
+        if (password.equals (userMapper.getPasswordById(user.getId())) ) {
 
             user.setUserPw(password);
             userMapper.updateUser(user);
             userMapper.updateUserDetail(user);
+
+            return 1;   //컨트롤러에서 받는 값
+
         } else {
-            //에러처리 해야함  model.addAttribute("msg" , "비밀번호 일치하지않음");
-            //공백상태로 제출하면 쿼리문에서 수정회피
+            log.debug("비밀번호 일치하지 않음");
+
+            return 0;
         }
     }
 
