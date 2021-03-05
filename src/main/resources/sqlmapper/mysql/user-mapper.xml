@@ -152,9 +152,9 @@
             #{userName},
             #{loginId} ,
             #{userPw},
-             #{salt},
-             #{userEmail},
-             DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+            #{salt},
+            #{userEmail},
+            DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
             );
     </insert>
 
