@@ -125,7 +125,7 @@
             RECEIVE_SMS
         FROM
             OP_USER U
-                INNER JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
+        INNER JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
         WHERE ID=#{id}
     </select>
 

@@ -128,7 +128,7 @@ public class UserController {
 
 		int userCount = userService.getUserCountByLoginId(loginId); //오류
 
-		return userCount > 0 ? 1:0 ;
+		return userCount > 0 ? 1 : 0 ;
 	}
 
 }

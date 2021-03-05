@@ -87,14 +87,11 @@ public class UserServiceImpl implements UserService{
     public int updateUser(User user) {
 
         String salt = userMapper.getSaltById(user.getId());
-        log.debug(salt);
         String password = user.getUserPw();
-        log.debug(password);
         String hashPassword = SHA256Util.getEncrypt(password, salt);
-        log.debug(hashPassword);
 
         //해시함수로 가져온 것과 입력한것을 해시함수로 변환한 것이 일치하면 수정한다.
-        if (hashPassword.equals (userMapper.getPasswordById(user.getId())) ) {
+        if (hashPassword.equals (userMapper.getPasswordById(user.getId()))) {
 
             user.setUserPw(hashPassword);
             userMapper.updateUser(user);
@@ -110,7 +107,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int getUserCountByLoginId(String loginId)  {
+    public int getUserCountByLoginId(String loginId) {
         int userCount = userMapper.getUserCountByLoginId(loginId);
         return userCount;
     }

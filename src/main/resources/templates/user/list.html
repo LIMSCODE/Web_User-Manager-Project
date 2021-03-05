@@ -228,7 +228,7 @@
                     <form method="post"  th:object="${user}" th:action="|@{/delete/}${userList.id}|">
                         <input type="hidden" name="id" th:value="${userList.id}">
                         <td>
-                            <!--<a class="delete" th:href="|@{/delete}|" th:text="삭제"></a> href는 get으로 처리된다.-->
+                            <!--href는 get으로 처리된다.-->
                             <button class="delete" type="submit" >삭제</button>
                         </td>
                     </form>
