@@ -7,25 +7,26 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
 @Controller
-public class UserController {
+public class UserManagerController {
 	@Autowired
 	private UserService userService;
 
-	@GetMapping("/user/list")
+	@GetMapping("/opmanager/user/list")
 	public String getUserList(@ModelAttribute("user") User user, @ModelAttribute("cri") Criteria cri, Model model) {
 
 		List<User> userList = userService.getUserList(user, cri);
 		model.addAttribute("userList", userList);
 
-		return "after-login";
+		return "user-after-login";
 	}
 
-	@GetMapping("/user/create")
+	@GetMapping("/opmanager/user/create")
 	public String registerForm(User user, @ModelAttribute("cri") Criteria cri, Model model) {
 
 		model.addAttribute("user", user);
@@ -40,7 +41,7 @@ public class UserController {
 	 * @param userDetail
 	 * @return
 	 */
-	@PostMapping("/user/create")
+	@PostMapping("/opmanager/user/create")
 	public String createUser(@ModelAttribute("cri") Criteria cri,
 	                         @ModelAttribute("user") User user,@ModelAttribute("userDetail") UserDetail userDetail) {
 
@@ -50,7 +51,7 @@ public class UserController {
 		return "redirect:/user/list";
 	}
 
-	@GetMapping("/user/edit/{id}")
+	@GetMapping("/opmanager/user/edit/{id}")
 	public String updateForm(@PathVariable("id") long id, User user, @ModelAttribute("cri") Criteria cri, Model model) {
 
 		user = userService.getUserById(id);
@@ -69,7 +70,7 @@ public class UserController {
 	 * @param rttr
 	 * @return
 	 */
-	@PostMapping("/user/edit/{id}")
+	@PostMapping("/opmanager/user/edit/{id}")
 	public String updateUser(@ModelAttribute("cri") Criteria cri, @ModelAttribute("user") User user,
 							 @ModelAttribute("userDetail") UserDetail userDetail, Model model, RedirectAttributes rttr) {
 
@@ -86,12 +87,12 @@ public class UserController {
 			rttr.addAttribute("searchType", cri.getSearchType());
 			rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
 
-			return "redirect:/user/list" ;
+			return "redirect:/opmanager/user/list" ;
 
 		} else {
 			log.debug("비밀번호 일치하지않음 컨트롤러");
 
-			return "redirect:/user/edit/" + user.getId();
+			return "redirect:/opmanager/user/edit/" + user.getId();
 		}
 	}
 
@@ -102,7 +103,7 @@ public class UserController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping(value = "/delete/{id}")
+	@PostMapping(value = "/opmanager/delete/{id}")
 	String deleteUser(@PathVariable("id") long id,
 	                  @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr, Model model) {
 
@@ -115,11 +116,11 @@ public class UserController {
 		rttr.addAttribute("searchType", cri.getSearchType());
 		rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
 
-		return "redirect:/user/list";
+		return "redirect:/opmanager/user/list";
 	}
 
 	@ResponseBody
-	@PostMapping(value = "/user/check-id")
+	@PostMapping(value = "/opmanager/user/check-id")
 	public int checkId(HttpServletRequest request, User user) throws Exception {
 
 		String loginId = request.getParameter("loginId");

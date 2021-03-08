@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <title>회원등록</title>
+    <style>
+        input[type=text],input[type=password] {
+            width: 45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
+            padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
+            box-sizing: border-box; }
+
+        input[type=submit] {
+            width: 50%; background-color: darkslategrey; color: white;
+            padding: 14px 20px; margin: 8px 0; border: none;
+            border-radius: 4px; cursor: pointer; text-decoration: none;
+        }
+        input[type=button], button[type=button] {
+            width: 20%; background-color: darkslategrey; color: white;
+            padding: 14px 20px; margin: 8px 0; border: none;
+            border-radius: 4px; cursor: pointer; text-decoration: none;
+        }
+        .btn{
+            width: 20%; background-color: darkslategrey; color: white;
+            padding: 14px 20px; margin: 8px 0; border: none;
+            border-radius: 4px; cursor: pointer; text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<form method="post" id="target" th:object="${user}" >
+    <span th:if="${id} != null">
+        <input type="hidden" name="id" th:value="${user.id}"/>
+    </span>
+
+    <span th:if="${id} != null">
+    이름<input type="text" name="userName" id="userName" th:value="${user.userName}" maxlength="12" readonly> <br>
+    아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="12" readonly>
+    </span>
+    <span th:if="${id} == null">
+    이름<input type="text" name="userName" id="userName" th:value="${user.userName}" maxlength="12"> <br>
+    아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="12">
+    </span>
+
+    <span th:if="${id} == null">
+    <button type ="button" class="checkId" id="checkId"> 아이디중복확인 </button>
+    <span class="msg" id="msg"> </span>
+    </span>
+    <br>
+    <span th:if="${id} != null">
+        비밀번호 <input type="password" name="userPw"   maxlength="8" > <br>
+    비밀번호 확인 <input type="password" name="userPwConfirm"   maxlength="8"> <br>
+    </span>
+    <span  th:if="${id} == null">
+        비밀번호 <input type="password" name="userPw"  id="userPw" th:value="${user.userPw}" maxlength="8" > <br>
+    비밀번호 확인 <input type="password" name="userPwConfirm"  id="userPwConfirm" th:value="${user.userPw}" maxlength="8"> <br>
+    </span>
+    <span id="isSame" class="same"></span>
+    이메일 <input type="text" name="userEmail" id="userEmail" th:value="${user.userEmail}"> <br>
+
+    우편번호 <input type="text" name="zipcode" id="zipcode" th:value="${user.userDetail?.zipcode}" > <br>
+    주소 <input type="text" name="address"  id="address" th:value="${user.userDetail?.address}" > <br>
+    상세주소 <input type="text" name="addressDetail" id="addressDetail"  th:value="${user.userDetail?.addressDetail}"> <br>
+    전화번호 <input type="text" name="phoneNumber" id="phoneNumber" th:value="${user.userDetail?.phoneNumber}" > <br>
+    SNS수신여부
+    <label> <input type="radio" name="receiveSms" value="1" checked>수신 </label>
+    <label> <input type="radio" name="receiveSms" value="0">수신x </label>
+
+    <br>
+
+    <span th:if="${id} != null">
+    <input type="submit" class="submit" value="수정"  formaction="/user/edit/${id}">
+    </span>
+    <span th:if="${id} == null">
+    <input type="submit" class="submit" value="등록" formaction="/user/create">
+    </span>
+</form>
+
+<br><br>
+<div class="" th:object="${user}">
+    <td><a class="btn" th:href="|@{/user/list}*{makeQueryString(currentPageNo)}|" th:text="목록"></a> </td>
+</div>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+
+	//최종 제출시 이벤트
+	$("#target").on("submit", function() {
+
+		//모두 입력되도록
+		let $userName= $("#userName");
+		let $loginId= $("#loginId");
+		let $userPw = $("#userPw");
+		let $userPwConfirm = $("#userPwConfirm");
+		let $userEmail = $("#userEmail");
+		let $receiveSms = $("#receiveSms");
+
+		if ($userName.val() == "") {
+			alert("이름을 입력해주세요");
+			$userName.focus();
+			return false;
+		}
+		if ($loginId.val() == "") {
+			alert("아이디 입력해주세요");
+			$loginId.focus();
+			return false;
+		}
+		if ($userPw.val() == "") {
+			alert("비밀번호 입력해주세요");
+			$userPw.focus();
+			return false;
+		}
+		if ($userEmail.val() == "") {
+			alert("이메일 입력해주세요");
+			$userEmail.focus();
+			return false;
+		}
+		if ($receiveSms.val() == "") {
+			alert("sns수신여부 체크");
+			$receiveSms.focus();
+			return false;
+		}
+		if ($userPw.val() != $userPwConfirm.val()) {
+			alert("비밀번호 일치하지 않음");
+			$userPw.focus();
+			return false;
+		}
+
+		//이메일 정규식
+		let $email = $("#userEmail");
+		let exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+
+		//이메일 형식이 알파벳+숫자@알파벳+숫자.알파벳+숫자 형식이 아닐 경우
+		if (exptext.test($email.val()) == false) {
+			alert("이메일 형식이 올바르지 않습니다.");
+			return false;
+		}
+	});
+
+	//아이디 중복 체크
+	$("#checkId").click (function() {
+
+		let $loginId = $("#loginId");
+		let $loginMessage = $("#msg");
+		if ($loginId.val() == "") {
+			alert("아이디를 입력해주세요");
+			return false;
+		}  // [Object object] 말고 id값으로 출력되도록
+
+		if ($loginMessage.val() == "사용 불가") {
+			return false;
+		}
+		let query = {"loginId" : $loginId.val() };
+		//alert(JSON.stringify(query));
+
+		$.ajax({
+			url : "check-id",
+			type : "post",
+			data : query,
+			datatype: "json",
+			success : function(data) {
+				if (data == 1) {
+					$("#msg").text("사용 불가");
+					$("#msg").attr("style", "color:#f00");
+					$(".submit").attr("disabled", "disabled");
+				} else {
+					$("#msg").text("사용 가능");
+					$("#msg").attr("style", "color:#00f");
+					$(".submit").removeAttr("disabled");
+				}
+			},
+			error:function() {
+				alert("실패");
+			}
+		});
+	});
+</script>
+
+</body>
+</html>

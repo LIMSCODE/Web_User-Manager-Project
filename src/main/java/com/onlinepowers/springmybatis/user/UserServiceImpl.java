@@ -77,8 +77,10 @@ public class UserServiceImpl implements UserService{
         password = SHA256Util.getEncrypt(password, salt);
         user.setUserPw(password);
 
+
         userMapper.insertUser(user);
         userMapper.insertUserDetail(user.userDetail);
+
 
     }
 
@@ -100,10 +102,20 @@ public class UserServiceImpl implements UserService{
             return 1;   //컨트롤러에서 받는 값
 
         } else {
-            log.debug("비밀번호 일치하지 않음");
+            log.debug("비밀번호 일치하지 않음 서비스임플");
+
+            try {
+                user.setUserName("a");
+                userMapper.updateUser(user);
+
+            } catch (Exception e) {
+                log.debug("ERROR: {}", e.getMessage(), e);
+                log.debug("비밀번호 일치하지 않음 서비스임플11111111");
+            }
 
             return 0;
         }
+
     }
 
     @Override

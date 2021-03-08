@@ -10,8 +10,8 @@
         <result column="EMAIL" property="userEmail" />
         <result column="CREATED_DATE" property="userDate" />
         <association property="userDetail" resultMap="userDetailMap" />
+        <association property="userRole" resultMap="userRoleMap" />
     </resultMap>
-
     <resultMap id="userDetailMap" type="com.onlinepowers.springmybatis.user.UserDetail">
         <id column="USER_ID" property="userId" />
         <result column="ZIPCODE" property="zipcode" />
@@ -19,6 +19,10 @@
         <result column="ADDRESS_DETAIL" property="addressDetail" />
         <result column="PHONE_NUMBER" property="phoneNumber" />
         <result column="RECEIVE_SMS" property="receiveSms" />
+    </resultMap>
+    <resultMap id="userRoleMap" type="com.onlinepowers.springmybatis.user.UserRole">
+        <id column="USER_ID" property="userId" />
+        <result column="AUTHORITY" property="authority" />
     </resultMap>
 
     <select id="getCountByParam" resultType="int"
@@ -49,10 +53,12 @@
             ADDRESS,
             ADDRESS_DETAIL,
             PHONE_NUMBER,
-            RECEIVE_SMS
+            RECEIVE_SMS,
+            AUTHORITY
         FROM
             OP_USER AS U
         INNER JOIN OP_USER_DETAIL AS UD ON U.ID = UD.USER_ID
+        INNER JOIN OP_USER_ROLE AS UR ON UD.USER_ID = UR.USER_ID
         <include refid="search" />
         ORDER BY ID DESC
         <include refid="paging" />
@@ -122,10 +128,12 @@
             ADDRESS,
             ADDRESS_DETAIL,
             PHONE_NUMBER,
-            RECEIVE_SMS
+            RECEIVE_SMS,
+            AUTHORITY
         FROM
             OP_USER U
         INNER JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
+        INNER JOIN OP_USER_ROLE AS UR ON UD.USER_ID = UR.USER_ID
         WHERE ID=#{id}
     </select>
 
@@ -180,6 +188,20 @@
             #{receiveSms}
             );
     </insert>
+    <insert id="insertUserRole"
+            parameterType="com.onlinepowers.springmybatis.user.User"
+            useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="int" keyProperty="userId" order="BEFORE">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO OP_USER_ROLE
+            (USER_ID,
+             AUTHORITY)
+        VALUES
+            (#{userId},
+            #{authority}
+            );
+    </insert>
 
     <update id="updateUser"
             parameterType="com.onlinepowers.springmybatis.user.User">
@@ -201,6 +223,13 @@
             PHONE_NUMBER=#{userDetail.phoneNumber},
             RECEIVE_SMS=#{userDetail.receiveSms}
         WHERE USER_ID=#{userDetail.userId};
+    </update>
+    <update id="updateUserRole"
+            parameterType="com.onlinepowers.springmybatis.user.User">
+        UPDATE OP_USER_ROLE
+        SET
+           AUTHORITY=#{userRole.authority}
+        WHERE USER_ID=#{userRole.userId};
     </update>
 
     <select id="getUserCountByLoginId" resultType = "INT">

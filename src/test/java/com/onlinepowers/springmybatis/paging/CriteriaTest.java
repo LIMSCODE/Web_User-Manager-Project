@@ -8,6 +8,7 @@ public class CriteriaTest {
 
 	@Test
 	public void getId(){
+
 		Criteria criteria = new Criteria();
 		criteria.setCurrentPageNo(1);
 		criteria.setRecordsPerPage(2);
