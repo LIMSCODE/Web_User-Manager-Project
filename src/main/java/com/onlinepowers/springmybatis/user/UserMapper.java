@@ -21,6 +21,8 @@ public interface UserMapper {
 	String getPasswordById(long id);
 
 	String getSaltById(long id);
-
-
+	
+	
+	//로그인
+	User getUserByLoginId(String loginId);
 }

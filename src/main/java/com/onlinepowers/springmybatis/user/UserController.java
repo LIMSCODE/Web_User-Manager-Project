@@ -17,12 +17,12 @@ public class UserController {
 	private UserService userService;
 
 	@GetMapping("/user/list")
-	public String getUserList(@ModelAttribute("user") User user, @ModelAttribute("cri") Criteria cri, Model model) {
+	public String getUserList(User user, @ModelAttribute("cri") Criteria cri, Model model) {
 
 		List<User> userList = userService.getUserList(user, cri);
 		model.addAttribute("userList", userList);
 
-		return "after-login";
+		return "/user/after-login";
 	}
 
 	@GetMapping("/user/create")
@@ -30,7 +30,7 @@ public class UserController {
 
 		model.addAttribute("user", user);
 
-		return "/user/form";
+		return "/opmanager/user/form";
 	}
 
 	/**
@@ -47,17 +47,18 @@ public class UserController {
 		user.setUserDetail(userDetail);
 		userService.insertUser(user);	//user에 userDetail 포함시켜서 매퍼로 넘김.
 
-		return "redirect:/user/list";
+		return "redirect:/opmanager/user/list";
 	}
 
 	@GetMapping("/user/edit/{id}")
-	public String updateForm(@PathVariable("id") long id, User user, @ModelAttribute("cri") Criteria cri, Model model) {
+	public String updateForm(@PathVariable("id") long id, User user,
+	                         @ModelAttribute("cri") Criteria cri, Model model) {
 
 		user = userService.getUserById(id);
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
 		model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
 
-		return "/user/form";
+		return "/opmanager/user/form";
 	}
 
 	/**
@@ -77,6 +78,7 @@ public class UserController {
 		user.setUserDetail(userDetail);
 
 		if (userService.updateUser(user) == 1) {
+
 			log.debug("비밀번호 일치 컨트롤러");
 			userService.updateUser(user);
 
@@ -86,9 +88,10 @@ public class UserController {
 			rttr.addAttribute("searchType", cri.getSearchType());
 			rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
 
-			return "redirect:/user/list" ;
+			return "redirect:/opmanager/user/list" ;
 
 		} else {
+
 			log.debug("비밀번호 일치하지않음 컨트롤러");
 
 			return "redirect:/user/edit/" + user.getId();
@@ -115,7 +118,7 @@ public class UserController {
 		rttr.addAttribute("searchType", cri.getSearchType());
 		rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
 
-		return "redirect:/user/list";
+		return "redirect:/opmanager/user/list";
 	}
 
 	@ResponseBody
@@ -129,5 +132,4 @@ public class UserController {
 
 		return userCount > 0 ? 1 : 0 ;
 	}
-
 }

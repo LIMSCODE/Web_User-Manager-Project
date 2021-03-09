@@ -18,12 +18,12 @@ public class UserManagerController {
 	private UserService userService;
 
 	@GetMapping("/opmanager/user/list")
-	public String getUserList(@ModelAttribute("user") User user, @ModelAttribute("cri") Criteria cri, Model model) {
+	public String getUserList(User user, @ModelAttribute("cri") Criteria cri, Model model) {
 
 		List<User> userList = userService.getUserList(user, cri);
 		model.addAttribute("userList", userList);
 
-		return "user-after-login";
+		return "/opmanager/user/list";
 	}
 
 	@GetMapping("/opmanager/user/create")

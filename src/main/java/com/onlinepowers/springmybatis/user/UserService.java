@@ -17,5 +17,7 @@ public interface UserService {
     int updateUser(User user);
     int getUserCountByLoginId(String loginId);
 
+    User getUserByLoginId(String loginId);
 
+    String getSaltById(long id);
 }

@@ -4,11 +4,11 @@
 <mapper namespace="com.onlinepowers.springmybatis.user.UserMapper">
     <resultMap id="userMap" type="com.onlinepowers.springmybatis.user.User">
         <id column="ID" property="id" />
-        <result column="NAME" property="userName" />
+        <result column="NAME" property="name" />
         <result column="LOGIN_ID" property="loginId" />
-        <result column="PASSWORD" property="userPw" />
-        <result column="EMAIL" property="userEmail" />
-        <result column="CREATED_DATE" property="userDate" />
+        <result column="PASSWORD" property="password" />
+        <result column="EMAIL" property="email" />
+        <result column="CREATED_DATE" property="createdDate" />
         <association property="userDetail" resultMap="userDetailMap" />
         <association property="userRole" resultMap="userRoleMap" />
     </resultMap>
@@ -246,4 +246,23 @@
         WHERE ID = #{id}
     </select>
 
+    <select id="getUserByLoginId"  resultMap="userMap">
+        SELECT
+            ID,
+            NAME,
+            LOGIN_ID,
+            PASSWORD,
+            EMAIL,
+            DATE_FORMAT(CREATED_DATE, '%Y/%m/%d %H:%i:%s') AS CREATED_DATE,
+            ZIPCODE,
+            ADDRESS,
+            ADDRESS_DETAIL,
+            PHONE_NUMBER,
+            RECEIVE_SMS
+        FROM
+            OP_USER U
+                INNER JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
+
+        WHERE LOGIN_ID=#{loginId}
+    </select>
 </mapper>

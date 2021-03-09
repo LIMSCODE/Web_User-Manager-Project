@@ -28,11 +28,12 @@
 </head>
 <body>
 
-<form method="post" id="target" th:object="${user}" >
+<form id="target" th:object="${user}" method="post" >
     <span>
          아이디 <input type="text" name="loginId"  id="loginId" th:value="${user.loginId}" maxlength="15" > <br>
-         비밀번호 <input type="password" name="userPw"  id="userPw" th:value="${user.userPw}" maxlength="15" > <br>
+         비밀번호 <input type="password" name="password"  id="password" th:value="${user.password}" maxlength="15" > <br>
     </span>
+    <input type="submit" class="submit" value="사용자 로그인"  formaction="/user/after-login">
 </form>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -41,11 +42,11 @@
 	//최종 제출시 이벤트
 	$("#target").on("submit", function() {
 
-		let $userPw = $("#userPw");
+		let $password = $("#password");
 
-		if ($userPw.val() == "") {
+		if ($password.val() == "") {
 			alert("비밀번호 입력해주세요");
-			$userPw.focus();
+			$password.focus();
 			return false;
 		}
 	});

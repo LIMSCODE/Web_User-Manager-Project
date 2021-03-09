@@ -141,13 +141,13 @@
 
                                 <select name="searchType" class="form-control">
                                     <option value="" th:selected="${#strings.isEmpty (user.searchType) }">전체</option>
-                                    <option value="userName" th:selected="${#strings.equals (user.searchType, 'userName') }">
+                                    <option value="name" th:selected="${#strings.equals (user.searchType, 'userName') }">
                                         이름
                                     </option>
                                     <option value="loginId"
                                             th:selected="${#strings.equals(user.searchType, 'loginId')}">아이디
                                     </option>
-                                    <option value="userEmail"
+                                    <option value="email"
                                             th:selected="${#strings.equals(user.searchType, 'userEmail')}">이메일
                                     </option>
                                     <option value="zipcode"
@@ -209,10 +209,10 @@
                 <tr th:each="userList : ${userList}">
 
                     <td th:text="${userList.pagingId}"></td>
-                    <td th:text="${userList.userName}"></td>
+                    <td th:text="${userList.name}"></td>
                     <td th:text="${userList.loginId}"></td>
-                    <td th:text="${userList.userEmail}"></td>
-                    <td th:text="${userList.userDate}"></td>
+                    <td th:text="${userList.email}"></td>
+                    <td th:text="${userList.createdDate}"></td>
 
                     <td th:text="${userList.userDetail?.zipcode}"></td>
                     <td th:text="${userList.userDetail?.address}"></td>

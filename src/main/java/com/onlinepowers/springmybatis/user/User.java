@@ -10,15 +10,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User extends Criteria {
 
-    private long id ;
-    private long pagingId;
-    private String userName;
-    private String loginId;
-    private String userPw;
-    private String salt;
-    private String userEmail;
-    private String userDate;
+	private long id;
+	private long pagingId;
+	private String name;
+	private String loginId;
+	private String password;
+	private String salt;
+	private String email;
+	private String createdDate;
 
-    public UserDetail userDetail;
+	public UserDetail userDetail;
+	public UserRole userRole;
 
 }
