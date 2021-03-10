@@ -15,9 +15,10 @@ public interface UserService {
     void deleteUserById(long id);
     void insertUser(User user);
     void updateUser(User user);
+
+    int getMaxPk();
     int getUserCountByLoginId(String loginId);
 
     User getUserByLoginId(String loginId);
 
-    String getSaltById(long id);
 }

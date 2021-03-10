@@ -77,23 +77,30 @@ public class UserManagerController {
 							UserDetail userDetail, UserRole userRole, Model model, RedirectAttributes rttr) {
 
 		userDetail.setUserId(user.getId());     //Detail테이블 수정안되는 현상 해결
+		userRole.setUserId(user.getId());
 
 		user.setUserDetail(userDetail);
 		user.setUserRole(userRole);
 
-		//비밀번호가 널이 아니면 비번+다른정보 업데이트
-		//비밀번호가 널이면 회피
 		if (user.getPassword() != "") {
 			log.debug("수정한다.");
 			userService.updateUser(user);
 
-			rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
-			rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
-			rttr.addAttribute("pageSize", cri.getPageSize());
-			rttr.addAttribute("searchType", cri.getSearchType());
-			rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
+			if (user.userRole.getAuthority().equals("1")) {
 
-			return "redirect:/opmanager/user/list" ;
+				rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
+				rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
+				rttr.addAttribute("pageSize", cri.getPageSize());
+				rttr.addAttribute("searchType", cri.getSearchType());
+				rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
+
+				return "redirect:/opmanager/user/list";
+
+			} else {
+
+				return "redirect:/user/after-login";
+			}
+
 
 		} else {
 			log.debug("수정되지않음");

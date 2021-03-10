@@ -217,19 +217,19 @@
             parameterType="com.onlinepowers.springmybatis.user.User">
         UPDATE OP_USER_DETAIL
         SET
-            ZIPCODE=#{userDetail.zipcode},
-            ADDRESS=#{userDetail.address},
-            ADDRESS_DETAIL=#{userDetail.addressDetail},
-            PHONE_NUMBER=#{userDetail.phoneNumber},
-            RECEIVE_SMS=#{userDetail.receiveSms}
-        WHERE USER_ID=#{userDetail.userId};
+            ZIPCODE=#{zipcode},
+            ADDRESS=#{address},
+            ADDRESS_DETAIL=#{addressDetail},
+            PHONE_NUMBER=#{phoneNumber},
+            RECEIVE_SMS=#{receiveSms}
+        WHERE USER_ID=#{userId};
     </update>
     <update id="updateUserRole"
             parameterType="com.onlinepowers.springmybatis.user.User">
         UPDATE OP_USER_ROLE
         SET
-           AUTHORITY=#{userRole.authority}
-        WHERE USER_ID=#{userRole.userId};
+           AUTHORITY= #{authority}
+        WHERE USER_ID=#{userId};
     </update>
 
 
@@ -238,6 +238,11 @@
             COUNT(*)
         FROM OP_USER
         WHERE LOGIN_ID = #{loginId}
+    </select>
+    <select id="getMaxPk" resultType = "INT">
+        SELECT
+            IFNULL(MAX(ID),0)
+        FROM OP_USER
     </select>
     <select id="getUserByLoginId"  resultMap="userMap">
         SELECT
@@ -251,11 +256,12 @@
             ADDRESS,
             ADDRESS_DETAIL,
             PHONE_NUMBER,
-            RECEIVE_SMS
+            RECEIVE_SMS,
+            AUTHORITY
         FROM
             OP_USER U
                 INNER JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
-
+                INNER JOIN OP_USER_ROLE AS UR ON UD.USER_ID = UR.USER_ID
         WHERE LOGIN_ID=#{loginId}
     </select>
 </mapper>

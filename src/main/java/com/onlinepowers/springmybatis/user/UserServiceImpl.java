@@ -74,8 +74,9 @@ public class UserServiceImpl implements UserService {
 	public void insertUser(User user) {
 
 		String password = user.getPassword();
-		password = SHA256Util.getEncrypt(password, user.getId());
+		password = SHA256Util.getEncrypt(password, getMaxPk());
 		user.setPassword(password);
+		log.debug(password);
 
 		userMapper.insertUser(user);
 		userMapper.insertUserDetail(user.userDetail);
@@ -87,10 +88,20 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateUser(User user) {
 
-		userMapper.updateUser(user);
-		userMapper.updateUserDetail(user);
-		userMapper.updateUserRole(user);
+		String password = user.getPassword();
+		password = SHA256Util.getEncrypt(password, user.getId());
+		user.setPassword(password);
 
+		userMapper.updateUser(user);
+		userMapper.updateUserDetail(user.userDetail);
+		userMapper.updateUserRole(user.userRole);
+
+	}
+
+	@Override
+	public int getMaxPk() {
+		int maxPk = userMapper.getMaxPk();
+		return maxPk+1;
 	}
 
 	@Override
@@ -102,11 +113,6 @@ public class UserServiceImpl implements UserService {
 	//로그인
 	public User getUserByLoginId(String loginId) {
 		return userMapper.getUserByLoginId(loginId);
-	}
-
-	@Override
-	public String getSaltById(long id) {
-		return userMapper.getSaltById(id);
 	}
 
 }

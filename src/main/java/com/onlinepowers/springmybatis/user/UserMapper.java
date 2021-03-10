@@ -16,14 +16,13 @@ public interface UserMapper {
 	void insertUserRole(UserRole userRole);
 
 	void updateUser(User user);
-	void updateUserDetail(User user);
-	void updateUserRole(User user);
+	void updateUserDetail(UserDetail userDetail);
+	void updateUserRole(UserRole userRole);
 
 	int getUserCountByLoginId(String loginId);
+	int getMaxPk();
 	String getPasswordById(long id);
 
-	String getSaltById(long id);
-	
 	
 	//로그인
 	User getUserByLoginId(String loginId);

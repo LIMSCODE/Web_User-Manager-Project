@@ -47,7 +47,7 @@ public class UserController {
 
 			log.debug("비밀번호 일치함 수정폼으로 이동");
 
-			return "redirect:/user/edit/" + loginUser.getId();
+			return "redirect:/opmanager/user/edit/" + loginUser.getId();
 
 		} else {
 
@@ -58,37 +58,5 @@ public class UserController {
 
 	}
 
-	//수정하기 누르면 edit폼으로 넘어와서 (뷰에서 폼태그 히든값으로 세션안의 id를 같이넘김)
-	@GetMapping("/user/edit/{id}")
-	public String updateForm(@PathVariable("id") long id, Model model, HttpSession session) {
-
-		//id값은 로그인세션의 id이고, model로 뷰로 보낸다.
-		//세션 저장 정보
-		User loginUser = (User) session.getAttribute("loginUser");
-
-		model.addAttribute("user", loginUser);  //뷰에서 밸류값 지정하면 기존아이디 뜸
-
-		return "/user/form";
-	}
-
-	/**
-	 * 수정버튼 누름
-	 * @param user
-	 * @param userDetail
-	 * @return
-	 */
-	@PostMapping("/user/edit/{id}")
-	public String updateUser(@ModelAttribute("user") User user,
-							 @ModelAttribute("userDetail") UserDetail userDetail) {
-
-		userDetail.setUserId(user.getId());     //Detail테이블 수정안되는 현상 해결
-		user.setUserDetail(userDetail);
-
-		//입력된 정보를 받아와 update문 돌린다.
-		userService.updateUser(user);
-
-		return "redirect:/user/edit/" + user.getId();
-
-	}
 
 }

@@ -25,16 +25,10 @@ public class MainController {
 		return "/main";
 	}
 
-	@GetMapping("/user/login")
-	public String userLogin(@ModelAttribute("user") User user) {
+	@GetMapping("/login")
+	public String login(@ModelAttribute("user") User user) {
 
-		return "/user/login";
-	}
-
-	@GetMapping("/opmanager/user/login")
-	public String userManagerLogin(@ModelAttribute("user") User user) {
-
-		return "/opmanager/user/login";
+		return "/login";
 	}
 
 	/**
@@ -42,7 +36,7 @@ public class MainController {
 	 * @param user
 	 * @return
 	 */
-	@PostMapping("/user/login")
+	@PostMapping("/login")
 	public String userLogin(User user, HttpSession session) {
 
 		//만약 입력아이디에 해당하는 유저가 DB에 있으면
@@ -65,7 +59,16 @@ public class MainController {
 				session.setMaxInactiveInterval(1000 * 1000);
 
 				log.debug("비밀번호 일치");
-				return "redirect:/user/after-login";
+
+				if (loginUser.getUserRole().getAuthority().equals("1")) {
+
+					return "redirect:/opmanager/user/list";
+
+				} else {
+
+					return "redirect:/user/after-login";
+				}
+
 
 			} else {
 				log.debug("비밀번호 일치하지 않음");
@@ -104,6 +107,8 @@ public class MainController {
 			String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
 
 			log.debug(hashPassword);
+			log.debug(loginUser.getPassword());
+
 
 			//DB에 저장된 비밀번호 값과 일치하는지 확인
 			if (hashPassword.equals(loginUser.getPassword())) {
@@ -128,7 +133,7 @@ public class MainController {
 		}
 	}
 
-	// 로그아웃 하는 부분
+
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
 		session.invalidate();  // 세션 초기화
