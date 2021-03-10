@@ -24,11 +24,13 @@ public class MainController {
 
 		return "/main";
 	}
+
 	@GetMapping("/user/login")
 	public String userLogin(@ModelAttribute("user") User user) {
 
 		return "/user/login";
 	}
+
 	@GetMapping("/opmanager/user/login")
 	public String userManagerLogin(@ModelAttribute("user") User user) {
 
@@ -43,26 +45,54 @@ public class MainController {
 	@PostMapping("/user/login")
 	public String userLogin(User user, HttpSession session) {
 
-		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
-		User loginUser = userService.getUserByLoginId(user.getLoginId());
+		//만약 입력아이디에 해당하는 유저가 DB에 있으면
+		if (userService.getUserByLoginId(user.getLoginId()) != null) {
 
-		//user를 폼태그에서 받아와 세션에 저장한다.
-		if (user.getId() == loginUser.getId()) {
-			//넘어온 비밀번호와 DB에서 가져와 로그인유저에 저장된 값이 일치하는지 확인후 세션에 담는다.
-			session.setAttribute("loginUser", loginUser);
-			session.setMaxInactiveInterval(1000 * 1000);
+			//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
+			User loginUser = userService.getUserByLoginId(user.getLoginId());
 
-			return "redirect:/user/after-login";
+			//입력한 비밀번호를 PK이용하여 해시함수로 만들고
+			String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
+
+			log.debug(hashPassword);
+			log.debug(loginUser.getPassword());
+
+			//DB에 저장된 비밀번호 값과 일치하는지 확인
+			if (hashPassword.equals(loginUser.getPassword())) {
+
+				//비밀번호 일치시 세션에 담는다.
+				session.setAttribute("loginUser", loginUser);
+				session.setMaxInactiveInterval(1000 * 1000);
+
+				log.debug("비밀번호 일치");
+				return "redirect:/user/after-login";
+
+			} else {
+				log.debug("비밀번호 일치하지 않음");
+				return "redirect:/user/login";
+			}
 
 		} else {
-
+			log.debug("해당하는 아이디가 없음");
 			return "redirect:/user/login";
 
 		}
 	}
 
+	@GetMapping("/user/after-login")
+	public String afterLogin(@ModelAttribute("user") User user, HttpSession session) {
+
+		//redirect를 받는 GetMapping, 세션에 저장된 User객체 받음
+		User loginUser = (User) session.getAttribute("loginUser");
+		log.debug("로그인 함");
+		log.debug(loginUser.getLoginId());
+
+		return "/user/after-login";
+	}
+
+
 	@PostMapping("/opmanager/user/login")
-	public String userManagerLogin(User user, HttpSession session) {
+	public String userManagerLogin(User user, HttpSession session, @ModelAttribute("cri") Criteria cri, Model model) {
 
 		//만약 입력아이디에 해당하는 유저가 DB에 있으면
 		if (userService.getUserByLoginId(user.getLoginId()) != null) {
@@ -71,7 +101,7 @@ public class MainController {
 			User loginUser = userService.getUserByLoginId(user.getLoginId());
 
 			//입력한 비밀번호를 PK이용하여 해시함수로 만들고
-			String hashPassword = SHA256Util.getEncrypt(user.getPassword(), user.getId());
+			String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
 
 			log.debug(hashPassword);
 
@@ -81,6 +111,9 @@ public class MainController {
 				//비밀번호 일치시 세션에 담는다.
 				session.setAttribute("loginUser", loginUser);
 				session.setMaxInactiveInterval(1000 * 1000);
+
+				List<User> userList = userService.getUserList(user, cri);
+				model.addAttribute("userList", userList);
 
 				return "redirect:/opmanager/user/list";
 
@@ -92,7 +125,6 @@ public class MainController {
 		} else {
 			log.debug("해당하는 아이디가 없음");
 			return "redirect:/opmanager/user/login";
-
 		}
 	}
 

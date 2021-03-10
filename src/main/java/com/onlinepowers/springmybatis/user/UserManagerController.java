@@ -27,9 +27,7 @@ public class UserManagerController {
 	}
 
 	@GetMapping("/opmanager/user/create")
-	public String registerForm(User user, @ModelAttribute("cri") Criteria cri, Model model) {
-
-		model.addAttribute("user", user);
+	public String registerForm(User user) {
 
 		return "/user/form";
 	}
@@ -42,17 +40,21 @@ public class UserManagerController {
 	 * @return
 	 */
 	@PostMapping("/opmanager/user/create")
-	public String createUser(@ModelAttribute("cri") Criteria cri,
-	                         @ModelAttribute("user") User user,@ModelAttribute("userDetail") UserDetail userDetail) {
+	public String createUser(Criteria cri,
+	                         User user, UserDetail userDetail, UserRole userRole) {
 
 		user.setUserDetail(userDetail);
+		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 (userRole으로 받아짐)
+									//user안에 userRole을 set해줘서 넘어온 name=authority 데이터를 받는다.
+
 		userService.insertUser(user);	//user에 userDetail 포함시켜서 매퍼로 넘김.
 
-		return "redirect:/user/list";
+		return "redirect:/opmanager/user/list";
 	}
 
 	@GetMapping("/opmanager/user/edit/{id}")
-	public String updateForm(@PathVariable("id") long id, User user, @ModelAttribute("cri") Criteria cri, Model model) {
+	public String updateForm(@PathVariable("id") long id, User user,
+	                         @ModelAttribute("cri") Criteria cri, Model model) {
 
 		user = userService.getUserById(id);
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
@@ -71,14 +73,18 @@ public class UserManagerController {
 	 * @return
 	 */
 	@PostMapping("/opmanager/user/edit/{id}")
-	public String updateUser(@ModelAttribute("cri") Criteria cri, @ModelAttribute("user") User user,
-							 @ModelAttribute("userDetail") UserDetail userDetail, Model model, RedirectAttributes rttr) {
+	public String updateUser(Criteria cri, User user,
+							UserDetail userDetail, UserRole userRole, Model model, RedirectAttributes rttr) {
 
 		userDetail.setUserId(user.getId());     //Detail테이블 수정안되는 현상 해결
-		user.setUserDetail(userDetail);
 
-		if (userService.updateUser(user) == 1) {
-			log.debug("비밀번호 일치 컨트롤러");
+		user.setUserDetail(userDetail);
+		user.setUserRole(userRole);
+
+		//비밀번호가 널이 아니면 비번+다른정보 업데이트
+		//비밀번호가 널이면 회피
+		if (user.getPassword() != "") {
+			log.debug("수정한다.");
 			userService.updateUser(user);
 
 			rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
@@ -90,7 +96,7 @@ public class UserManagerController {
 			return "redirect:/opmanager/user/list" ;
 
 		} else {
-			log.debug("비밀번호 일치하지않음 컨트롤러");
+			log.debug("수정되지않음");
 
 			return "redirect:/opmanager/user/edit/" + user.getId();
 		}
@@ -103,8 +109,8 @@ public class UserManagerController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping(value = "/opmanager/delete/{id}")
-	String deleteUser(@PathVariable("id") long id,
+	@PostMapping("/opmanager/user/delete/{id}")
+	public String deleteUser(@PathVariable("id") long id,
 	                  @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr, Model model) {
 
 		userService.deleteUserById(id);

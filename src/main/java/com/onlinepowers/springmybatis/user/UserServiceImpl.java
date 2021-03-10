@@ -73,49 +73,23 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void insertUser(User user) {
 
-		String salt = SHA256Util.generateSalt();
-		user.setSalt(salt);
-
 		String password = user.getPassword();
 		password = SHA256Util.getEncrypt(password, user.getId());
 		user.setPassword(password);
 
 		userMapper.insertUser(user);
 		userMapper.insertUserDetail(user.userDetail);
+		userMapper.insertUserRole(user.userRole);
 
 	}
 
 	@Transactional
 	@Override
-	public int updateUser(User user) {
+	public void updateUser(User user) {
 
-		String password = user.getPassword();
-		String hashPassword = SHA256Util.getEncrypt(password, user.getId());
-
-
-		//해시함수로 가져온 것과 입력한것을 해시함수로 변환한 것이 일치하면 수정한다.
-		if (hashPassword.equals(userMapper.getPasswordById(user.getId()))) {
-
-			user.setPassword(hashPassword);
-			userMapper.updateUser(user);
-			userMapper.updateUserDetail(user);
-
-			return 1;   //컨트롤러에서 받는 값
-
-		} else {
-			log.debug("비밀번호 일치하지 않음 서비스임플");
-
-			try {
-				user.setName("a");
-				userMapper.updateUser(user);
-
-			} catch (Exception e) {
-				log.debug("ERROR: {}", e.getMessage(), e);
-				log.debug("비밀번호 일치하지 않음 서비스임플11111111");
-			}
-
-			return 0;
-		}
+		userMapper.updateUser(user);
+		userMapper.updateUserDetail(user);
+		userMapper.updateUserRole(user);
 
 	}
 

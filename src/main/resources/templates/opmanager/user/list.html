@@ -199,6 +199,7 @@
                     <th class="col-sm-3">상세주소</th>
                     <th class="col-sm-3">전화번호</th>
                     <th class="col-sm-3">SMS수신여부</th>
+                    <th class="col-sm-3">직위</th>
 
                     <th class="col-sm-3">수정</th>
                     <th class="col-sm-3">삭제</th>
@@ -219,13 +220,14 @@
                     <td th:text="${userList.userDetail?.addressDetail}"></td>
                     <td th:text="${userList.userDetail?.phoneNumber}"></td>
                     <td th:text="${userList.UserDetail?.getReceiveSmsTitle()}"></td>
+                    <td th:text="${userList.UserRole?.getAuthorityTitle()}"></td>
 
                     <div class=""  th:object="${user}">
                         <!--수정  아이디 넘어감 성공-->
-                        <td><a id="edit" th:href="|@{/user/edit/}${userList.id}*{makeQueryString(currentPageNo)}|" th:text="수정"></a> </td>
+                        <td><a id="edit" th:href="|@{/opmanager/user/edit/}${userList.id}*{makeQueryString(currentPageNo)}|" th:text="수정"></a> </td>
                     </div>
 
-                    <form method="post"  th:object="${user}" th:action="|@{/delete/}${userList.id}|">
+                    <form method="post"  th:object="${user}" th:action="|@{/opmanager/user/delete/}${userList.id}|">
                         <input type="hidden" name="id" th:value="${userList.id}">
                         <td>
                             <!--href는 get으로 처리된다.-->
@@ -244,11 +246,11 @@
     </th:block>
 
     <!--등록 성공-->
-    <form th:action="|@{/user/create}|" th:object="${user}" >
+    <form th:action="|@{/opmanager/user/create}|" th:object="${user}" >
         <input type="submit" value="등록" style="float:right">
     </form>
-
 </div>
+
 <th:block layout:fragment="script">
     <script th:inline="javascript">
 		function movePage (uri, queryString) {

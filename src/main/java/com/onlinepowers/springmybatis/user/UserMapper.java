@@ -13,9 +13,11 @@ public interface UserMapper {
 
 	void insertUser(User user);
 	void insertUserDetail(UserDetail userDetail);
+	void insertUserRole(UserRole userRole);
 
 	void updateUser(User user);
 	void updateUserDetail(User user);
+	void updateUserRole(User user);
 
 	int getUserCountByLoginId(String loginId);
 	String getPasswordById(long id);
@@ -25,4 +27,7 @@ public interface UserMapper {
 	
 	//로그인
 	User getUserByLoginId(String loginId);
+
+
+
 }

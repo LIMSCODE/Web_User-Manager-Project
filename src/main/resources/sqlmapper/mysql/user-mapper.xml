@@ -71,22 +71,20 @@
     </sql>
 
     <sql id="search">
-
         <if test="searchKeyword != null and searchKeyword != ''">
             WHERE
             <choose>
                 <when test="searchType != null and searchType != ''">
                     <choose>
-                        <when test="'userName'.equals(searchType)">
+                        <when test="'name'.equals(searchType)">
                             NAME LIKE CONCAT('%', #{searchKeyword}, '%')
                         </when>
                         <when test="'loginId'.equals(searchType)">
                             LOGIN_ID LIKE CONCAT('%', #{searchKeyword}, '%')
                         </when>
-                        <when test="'userEmail'.equals(searchType)">
+                        <when test="'email'.equals(searchType)">
                             EMAIL LIKE CONCAT('%', #{searchKeyword}, '%')
                         </when>
-
                         <when test="'zipcode'.equals(searchType)">
                             ZIPCODE LIKE CONCAT('%', #{searchKeyword}, '%')
                         </when>
@@ -144,6 +142,8 @@
         WHERE id = #{id}
     </delete>
 
+
+
     <insert id="insertUser"
             parameterType="com.onlinepowers.springmybatis.user.User"
             useGeneratedKeys="true" keyProperty="id">
@@ -157,15 +157,14 @@
             CREATED_DATE)
         VALUES
             (0,
-            #{userName},
+            #{name},
             #{loginId} ,
-            #{userPw},
+            #{password},
             #{salt},
-            #{userEmail},
+            #{email},
             DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
             );
     </insert>
-
     <insert id="insertUserDetail"
             parameterType="com.onlinepowers.springmybatis.user.User"
             useGeneratedKeys="true" keyProperty="id">
@@ -203,16 +202,17 @@
             );
     </insert>
 
+
     <update id="updateUser"
             parameterType="com.onlinepowers.springmybatis.user.User">
         UPDATE OP_USER
         SET
-        <if test="userPw != null">
-            EMAIL=#{userEmail}
+        <if test="password != null">
+            PASSWORD=#{password},
+            EMAIL=#{email}
         </if>
         WHERE ID=#{id};
     </update>
-
     <update id="updateUserDetail"
             parameterType="com.onlinepowers.springmybatis.user.User">
         UPDATE OP_USER_DETAIL
@@ -232,20 +232,13 @@
         WHERE USER_ID=#{userRole.userId};
     </update>
 
+
     <select id="getUserCountByLoginId" resultType = "INT">
         SELECT
             COUNT(*)
         FROM OP_USER
         WHERE LOGIN_ID = #{loginId}
     </select>
-
-    <select id="getSaltById" resultType = "STRING">
-        SELECT
-            SALT
-        FROM OP_USER
-        WHERE ID = #{id}
-    </select>
-
     <select id="getUserByLoginId"  resultMap="userMap">
         SELECT
             ID,

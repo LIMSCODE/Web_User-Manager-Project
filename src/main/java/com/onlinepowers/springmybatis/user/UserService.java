@@ -14,7 +14,7 @@ public interface UserService {
 
     void deleteUserById(long id);
     void insertUser(User user);
-    int updateUser(User user);
+    void updateUser(User user);
     int getUserCountByLoginId(String loginId);
 
     User getUserByLoginId(String loginId);

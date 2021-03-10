@@ -56,23 +56,25 @@
     비밀번호 확인 <input type="password" name="passwordConfirm"  id="passwordConfirm" th:value="${user.password}" maxlength="8"> <br>
     </span>
     <span id="isSame" class="same"></span>
-    이메일 <input type="text" name="userEmail" id="userEmail" th:value="${user.email}"> <br>
+    이메일 <input type="text" name="email" id="email" th:value="${user.email}"> <br>
 
     우편번호 <input type="text" name="zipcode" id="zipcode" th:value="${user.userDetail?.zipcode}" > <br>
     주소 <input type="text" name="address"  id="address" th:value="${user.userDetail?.address}" > <br>
     상세주소 <input type="text" name="addressDetail" id="addressDetail"  th:value="${user.userDetail?.addressDetail}"> <br>
     전화번호 <input type="text" name="phoneNumber" id="phoneNumber" th:value="${user.userDetail?.phoneNumber}" > <br>
     SNS수신여부
-    <label> <input type="radio" name="receiveSms" value="1" checked>수신 </label>
-    <label> <input type="radio" name="receiveSms" value="0">수신x </label>
+    <label> <input type="radio" name="receiveSms" value="1" checked> 수신 </label>
+    <label> <input type="radio" name="receiveSms" value="0"> 수신x </label><br>
 
-    <br>
+    직위
+    <label> <input type="radio" name="authority" value="1" checked> 관리자 </label>
+    <label> <input type="radio" name="authority" value="0"> 회원 </label><br>
 
     <span th:if="${id} != null">
-    <input type="submit" class="submit" value="수정"  formaction="/user/edit/${id}">
+    <input type="submit" class="submit" value="수정"  formaction="/opmanager/user/edit/${id}">
     </span>
     <span th:if="${id} == null">
-    <input type="submit" class="submit" value="등록" formaction="/user/create">
+    <input type="submit" class="submit" value="등록" formaction="/opmanager/user/create">
     </span>
 </form>
 
@@ -92,7 +94,7 @@
 		let $loginId= $("#loginId");
 		let $password = $("#password");
 		let $passwordConfirm = $("#passwordConfirm");
-		let $userEmail = $("#email");
+		let $email = $("#email");
 		let $receiveSms = $("#receiveSms");
 
 		if ($name.val() == "") {
@@ -112,7 +114,7 @@
 		}
 		if ($email.val() == "") {
 			alert("이메일 입력해주세요");
-			$userEmail.focus();
+			$email.focus();
 			return false;
 		}
 		if ($receiveSms.val() == "") {
