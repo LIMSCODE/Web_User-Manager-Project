@@ -41,8 +41,8 @@ public class UserManagerController {
 	 * @return
 	 */
 	@PostMapping("/opmanager/user/create")
-	public String createUser(Criteria cri,
-	                         User user, UserDetail userDetail, UserRole userRole,  HttpSession session) {
+	public String createUser(@ModelAttribute("cri") Criteria cri, User user,
+	                         UserDetail userDetail, UserRole userRole,  HttpSession session) {
 
 		user.setUserDetail(userDetail);
 		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 (userRole으로 받아짐)
@@ -108,9 +108,9 @@ public class UserManagerController {
 	 * @return
 	 */
 	@PostMapping("/opmanager/user/edit/{id}")
-	public String updateUser(Criteria cri, User user,
-							UserDetail userDetail, UserRole userRole, Model model, RedirectAttributes rttr
-							, HttpSession session) {
+	public String updateUser(@ModelAttribute("cri") Criteria cri, User user,
+							UserDetail userDetail, UserRole userRole, Model model,
+							 RedirectAttributes rttr, HttpSession session) {
 
 		//user.getLoginId 로 입력받은값이 loginUser.
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -158,8 +158,8 @@ public class UserManagerController {
 	 * @return
 	 */
 	@PostMapping("/opmanager/user/delete/{id}")
-	public String deleteUser(@PathVariable("id") long id,
-	                  @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr, Model model) {
+	public String deleteUser(@PathVariable("id") long id, @ModelAttribute("cri") Criteria cri,
+	                         RedirectAttributes rttr, Model model) {
 
 		userService.deleteUserById(id);
 

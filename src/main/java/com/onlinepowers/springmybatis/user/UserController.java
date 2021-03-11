@@ -18,7 +18,6 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-
 	//로그인 후 수정하려할때 비밀번호 확인
 	@GetMapping("/user/password-check")
 	public String checkPassword() {
