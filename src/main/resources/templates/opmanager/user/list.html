@@ -111,6 +111,12 @@
     .pagination .on{padding-top:1px;height:22px;color:#fff;font-weight:bold;background:#000;}
 
     .pagination .on:hover{text-decoration:none;}
+
+     .btn{
+         width: 20%; background-color: darkslategrey; color: white;
+         padding: 14px 20px; margin: 8px 0; border: none;
+         border-radius: 4px; cursor: pointer; text-decoration: none;
+     }
 </style>
 
 <body>
@@ -131,7 +137,7 @@
                     <div class="dropdown-menu dropdown-menu-right" role="menu"   >
 
                         <!--/* 검색 form */-->
-                        <form id="searchForm" th:action="@{/user/list}" method="get" th:onsubmit="return searchBoard(this)"
+                        <form id="searchForm" th:action="@{/opmanager/user/list}" method="get" th:onsubmit="return searchBoard(this)"
                               class="form-horizontal" role="form">
                             <!-- /* 현재 페이지 번호, 페이지당 출력할 데이터 개수, 페이지 하단에 출력할 페이지 개수 Hidden 파라미터 */ -->
                             <input type="hidden" name="currentPageNo" value="1"/>
@@ -174,7 +180,7 @@
                                 </button>
 
                                 <div th:object="${user}"  class="reset">
-                                    <td><a id="reset" th:href="|@{/user/list}|">검색 초기화</a> </td>
+                                    <td><a id="reset" th:href="|@{/opmanager/user/list}|">검색 초기화</a> </td>
                                 </div>
 
                             </div>

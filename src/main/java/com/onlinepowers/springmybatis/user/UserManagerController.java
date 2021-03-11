@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Slf4j
@@ -33,7 +34,7 @@ public class UserManagerController {
 	}
 
 	/**
-	 * 등록 버튼 누름
+	 * main에서 회원가입, 관리자페이지에서 회원등록
 	 * @param cri
 	 * @param user
 	 * @param userDetail
@@ -41,15 +42,43 @@ public class UserManagerController {
 	 */
 	@PostMapping("/opmanager/user/create")
 	public String createUser(Criteria cri,
-	                         User user, UserDetail userDetail, UserRole userRole) {
+	                         User user, UserDetail userDetail, UserRole userRole,  HttpSession session) {
 
 		user.setUserDetail(userDetail);
 		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 (userRole으로 받아짐)
 									//user안에 userRole을 set해줘서 넘어온 name=authority 데이터를 받는다.
 
-		userService.insertUser(user);	//user에 userDetail 포함시켜서 매퍼로 넘김.
+		userService.insertUser(user);
 
-		return "redirect:/opmanager/user/list";
+		//관리자페이지에서 등록하는 경우
+		if (session.getAttribute("loginUser") != null) {
+
+			return "redirect:/opmanager/user/list";
+
+		//회원가입	
+		} else {
+
+			//관리자로 선택했을때
+			if ("1".equals(user.getUserRole().getAuthority())) {
+
+				log.debug("list로 보냄");
+
+				//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
+				User loginUser = userService.getUserByLoginId(user.getLoginId());
+				session.setAttribute("loginUser", loginUser);
+
+				return "redirect:/opmanager/user/list";
+
+			//유저로 선택했을때
+			} else {
+
+				//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
+				User loginUser = userService.getUserByLoginId(user.getLoginId());
+				session.setAttribute("loginUser", loginUser);
+
+				return "redirect:/user/after-login";
+			}
+		}
 	}
 
 	@GetMapping("/opmanager/user/edit/{id}")
@@ -60,11 +89,17 @@ public class UserManagerController {
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
 		model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
 
+		//관리자일때만 목록 링크 보이도록한다.
+		String authority = user.getUserRole().getAuthority();
+		if ("1".equals(authority)) {
+			model.addAttribute("authority", authority);   //form 뷰에서 id있을때로 처리됨.
+		}
+
 		return "/user/form";
 	}
 
 	/**
-	 * 수정 버튼 누름
+	 * 유저페이지에서 수정, 관리자페이지에서 수정
 	 * @param cri
 	 * @param user
 	 * @param userDetail
@@ -74,7 +109,11 @@ public class UserManagerController {
 	 */
 	@PostMapping("/opmanager/user/edit/{id}")
 	public String updateUser(Criteria cri, User user,
-							UserDetail userDetail, UserRole userRole, Model model, RedirectAttributes rttr) {
+							UserDetail userDetail, UserRole userRole, Model model, RedirectAttributes rttr
+							, HttpSession session) {
+
+		//user.getLoginId 로 입력받은값이 loginUser.
+		User loginUser = (User) session.getAttribute("loginUser");
 
 		userDetail.setUserId(user.getId());     //Detail테이블 수정안되는 현상 해결
 		userRole.setUserId(user.getId());
@@ -83,10 +122,12 @@ public class UserManagerController {
 		user.setUserRole(userRole);
 
 		if (user.getPassword() != "") {
+
 			log.debug("수정한다.");
 			userService.updateUser(user);
 
-			if (user.userRole.getAuthority().equals("1")) {
+			//관리자일때
+			if ("1".equals(loginUser.getUserRole().getAuthority())) {
 
 				rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
 				rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
@@ -98,9 +139,8 @@ public class UserManagerController {
 
 			} else {
 
-				return "redirect:/user/after-login";
+					return "redirect:/user/after-login";
 			}
-
 
 		} else {
 			log.debug("수정되지않음");
@@ -108,6 +148,7 @@ public class UserManagerController {
 			return "redirect:/opmanager/user/edit/" + user.getId();
 		}
 	}
+
 
 	/**
 	 * 삭제

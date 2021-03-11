@@ -47,14 +47,11 @@
     <span class="msg" id="msg"> </span>
     </span>
     <br>
-    <span th:if="${id} != null">
-        비밀번호 <input type="password" name="password"   maxlength="8" > <br>
-    비밀번호 확인 <input type="password" name="passwordConfirm"   maxlength="8"> <br>
+    <span>
+        비밀번호 <input type="password" name="password" id="password"  maxlength="8" > <br>
+    비밀번호 확인 <input type="password" name="passwordConfirm"  id="passwordConfirm"  maxlength="8"> <br>
     </span>
-    <span  th:if="${id} == null">
-        비밀번호 <input type="password" name="password"  id="password" th:value="${user.password}" maxlength="8" > <br>
-    비밀번호 확인 <input type="password" name="passwordConfirm"  id="passwordConfirm" th:value="${user.password}" maxlength="8"> <br>
-    </span>
+
     <span id="isSame" class="same"></span>
     이메일 <input type="text" name="email" id="email" th:value="${user.email}"> <br>
 
@@ -79,9 +76,11 @@
 </form>
 
 <br><br>
+<span th:if="${authority} != null">
 <div class="" th:object="${user}">
     <td><a class="btn" th:href="|@{/opmanager/user/list}*{makeQueryString(currentPageNo)}|" th:text="목록"></a> </td>
 </div>
+</span>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">

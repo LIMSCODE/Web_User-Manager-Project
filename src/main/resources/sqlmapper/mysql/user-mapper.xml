@@ -152,7 +152,6 @@
             NAME,
             LOGIN_ID,
             PASSWORD,
-            SALT,
             EMAIL,
             CREATED_DATE)
         VALUES
@@ -160,7 +159,6 @@
             #{name},
             #{loginId} ,
             #{password},
-            #{salt},
             #{email},
             DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
             );

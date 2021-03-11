@@ -43,13 +43,20 @@
 	//최종 제출시 이벤트
 	$("#target").on("submit", function() {
 
+		let $loginId = $("#loginId");
 		let $password = $("#password");
 
+		if ($loginId.val() == "") {
+			alert("아이디 입력해주세요");
+			$loginId.focus();
+			return false;
+		}
 		if ($password.val() == "") {
 			alert("비밀번호 입력해주세요");
 			$password.focus();
 			return false;
 		}
+
 	});
 </script>
 

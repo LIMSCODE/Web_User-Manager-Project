@@ -69,7 +69,6 @@ public class MainController {
 					return "redirect:/user/after-login";
 				}
 
-
 			} else {
 				log.debug("비밀번호 일치하지 않음");
 				return "redirect:/user/login";
@@ -132,7 +131,6 @@ public class MainController {
 			return "redirect:/opmanager/user/login";
 		}
 	}
-
 
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
