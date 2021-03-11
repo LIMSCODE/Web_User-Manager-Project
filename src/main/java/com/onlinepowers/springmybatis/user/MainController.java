@@ -20,13 +20,13 @@ public class MainController {
 	private UserService userService;
 
 	@GetMapping("/main")
-	public String main(@ModelAttribute("user") User user) {
+	public String main() {
 
 		return "/main";
 	}
 
 	@GetMapping("/login")
-	public String login(@ModelAttribute("user") User user) {
+	public String login(User user) {
 
 		return "/login";
 	}
@@ -37,7 +37,7 @@ public class MainController {
 	 * @return
 	 */
 	@PostMapping("/login")
-	public String userLogin(User user, HttpSession session) {
+	public String login(User user, HttpSession session) {
 
 		//만약 입력아이디에 해당하는 유저가 DB에 있으면
 		if (userService.getUserByLoginId(user.getLoginId()) != null) {
@@ -60,15 +60,15 @@ public class MainController {
 
 				log.debug("비밀번호 일치");
 
+				//관리자일때
 				if (loginUser.getUserRole().getAuthority().equals("1")) {
 
 					return "redirect:/opmanager/user/list";
-
+				//사용자일때
 				} else {
 
 					return "redirect:/user/after-login";
 				}
-
 			} else {
 				log.debug("비밀번호 일치하지 않음");
 				return "redirect:/user/login";
@@ -77,12 +77,11 @@ public class MainController {
 		} else {
 			log.debug("해당하는 아이디가 없음");
 			return "redirect:/user/login";
-
 		}
 	}
 
 	@GetMapping("/user/after-login")
-	public String afterLogin(@ModelAttribute("user") User user, HttpSession session) {
+	public String afterLogin(HttpSession session) {
 
 		//redirect를 받는 GetMapping, 세션에 저장된 User객체 받음
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -108,16 +107,12 @@ public class MainController {
 			log.debug(hashPassword);
 			log.debug(loginUser.getPassword());
 
-
 			//DB에 저장된 비밀번호 값과 일치하는지 확인
 			if (hashPassword.equals(loginUser.getPassword())) {
 
 				//비밀번호 일치시 세션에 담는다.
 				session.setAttribute("loginUser", loginUser);
 				session.setMaxInactiveInterval(1000 * 1000);
-
-				List<User> userList = userService.getUserList(user, cri);
-				model.addAttribute("userList", userList);
 
 				return "redirect:/opmanager/user/list";
 
