@@ -123,24 +123,31 @@ public class UserManagerController {
 
 		if (user.getPassword() != "") {
 
-			log.debug("수정한다.");
-			userService.updateUser(user);
+			try {
 
-			//관리자일때
-			if ("1".equals(loginUser.getUserRole().getAuthority())) {
+				log.debug("수정한다.");
+				userService.updateUser(user);
 
-				rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
-				rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
-				rttr.addAttribute("pageSize", cri.getPageSize());
-				rttr.addAttribute("searchType", cri.getSearchType());
-				rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
+			} catch (Exception e) {
 
-				return "redirect:/opmanager/user/list";
-
-			} else {
-
-				return "redirect:/user/after-login";
+				log.debug("update 오류");
 			}
+
+				//관리자일때
+				if ("1".equals(loginUser.getUserRole().getAuthority())) {
+
+					rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
+					rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
+					rttr.addAttribute("pageSize", cri.getPageSize());
+					rttr.addAttribute("searchType", cri.getSearchType());
+					rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
+
+					return "redirect:/opmanager/user/list";
+
+				} else {
+
+					return "redirect:/user/after-login";
+				}
 
 		} else {
 			log.debug("수정되지않음");
