@@ -55,7 +55,7 @@ public class UserController {
 		//로그인 세션의 비밀번호 값과 일치하는지 확인
 		if (hashPassword.equals(loginUser.getPassword())) {
 
-			log.debug("비밀번호 일치함 수정폼으로 이동");
+			log.debug("비밀번호 일치, 수정폼으로 이동");
 
 			return "redirect:/opmanager/user/edit/" + loginUser.getId();
 
