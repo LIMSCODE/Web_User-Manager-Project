@@ -18,6 +18,17 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+	@GetMapping("/user/after-login")
+	public String afterLogin(HttpSession session) {
+
+		//redirect를 받는 GetMapping, 세션에 저장된 User객체 받음
+		User loginUser = (User) session.getAttribute("loginUser");
+		log.debug("로그인 함");
+		log.debug(loginUser.getLoginId());
+
+		return "/user/after-login";
+	}
+
 	//로그인 후 수정하려할때 비밀번호 확인
 	@GetMapping("/user/password-check")
 	public String checkPassword() {
