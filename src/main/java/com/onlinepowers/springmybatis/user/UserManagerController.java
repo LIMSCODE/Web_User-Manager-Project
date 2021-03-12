@@ -115,7 +115,8 @@ public class UserManagerController {
 		//user.getLoginId 로 입력받은값이 loginUser.
 		User loginUser = (User) session.getAttribute("loginUser");
 
-		userDetail.setUserId(user.getId());     //Detail테이블 수정안되는 현상 해결
+		//하위 테이블 수정안되는 현상 해결
+		userDetail.setUserId(user.getId());
 		userRole.setUserId(user.getId());
 
 		user.setUserDetail(userDetail);
