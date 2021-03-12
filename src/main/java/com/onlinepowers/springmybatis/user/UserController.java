@@ -36,7 +36,6 @@ public class UserController {
 		return "/user/password-check";
 	}
 
-	//수정폼 전에 비밀번호 확인하기
 	@PostMapping("/user/password-check")
 	public String checkPassword(User user, HttpSession session, Model model) {
 		

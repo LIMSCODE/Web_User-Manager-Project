@@ -149,14 +149,14 @@
 
                                 <select name="searchType" class="form-control">
                                     <option value="" th:selected="${#strings.isEmpty (user.searchType) }">전체</option>
-                                    <option value="name" th:selected="${#strings.equals (user.searchType, 'userName') }">
+                                    <option value="name" th:selected="${#strings.equals (user.searchType, 'name') }">
                                         이름
                                     </option>
                                     <option value="loginId"
                                             th:selected="${#strings.equals(user.searchType, 'loginId')}">아이디
                                     </option>
                                     <option value="email"
-                                            th:selected="${#strings.equals(user.searchType, 'userEmail')}">이메일
+                                            th:selected="${#strings.equals(user.searchType, 'email')}">이메일
                                     </option>
                                     <option value="zipcode"
                                             th:selected="${#strings.equals(user.searchType, 'zipcode')}">우편번호

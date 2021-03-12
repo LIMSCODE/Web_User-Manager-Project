@@ -139,7 +139,7 @@ public class UserManagerController {
 
 			} else {
 
-					return "redirect:/user/after-login";
+				return "redirect:/user/after-login";
 			}
 
 		} else {
@@ -175,9 +175,9 @@ public class UserManagerController {
 
 	@ResponseBody
 	@PostMapping(value = "/opmanager/user/check-id")
-	public int checkId(HttpServletRequest request, User user) throws Exception {
+	public int checkId(User user) throws Exception {
 
-		String loginId = request.getParameter("loginId");
+		String loginId = user.getLoginId();
 		log.debug(loginId);
 
 		int userCount = userService.getUserCountByLoginId(loginId); //오류
