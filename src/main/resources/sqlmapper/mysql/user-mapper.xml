@@ -142,8 +142,6 @@
         WHERE id = #{id}
     </delete>
 
-
-
     <insert id="insertUser"
             parameterType="com.onlinepowers.springmybatis.user.User"
             useGeneratedKeys="true" keyProperty="id">
@@ -200,7 +198,6 @@
             );
     </insert>
 
-
     <update id="updateUser"
             parameterType="com.onlinepowers.springmybatis.user.User">
         UPDATE OP_USER
@@ -226,7 +223,7 @@
             parameterType="com.onlinepowers.springmybatis.user.User">
         UPDATE OP_USER_ROLE
         SET
-           AUTHORITY= #{authority}
+           AUTHORITY= IFNULL(#{authority}, '0')
         WHERE USER_ID=#{userId};
     </update>
 

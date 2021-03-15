@@ -18,11 +18,12 @@
 
     <span th:if="${loginUser} == null">
          <a class="btn" href="/user/login" >로그인하기</a>
-         <a class="btn" href="/user/create" >회원가입</a>
+         <a class="btn" href="/regist-form" >회원가입</a>
     </span>
 
     <span th:if="${loginUser} != null">
-         <a class="btn" href="/user/password-check"  >정보수정</a>
+        <span th:text="${loginUser.loginId} +'님 안녕하세요'"></span>   <br><br><br>
+         <a class="btn" href="/user/password-check"  >정보수정</a>      <br><br><br>
          <a class="btn" href="/user/logout" >로그아웃</a>
     </span>
 

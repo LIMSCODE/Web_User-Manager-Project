@@ -17,7 +17,6 @@
 <div class="">
 
     <span th:if="${loginUser} != null">
-    <!--관리자 로그인시 뜨는 창, 안녕하세요 ㅇㅇ님, 로그아웃,회원관리-->
 
           <span th:text="${loginUser.loginId} +'님 안녕하세요'"></span>   <br><br><br>
           <a class="btn" href="/opmanager/logout" >로그아웃</a>   <br><br><br>

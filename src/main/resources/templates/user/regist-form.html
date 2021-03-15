@@ -63,26 +63,23 @@
     <label> <input type="radio" name="receiveSms" value="1" checked> 수신 </label>
     <label> <input type="radio" name="receiveSms" value="0"> 수신x </label><br>
 
-    <span th:if="${userRole} != null">
     직위
     <label> <input type="radio" name="authority" value="1" checked> 관리자 </label>
     <label> <input type="radio" name="authority" value="0"> 회원 </label><br>
-    </span>
 
     <span th:if="${id} != null">
     <input type="submit" class="submit" value="수정"  formaction="/opmanager/user/edit/${id}">
     </span>
     <span th:if="${id} == null">
-    <input type="submit" class="submit" value="등록" formaction="/opmanager/user/create">
+    <input type="submit" class="submit" value="등록" formaction="/register">
     </span>
 </form>
 
 <br><br>
-<span th:if="${authority} != null">
+
 <div class="" th:object="${user}">
     <td><a class="btn" th:href="|@{/opmanager/user/list}*{makeQueryString(currentPageNo)}|" th:text="목록"></a> </td>
 </div>
-</span>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
@@ -152,7 +149,7 @@
 		if ($loginMessage.val() == "사용 불가") {
 			return false;
 		}
-		let query = {"loginId" : $loginId.val() };
+		let query = { "loginId" : $loginId.val() };
 		//alert(JSON.stringify(query));
 
 		$.ajax({
