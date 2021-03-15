@@ -12,13 +12,19 @@
         }
     </style>
 </head>
+
 <body>
 <div class="">
-    <br><br><br><br>
-    <!--로그인 창으로 이동해서 id, pw 입력받고 관리자이면 opmanager.user.list로, 유저이면 user.list로-->
-    <a class="btn" href="/login" >로그인하기</a>
-    <br><br><br>
-    <a class="btn" href="opmanager/user/create" >회원가입</a>
+
+    <span th:if="${loginUser} != null">
+    <!--관리자 로그인시 뜨는 창, 안녕하세요 ㅇㅇ님, 로그아웃,회원관리-->
+
+          <span th:text="${loginUser.loginId} +'님 안녕하세요'"></span>   <br><br><br>
+          <a class="btn" href="/opmanager/logout" >로그아웃</a>   <br><br><br>
+          <a class="btn" href="/opmanager/user/list" >회원관리</a>
+    </span>
+
 </div>
+
 </body>
 </html>

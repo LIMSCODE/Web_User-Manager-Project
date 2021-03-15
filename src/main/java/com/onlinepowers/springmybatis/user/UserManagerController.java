@@ -1,6 +1,7 @@
 package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
+import com.onlinepowers.springmybatis.util.SHA256Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,73 @@ import java.util.List;
 public class UserManagerController {
 	@Autowired
 	private UserService userService;
+
+	//매니저일때 메인
+	@GetMapping("/opmanager")
+	public String managerMain(User user, HttpSession session, Model model) {
+
+		User loginUser = (User) session.getAttribute("loginUser");
+
+		//로그인여부 체크 Y-opmanager(관리자페이지) , N-opmanager/login로 보낸다.
+		if (loginUser == null) {
+
+			return "/opmanager/user/login";
+		}
+
+		model.addAttribute("loginUser", loginUser);
+
+		return "/main/opmanager";
+	}
+
+
+	@GetMapping("/opmanager/user/login")
+	public String login(User user) {
+
+		return "/opmanager/user/login";
+	}
+
+	/**
+	 * 로그인 버튼 누름
+	 * @param user
+	 * @return
+	 */
+	@PostMapping("/opmanager/user/login")
+	public String login(User user, HttpSession session, Model model) {
+
+		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
+		User loginUser = userService.getUserByLoginId(user.getLoginId());
+
+		//입력한 비밀번호를 해시함수로
+		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
+		log.debug(hashPassword);
+		log.debug(loginUser.getPassword());
+
+		//입력한 id에 해당하는 유저가 없으면
+		if(loginUser == null) {
+			log.debug("해당 아이디 없음");
+			return "redirect:/opmanager/user/login";
+		}
+
+		//가져온 비밀번호가 입력한 비밀번호를 해시함수 적용한 것과 일치하지 않으면
+		if (!loginUser.getPassword().equals(hashPassword)) {
+
+			log.debug("비밀번호 일치하지 않음");
+			return "redirect:/opmanager/user/login";
+		}
+
+		//관리자일때
+		if ("1".equals(loginUser.getUserRole().getAuthority())) {
+
+			//비밀번호 일치시 세션에 담는다.
+			session.setAttribute("loginUser", loginUser);
+			session.setMaxInactiveInterval(1000 * 1000);
+
+			model.addAttribute("loginUser", loginUser);
+
+		}
+
+		return "redirect:/main/opmanager";
+	}
 
 	@GetMapping("/opmanager/user/list")
 	public String getUserList(User user, @ModelAttribute("cri") Criteria cri, Model model) {
@@ -98,15 +166,6 @@ public class UserManagerController {
 		return "/user/form";
 	}
 
-	/**
-	 * 유저페이지에서 수정, 관리자페이지에서 수정
-	 * @param cri
-	 * @param user
-	 * @param userDetail
-	 * @param model
-	 * @param rttr
-	 * @return
-	 */
 	@PostMapping("/opmanager/user/edit/{id}")
 	public String updateUser(@ModelAttribute("cri") Criteria cri, User user,
 							UserDetail userDetail, UserRole userRole, Model model,
@@ -147,7 +206,7 @@ public class UserManagerController {
 
 				} else {
 
-					return "redirect:/user/after-login";
+					return "redirect:/";
 				}
 
 		} else {
@@ -155,8 +214,8 @@ public class UserManagerController {
 
 			return "redirect:/opmanager/user/edit/" + user.getId();
 		}
-	}
 
+	}
 
 	/**
 	 * 삭제
@@ -182,7 +241,7 @@ public class UserManagerController {
 	}
 
 	@ResponseBody
-	@PostMapping(value = "/opmanager/user/check-id")
+	@PostMapping(value = "/check-id")
 	public int checkId(User user) throws Exception {
 
 		String loginId = user.getLoginId();

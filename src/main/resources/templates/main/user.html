@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>User 로그인 후</title>
+    <title>Title</title>
     <style>
         .btn{
             width: 20%; background-color: darkslategrey; color: white;
@@ -13,11 +13,18 @@
     </style>
 </head>
 <body>
-<div class="" >
-    <!--관리자, 회원 나눠서 th:if로 회원정보 수정 처리-->
+<div class="">
     <br><br><br><br>
-    <a class="btn" href="/user/password-check" > 회원정보 수정 </a> <br><br><br>
-    <a class="btn" href="/logout" > 로그아웃 </a>
+
+    <span th:if="${loginUser} == null">
+         <a class="btn" href="/user/login" >로그인하기</a>
+         <a class="btn" href="/user/create" >회원가입</a>
+    </span>
+
+    <span th:if="${loginUser} != null">
+         <a class="btn" href="/user/password-check"  >정보수정</a>
+         <a class="btn" href="/user/logout" >로그아웃</a>
+    </span>
 
 </div>
 </body>
