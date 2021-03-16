@@ -25,40 +25,41 @@ public class UserController {
 		return "/user/login";
 	}
 
+	//사용자일때 로그인
 	@PostMapping("/login")
 	public String login(User user, HttpSession session, Model model) {
 
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
 
-		if (loginUser != null) {
+		//입력한 비밀번호를 해시함수로
+		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
+		log.debug(hashPassword);
+		log.debug(loginUser.getPassword());
 
-			//입력한 비밀번호를 해시함수로
-			String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
-			log.debug(hashPassword);
-			log.debug(loginUser.getPassword());
-
-			//비밀번호 일치하지않으면
-			if (!loginUser.getPassword().equals(hashPassword)) {
-				log.debug("비밀번호 일치하지 않음");
-				return "redirect:/user/login";
-			}
-
-			//사용자일때
-			if ("0".equals(loginUser.getUserRole().getAuthority())) {
-
-				session.setAttribute("loginUser", loginUser);
-				session.setMaxInactiveInterval(1000 * 1000);
-
-				model.addAttribute("loginUser", loginUser);
-				return "redirect:/";
-			}
+		//아이디가 널일때
+		if (loginUser == null) {
+			log.debug("아이디 안넘어옴");
+			return "redirect:/user/login";
+		}
+		//비밀번호 일치하지않으면
+		if (!loginUser.getPassword().equals(hashPassword)) {
+			log.debug("비밀번호 일치하지 않음");
+			return "redirect:/user/login";
+		}
+		//사용자가 아닐때
+		if ("1".equals(loginUser.getUserRole().getAuthority())) {
+			log.debug("권한이 사용자가 아닙니다.");
+			return "redirect:/user/login";
 		}
 
-		log.debug("해당 아이디 없음");
-		return "redirect:/user/login";
-	}
+		session.setAttribute("loginUser", loginUser);
+		session.setMaxInactiveInterval(1000 * 1000);
 
+		model.addAttribute("loginUser", loginUser);
+
+		return "redirect:/";
+	}
 
 	//로그인 후 수정하려할때 비밀번호 확인
 	@GetMapping("/password-check")
@@ -72,7 +73,7 @@ public class UserController {
 		
 		//세션 저장 정보
 		User loginUser = (User) session.getAttribute("loginUser");
-		
+
 		//입력받은 비밀번호
 		log.debug(user.getPassword());
 		//입력한 비밀번호를 PK이용하여 해시함수로 만들고
@@ -84,8 +85,11 @@ public class UserController {
 		//로그인 세션의 비밀번호 값과 일치하는지 확인
 		if (hashPassword.equals(loginUser.getPassword())) {
 
-			log.debug("비밀번호 일치, 수정폼으로 이동");
-			model.addAttribute("authority", loginUser.getUserRole());
+			log.debug("비밀번호 일치, 수정폼으로 이동 ");
+
+			String authority = loginUser.getUserRole().authority;
+			log.debug(authority);  //0
+			model.addAttribute("authority", authority);
 
 			return "redirect:/opmanager/user/edit/" + loginUser.getId();
 

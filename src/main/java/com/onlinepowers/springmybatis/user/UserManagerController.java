@@ -20,7 +20,6 @@ public class UserManagerController {
 	@Autowired
 	private UserService userService;
 
-
 	@GetMapping("/login")
 	public String login(User user) {
 
@@ -33,33 +32,31 @@ public class UserManagerController {
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
 
-		if (loginUser != null) {
+		//입력한 비밀번호를 해시함수로
+		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
+		log.debug(hashPassword);
+		log.debug(loginUser.getPassword());
 
-			//입력한 비밀번호를 해시함수로
-			String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
-			log.debug(hashPassword);
-			log.debug(loginUser.getPassword());
-
-			//비밀번호 일치하지않으면
-			if (!loginUser.getPassword().equals(hashPassword)) {
-				log.debug("비밀번호 일치하지 않음");
-				return "redirect:/opmanager/user/login";
-			}
-
-			//관리자 일때
-			if ("1".equals(loginUser.getUserRole().getAuthority())) {
-
-				session.setAttribute("loginUser", loginUser);
-				session.setMaxInactiveInterval(1000 * 1000);
-
-				model.addAttribute("loginUser", loginUser);
-				return "redirect:/main/opmanager";
-			}
-
-		}
-			log.debug("해당 아이디 없음");
+		//아이디가 널일때
+		if (loginUser == null) {
+			log.debug("아이디 안넘어옴");
 			return "redirect:/opmanager/user/login";
+		}
+		//비밀번호 일치하지않으면
+		if (!loginUser.getPassword().equals(hashPassword)) {
+			log.debug("비밀번호 일치하지 않음");
+			return "redirect:/opmanager/user/login";
+		}
+		//관리자가 아닐때
+		if ("0".equals(loginUser.getUserRole().getAuthority())) {
+			log.debug("권한이 관리자가 아닙니다.");
+			return "redirect:/opmanager/user/login";
+		}
 
+		session.setAttribute("loginUser", loginUser);
+		session.setMaxInactiveInterval(1000 * 1000);
+
+		return "redirect:/opmanager";
 	}
 
 
@@ -73,7 +70,10 @@ public class UserManagerController {
 	}
 
 	@GetMapping("/create")
-	public String registerForm(User user) {
+	public String registerForm(User user, HttpSession session, Model model) {
+
+		User loginUser = (User) session.getAttribute("loginUser");
+		model.addAttribute("authority", loginUser.getUserRole().getAuthority());
 
 		return "/opmanager/user/form";
 	}
@@ -86,10 +86,6 @@ public class UserManagerController {
 		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 받음
 		userService.insertUser(user);
 
-		User sessionUser = (User) session.getAttribute("loginUser");
-
-		model.addAttribute("authority", sessionUser.getUserRole());
-
 		//관리자페이지에서 등록하는 경우
 		return "redirect:/opmanager/user/list";
 
@@ -98,14 +94,17 @@ public class UserManagerController {
 
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id, User user,
-	                         @ModelAttribute("cri") Criteria cri, Model model) {
+	                         @ModelAttribute("cri") Criteria cri, Model model, HttpSession session) {
 
 		user = userService.getUserById(id);
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
 		model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
 
-		//관리자일때만 목록 링크 보이도록한다.
-		String authority = user.getUserRole().getAuthority();
+		//세션 저장 정보
+		User loginUser = (User) session.getAttribute("loginUser");
+
+		//관리자일때만 목록 링크, 권한 수정 보이도록한다.
+		String authority = loginUser.getUserRole().getAuthority();
 		if ("1".equals(authority)) {
 			model.addAttribute("authority", authority);   //form 뷰에서 id있을때로 처리됨.
 		}
@@ -138,7 +137,7 @@ public class UserManagerController {
 		//유저일때
 		if ("0".equals(loginUser.getUserRole().getAuthority())) {
 
-			return "redirect:/opmanager/user/edit/" + user.getId();
+			return "redirect:/";
 
 		} else {
 
@@ -150,9 +149,7 @@ public class UserManagerController {
 			rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
 
 			return "redirect:/opmanager/user/list";
-
 		}
-
 	}
 
 	/**
