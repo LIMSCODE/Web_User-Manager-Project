@@ -63,12 +63,15 @@
     <label> <input type="radio" name="receiveSms" value="1" checked> 수신 </label>
     <label> <input type="radio" name="receiveSms" value="0"> 수신x </label><br>
 
+    <span th:if="${authority} == 1">
+        <!--등록일 경우에만 뜨도록 -->
     직위
     <label> <input type="radio" name="authority" value="1" checked> 관리자 </label>
     <label> <input type="radio" name="authority" value="0"> 회원 </label><br>
+    </span>
 
     <span th:if="${id} != null">
-    <input type="submit" class="submit" value="수정"  formaction="/opmanager/user/edit/${id}">
+    <input type="submit" class="submit" value="수정"  formaction="/user/edit/${id}">
     </span>
     <span th:if="${id} == null">
     <input type="submit" class="submit" value="등록" formaction="/register">
@@ -76,10 +79,6 @@
 </form>
 
 <br><br>
-
-<div class="" th:object="${user}">
-    <td><a class="btn" th:href="|@{/opmanager/user/list}*{makeQueryString(currentPageNo)}|" th:text="목록"></a> </td>
-</div>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
@@ -149,7 +148,7 @@
 		if ($loginMessage.val() == "사용 불가") {
 			return false;
 		}
-		let query = { "loginId" : $loginId.val() };
+		let query = {"loginId" : $loginId.val() };
 		//alert(JSON.stringify(query));
 
 		$.ajax({
@@ -168,7 +167,7 @@
 					$(".submit").removeAttr("disabled");
 				}
 			},
-			error:function() {
+			error : function() {
 				alert("실패");
 			}
 		});

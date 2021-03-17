@@ -69,9 +69,11 @@ public class MainController {
 
 	//회원가입
 	@GetMapping("/regist-form")
-	public String register(User user) {
+	public String register(User user, Model model) {
 
-		return "/user/regist-form";
+		model.addAttribute("authority", "1");   //form 뷰에서 id있을때로 처리됨.
+
+		return "/user/form";
 	}
 
 	@PostMapping("/register")
@@ -80,21 +82,28 @@ public class MainController {
 		user.setUserDetail(userDetail);
 		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 받음
 
-		userService.insertUser(user);
+		//관리자로 체크했을때
+		if ("1".equals(user.getUserRole().getAuthority())) {
 
-		User loginUser = userService.getUserByLoginId(user.getLoginId());
-		session.setAttribute("loginUser", loginUser);
+			userService.insertUser(user);
+			User loginUser = userService.getUserByLoginId(user.getLoginId());
 
-		//관리자일때
-		if ("1".equals(loginUser.getUserRole())) {
+			session.setAttribute("loginUser", loginUser);
+			model.addAttribute("loginUser", loginUser);
 
-			log.debug("회원가입");
 			return "redirect:/opmanager";
-			
 		} else {
-			log.debug("회원가입-사용자");
+
+			userService.insertUser(user);
+			User loginUser = userService.getUserByLoginId(user.getLoginId());
+
+			session.setAttribute("loginUser", loginUser);
+			model.addAttribute("loginUser", loginUser);
+
+
 			return "redirect:/";
 		}
+
 	}
 
 	@ResponseBody

@@ -91,7 +91,7 @@ public class UserController {
 			log.debug(authority);  //0
 			model.addAttribute("authority", authority);
 
-			return "redirect:/opmanager/user/edit/" + loginUser.getId();
+			return "redirect:/user/edit/" + loginUser.getId();
 
 		} else {
 
@@ -99,9 +99,55 @@ public class UserController {
 
 			return "redirect:/user/password-check";
 		}
-
 	}
 
+	@GetMapping("/edit/{id}")
+	public String updateForm(@PathVariable("id") long id, User user,
+	                         @ModelAttribute("cri") Criteria cri, Model model, HttpSession session) {
 
+		user = userService.getUserById(id);
+		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
+		model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
 
+		//세션 저장 정보
+		User loginUser = (User) session.getAttribute("loginUser");
+
+		//관리자일때만 목록 링크, 권한 수정 보이도록한다.
+		String authority = loginUser.getUserRole().getAuthority();
+		if ("1".equals(authority)) {
+			model.addAttribute("authority", authority);   //form 뷰에서 id있을때로 처리됨.
+		}
+
+		return "/user/form";
+	}
+
+	@PostMapping("/edit/{id}")
+	public String updateUser(@ModelAttribute("cri") Criteria cri, User user,
+	                         UserDetail userDetail, UserRole userRole, Model model,
+	                         RedirectAttributes rttr, HttpSession session) {
+
+		//user.getLoginId 로 입력받은값이 loginUser.
+		User loginUser = (User) session.getAttribute("loginUser");
+
+		//하위 테이블 수정안되는 현상 해결
+		userDetail.setUserId(user.getId());
+		userRole.setUserId(user.getId());
+
+		user.setUserDetail(userDetail);
+		user.setUserRole(userRole);
+
+		userService.updateUser(user);
+
+		if (user.getPassword() == "") {
+			log.debug("비밀번호 공란");
+			return "redirect:/user/edit/" + user.getId();
+		}
+
+		return "redirect:/";
+
+		}
 }
+
+
+
+
