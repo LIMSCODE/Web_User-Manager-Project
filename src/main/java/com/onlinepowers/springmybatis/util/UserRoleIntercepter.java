@@ -24,24 +24,22 @@ public class UserRoleIntercepter implements HandlerInterceptor {
 		int url = request.getRequestURI().indexOf("/user");  //포함하고있을시
 
 		// 세션이 있으면
-		if(session != null){
+		if (session != null) {
 			User loginUser = (User) session.getAttribute("loginUser");
 
 			//로그인한 상태이면 true (보여짐)
 			if (loginUser != null) {
 				String authority = loginUser.getUserRole().getAuthority();
 
-				// 관리자이면 user포함된 url 접근못하게 ?? 안됨 - MVCconfig에 adminRoleInterceptor추가해줘야함
-				if("1".equals(authority)){
+				if ("1".equals(authority)) {
 
 					// 사용자이면서 opmanager이 포함되있는 링크로 가면 튕겨냄
 				} else {
+
 					if (opUrl > -1) {
 						return false;
 					}
-					return true;
 				}
-
 				return true;
 
 				//로그인 안한상태이면 false (안보여짐) - opmanager은 보여져야함.

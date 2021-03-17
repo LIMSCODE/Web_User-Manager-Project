@@ -10,6 +10,31 @@
             padding: 14px 20px; margin: 8px 0; border: none;
             border-radius: 4px; cursor: pointer; text-decoration: none;
         }
+        header {
+            background: lightgray;
+            height: 215px;
+        }
+        main {
+
+        }
+
+        #left{
+            background : #f2f4f7;
+            float : left;
+            width : 20%;
+            height : 1000px;
+            position : relative;
+            top : 30px;
+        }
+
+        #right{
+            float : right;
+            width : 78%;
+            height : 1000px;
+            position : relative;
+            top : 30px;
+        }
+
     </style>
 </head>
 
@@ -18,9 +43,18 @@
 
     <span th:if="${loginUser} != null">
 
-          <span th:text="${loginUser.loginId} +'님 안녕하세요'"></span>   <br><br><br>
-          <a class="btn" href="/opmanager/logout" >로그아웃</a>   <br><br><br>
-          <a class="btn" href="/opmanager/user/list" >회원관리</a>
+        <header>
+            <br><br><br><br>
+            <span>[관리자 페이지]   </span>
+            <span th:text="${loginUser.loginId} +'님 안녕하세요'"></span>   <br><br><br>
+            <a class="btn" href="/opmanager/logout" >로그아웃</a>   <br><br><br>
+        </header>
+        <side id="left">
+            <br><br>
+            <a class="btn" href="/opmanager/user/list" >회원관리</a>
+        </side>
+        <main id="right">메인페이지</main>
+
     </span>
 
 </div>

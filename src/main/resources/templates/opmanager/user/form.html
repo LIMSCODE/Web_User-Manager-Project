@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+
 <head lang="en">
     <meta charset="UTF-8"/>
     <title>회원등록</title>
+
+
     <style>
         input[type=text],input[type=password] {
             width: 45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
@@ -24,9 +30,47 @@
             padding: 14px 20px; margin: 8px 0; border: none;
             border-radius: 4px; cursor: pointer; text-decoration: none;
         }
+        header {
+            background: lightgray;
+            height: 215px;
+        }
+        main {
+
+        }
+
+        #left{
+            background : #f2f4f7;
+            float : left;
+            width : 20%;
+            height : 1000px;
+            position : relative;
+            top : 30px;
+        }
+
+        #right{
+            float : right;
+            width : 78%;
+            height : 1000px;
+            position : relative;
+            top : 30px;
+        }
+
     </style>
 </head>
 <body>
+
+<header>
+    <br><br><br><br>
+    <span>[관리자 페이지]   </span>
+    <span th:text="${loginUser.loginId} +'님 안녕하세요'"></span>   <br><br><br>
+    <a class="btn" href="/opmanager/logout" >로그아웃</a>   <br><br><br>
+</header>
+<side id="left">
+    <br><br>
+    <a class="btn" href="/opmanager/user/list" >회원관리</a>
+</side>
+<main id="right">
+
 
 <form method="post" id="target" th:object="${user}" >
     <span th:if="${id} != null">
@@ -75,7 +119,9 @@
     <span th:if="${id} == null">
     <input type="submit" class="submit" value="등록" formaction="/opmanager/user/create">
     </span>
+
 </form>
+</main>
 
 <br><br>
 <span th:if="${authority} == 1">
@@ -108,11 +154,11 @@
 			$loginId.focus();
 			return false;
 		}
-		if ($password.val() == "") {
-			alert("비밀번호 입력해주세요");
-			$password.focus();
-			return false;
-		}
+		// if ($password.val() == "") {
+		// 	alert("비밀번호 입력해주세요");
+		// 	$password.focus();
+		// 	return false;
+		// }
 		if ($email.val() == "") {
 			alert("이메일 입력해주세요");
 			$email.focus();

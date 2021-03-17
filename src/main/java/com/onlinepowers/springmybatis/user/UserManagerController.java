@@ -61,10 +61,13 @@ public class UserManagerController {
 
 
 	@GetMapping("/list")
-	public String getUserList(User user, @ModelAttribute("cri") Criteria cri, Model model) {
+	public String getUserList(User user, @ModelAttribute("cri") Criteria cri, Model model, HttpSession session) {
 
 		List<User> userList = userService.getUserList(user, cri);
 		model.addAttribute("userList", userList);
+
+		User loginUser = (User) session.getAttribute("loginUser");
+		model.addAttribute("loginUser", loginUser);
 
 		return "/opmanager/user/list";
 	}
@@ -109,6 +112,8 @@ public class UserManagerController {
 			model.addAttribute("authority", authority);   //form 뷰에서 id있을때로 처리됨.
 		}
 
+		model.addAttribute("loginUser", loginUser);
+
 		return "/opmanager/user/form";
 	}
 
@@ -134,22 +139,14 @@ public class UserManagerController {
 			return "redirect:/opmanager/user/edit/" + user.getId();
 		}
 
-		//유저일때
-		if ("0".equals(loginUser.getUserRole().getAuthority())) {
+		rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
+		rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
+		rttr.addAttribute("pageSize", cri.getPageSize());
+		rttr.addAttribute("searchType", cri.getSearchType());
+		rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
 
-			return "redirect:/";
+		return "redirect:/opmanager/user/list";
 
-		} else {
-
-			//관리자일때
-			rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
-			rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
-			rttr.addAttribute("pageSize", cri.getPageSize());
-			rttr.addAttribute("searchType", cri.getSearchType());
-			rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
-
-			return "redirect:/opmanager/user/list";
-		}
 	}
 
 	/**

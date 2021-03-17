@@ -16,7 +16,6 @@ public class MVCConfiguration implements WebMvcConfigurer {
 				.addPathPatterns("/opmanager");   //user일때 통과불가
 
 
-
 	}
 
 }

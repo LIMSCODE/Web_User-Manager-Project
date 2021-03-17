@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="board/layout/basic">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
 <head>
     <meta charset="UTF-8">
     <title>회원 목록</title>
@@ -117,17 +118,52 @@
          padding: 14px 20px; margin: 8px 0; border: none;
          border-radius: 4px; cursor: pointer; text-decoration: none;
      }
+    header {
+        background: lightgray;
+        height: 215px;
+    }
+    main {
+
+    }
+
+    #left{
+        background: #f2f4f7;
+        float: left;
+        width: 20%;
+        height: 1000px;
+        position : relative;
+        top:30px;
+    }
+
+    #right{
+        float:right;
+        width: 70%;
+        height: 1000px;
+        position : relative;
+        top:30px;
+    }
+
 </style>
 
 <body>
 <div class="container" >
     <div class="page-header">
-        <h1>회원 목록</h1>
-        <a class="btn" href="/opmanager/logout" > 로그아웃 </a>
 
+        <header>
+            <br><br><br><br>
+            <span>[관리자 페이지]   </span>
+            <span th:text="${loginUser.loginId} +'님 안녕하세요'"></span>   <br><br><br>
+            <a class="btn" href="/opmanager/logout" >로그아웃</a>   <br><br><br>
+        </header>
+        <side id="left">
+            <br><br>
+            <a class="btn" href="/opmanager/user/list" >회원관리</a>
+        </side>
     </div>
 
     <br /> <br /> <br />
+
+    <main id="right">
 
     <!--검색영역-->
     <div th:fragment="search" id="adv-search" class="input-group" >
@@ -257,6 +293,10 @@
     <form th:action="|@{/opmanager/user/create}|" th:object="${user}" >
         <input type="submit" value="등록" style="float:right">
     </form>
+
+    </main>
+
+
 </div>
 
 <th:block layout:fragment="script">

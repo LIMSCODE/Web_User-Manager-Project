@@ -206,6 +206,9 @@
             PASSWORD=#{password},
             EMAIL=#{email}
         </if>
+        <if test="password == null">
+            EMAIL=#{email}
+        </if>
         WHERE ID=#{id};
     </update>
     <update id="updateUserDetail"
