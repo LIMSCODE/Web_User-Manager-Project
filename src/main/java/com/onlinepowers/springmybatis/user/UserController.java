@@ -108,7 +108,7 @@ public class UserController {
 
 		user = userService.getUserById(id);
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
-		model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
+		model.addAttribute("id", user.getId());   //form 뷰에서 id있을때로 처리됨.
 
 		//세션 저장 정보
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -138,11 +138,6 @@ public class UserController {
 		user.setUserRole(userRole);
 
 		userService.updateUser(user);
-
-		if (user.getPassword() == "") {
-			log.debug("비밀번호 공란");
-			return "redirect:/user/edit/" + user.getId();
-		}
 
 		return "redirect:/";
 

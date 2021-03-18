@@ -9,14 +9,16 @@ public class MVCConfiguration implements WebMvcConfigurer {
 
 	public void addInterceptors(InterceptorRegistry registry) {
 
-		//유저일때
+
 		UserRoleIntercepter userRoleIntercepter = new UserRoleIntercepter();
 
 		registry.addInterceptor(userRoleIntercepter)
-				.addPathPatterns("/opmanager");   //user일때 통과불가
-
+				.addPathPatterns("/opmanager/**")
+				.addPathPatterns("/user/edit/**");
 
 	}
+
+
 
 }
 
