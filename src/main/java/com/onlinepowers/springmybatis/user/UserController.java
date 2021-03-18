@@ -48,7 +48,7 @@ public class UserController {
 			return "redirect:/user/login";
 		}
 		//사용자가 아닐때
-		if ("1".equals(loginUser.getUserRole().getAuthority())) {
+		if ("ROLE_OPMANAGER".equals(loginUser.getUserRole().getAuthority())) {
 			log.debug("권한이 사용자가 아닙니다.");
 			return "redirect:/user/login";
 		}
@@ -102,8 +102,9 @@ public class UserController {
 	}
 
 	@GetMapping("/edit/{id}")
-	public String updateForm(@PathVariable("id") long id, User user,
-	                         @ModelAttribute("cri") Criteria cri, Model model, HttpSession session) {
+	public String updateForm(@PathVariable("id") long id,
+	                         @ModelAttribute("cri") Criteria cri,
+	                         User user, HttpSession session,  Model model) {
 
 		user = userService.getUserById(id);
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
@@ -114,7 +115,7 @@ public class UserController {
 
 		//관리자일때만 목록 링크, 권한 수정 보이도록한다.
 		String authority = loginUser.getUserRole().getAuthority();
-		if ("1".equals(authority)) {
+		if ("ROLE_OPMANAGER".equals(authority)) {
 			model.addAttribute("authority", authority);   //form 뷰에서 id있을때로 처리됨.
 		}
 
@@ -122,9 +123,9 @@ public class UserController {
 	}
 
 	@PostMapping("/edit/{id}")
-	public String updateUser(@ModelAttribute("cri") Criteria cri, User user,
-	                         UserDetail userDetail, UserRole userRole, Model model,
-	                         RedirectAttributes rttr, HttpSession session) {
+	public String updateUser(@ModelAttribute("cri") Criteria cri,
+	                         User user, UserDetail userDetail, UserRole userRole,
+	                         HttpSession session, Model model, RedirectAttributes rttr) {
 
 		//user.getLoginId 로 입력받은값이 loginUser.
 		User loginUser = (User) session.getAttribute("loginUser");

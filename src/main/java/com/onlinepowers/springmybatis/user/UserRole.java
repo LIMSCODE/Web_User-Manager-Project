@@ -17,7 +17,7 @@ public class UserRole extends Criteria {
         if (this.authority == null) {
             return " ";
         } else {
-            return "1".equals (this.authority) ? "관리자" : "회원" ;
+            return "ROLE_OPMANAGER".equals (this.authority) ? "관리자" : "회원" ;
         }
     }
 

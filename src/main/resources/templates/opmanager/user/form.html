@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout/default">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 
 <head lang="en">
@@ -107,11 +106,10 @@
     <label> <input type="radio" name="receiveSms" value="1" checked> 수신 </label>
     <label> <input type="radio" name="receiveSms" value="0"> 수신x </label><br>
 
-    <span th:if="${authority} == 1">
     직위
-    <label> <input type="radio" name="authority" value="1" checked> 관리자 </label>
-    <label> <input type="radio" name="authority" value="0"> 회원 </label><br>
-    </span>
+    <label> <input type="radio" name="authority" value="ROLE_OPMANAGER" checked> 관리자 </label>
+    <label> <input type="radio" name="authority" value="ROLE_USER"> 회원 </label><br>
+
 
     <span th:if="${id} != null">
     <input type="submit" class="submit" value="수정"  formaction="/opmanager/user/edit/${id}">

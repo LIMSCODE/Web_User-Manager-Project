@@ -83,7 +83,7 @@ public class MainController {
 		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 받음
 
 		//관리자로 체크했을때
-		if ("1".equals(user.getUserRole().getAuthority())) {
+		if ("ROLE_OPMANAGER".equals(user.getUserRole().getAuthority())) {
 
 			userService.insertUser(user);
 			User loginUser = userService.getUserByLoginId(user.getLoginId());
@@ -126,7 +126,7 @@ public class MainController {
 	@GetMapping("/opmanager/logout")
 	public String managerLogout(HttpSession session) {
 		session.invalidate();
-		return "redirect:/opmanager";
+		return "redirect:/";
 	}
 
 }

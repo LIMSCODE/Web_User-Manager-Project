@@ -48,7 +48,7 @@ public class UserManagerController {
 			return "redirect:/opmanager/user/login";
 		}
 		//관리자가 아닐때
-		if ("0".equals(loginUser.getUserRole().getAuthority())) {
+		if ("ROLE_USER".equals(loginUser.getUserRole().getAuthority())) {
 			log.debug("권한이 관리자가 아닙니다.");
 			return "redirect:/opmanager/user/login";
 		}
@@ -61,7 +61,9 @@ public class UserManagerController {
 
 
 	@GetMapping("/list")
-	public String getUserList(User user, @ModelAttribute("cri") Criteria cri, Model model, HttpSession session) {
+	public String getUserList(@ModelAttribute("cri") Criteria cri,
+	                          User user,
+	                          HttpSession session, Model model) {
 
 		List<User> userList = userService.getUserList(user, cri);
 		model.addAttribute("userList", userList);
@@ -78,16 +80,22 @@ public class UserManagerController {
 		User loginUser = (User) session.getAttribute("loginUser");
 		model.addAttribute("authority", loginUser.getUserRole().getAuthority());
 
+		model.addAttribute("loginUser", loginUser);
+
 		return "/opmanager/user/form";
 	}
 
 	@PostMapping("/create")
-	public String createUser(@ModelAttribute("cri") Criteria cri, User user, Model model,
-	                         UserDetail userDetail, UserRole userRole,  HttpSession session) {
+	public String createUser(@ModelAttribute("cri") Criteria cri,
+	                         User user, UserDetail userDetail, UserRole userRole,
+	                         HttpSession session, Model model) {
 
 		user.setUserDetail(userDetail);
 		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 받음
 		userService.insertUser(user);
+
+		User loginUser = (User) session.getAttribute("loginUser");
+		model.addAttribute("loginUser", loginUser);
 
 		//관리자페이지에서 등록하는 경우
 		return "redirect:/opmanager/user/list";
@@ -96,8 +104,10 @@ public class UserManagerController {
 
 
 	@GetMapping("/edit/{id}")
-	public String updateForm(@PathVariable("id") long id, User user,
-	                         @ModelAttribute("cri") Criteria cri, Model model, HttpSession session) {
+	public String updateForm(@PathVariable("id") long id,
+	                         @ModelAttribute("cri") Criteria cri,
+	                         User user,
+	                         HttpSession session, Model model) {
 
 		user = userService.getUserById(id);
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
@@ -108,7 +118,7 @@ public class UserManagerController {
 
 		//관리자일때만 목록 링크, 권한 수정 보이도록한다.
 		String authority = loginUser.getUserRole().getAuthority();
-		if ("1".equals(authority)) {
+		if ("ROLE_OPMANAGER".equals(authority)) {
 			model.addAttribute("authority", authority);   //form 뷰에서 id있을때로 처리됨.
 		}
 
@@ -118,9 +128,9 @@ public class UserManagerController {
 	}
 
 	@PostMapping("/edit/{id}")
-	public String updateUser(@ModelAttribute("cri") Criteria cri, User user,
-							UserDetail userDetail, UserRole userRole, Model model,
-							 RedirectAttributes rttr, HttpSession session) {
+	public String updateUser(@ModelAttribute("cri") Criteria cri,
+	                         User user, UserDetail userDetail, UserRole userRole,
+							 RedirectAttributes rttr, HttpSession session, Model model) {
 
 		//user.getLoginId 로 입력받은값이 loginUser.
 		User loginUser = (User) session.getAttribute("loginUser");

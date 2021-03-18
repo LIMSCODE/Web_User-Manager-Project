@@ -31,7 +31,7 @@ public class UserRoleIntercepter implements HandlerInterceptor {
 			if (loginUser != null) {
 				String authority = loginUser.getUserRole().getAuthority();
 
-				if ("1".equals(authority)) {
+				if ("ROLE_OPMANAGER".equals(authority)) {
 
 					// 사용자이면서 opmanager이 포함되있는 링크로 가면 튕겨냄
 				} else {

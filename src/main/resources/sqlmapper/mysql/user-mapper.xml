@@ -226,7 +226,7 @@
             parameterType="com.onlinepowers.springmybatis.user.User">
         UPDATE OP_USER_ROLE
         SET
-           AUTHORITY= IFNULL(#{authority}, '0')
+           AUTHORITY= IFNULL(#{authority}, 'ROLE_USER')
         WHERE USER_ID=#{userId};
     </update>
 

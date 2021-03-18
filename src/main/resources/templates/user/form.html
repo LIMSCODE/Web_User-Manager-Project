@@ -66,8 +66,8 @@
     <span th:if="${authority} == 1">
         <!--등록일 경우에만 뜨도록 -->
     직위
-    <label> <input type="radio" name="authority" value="1" checked> 관리자 </label>
-    <label> <input type="radio" name="authority" value="0"> 회원 </label><br>
+    <label> <input type="radio" name="authority" value="ROLE_OPMANAGER" checked> 관리자 </label>
+    <label> <input type="radio" name="authority" value="ROLE_USER"> 회원 </label><br>
     </span>
 
     <span th:if="${id} != null">
