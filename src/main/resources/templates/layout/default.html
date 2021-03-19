@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lagn="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<header>
+    <style>
+        header {
+            background: lightgray;
+            height: 130px;
+        }
+
+        sidebar{
+            background : #f2f4f7;
+            float : left;
+            width : 20%;
+            height : 1000px;
+            position : relative;
+            top : 30px;
+        }
+        contentbar{
+            float : right;
+            width : 78%;
+            height : 1000px;
+            position : relative;
+            top : 30px;
+        }
+    </style>
+</header>
+<body id="page-top">
+
+<div id="wrapper">
+    <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- 상단바 -->
+            <header>
+            <th:block th:replace="fragments/topbar :: topbarFragment" ></th:block>
+            </header>
+
+            <!-- 사이드바 -->
+            <sidebar>
+            <th:block th:replace="fragments/sidebar :: sidebarFragment" id="left"></th:block>
+            </sidebar>
+
+            <!-- 본문 -->
+            <contentbar>
+            <th:block layout:fragment="content" id="right"></th:block>
+            </contentbar>
+
+    </div>
+</div>
+
+</body>
+</html>

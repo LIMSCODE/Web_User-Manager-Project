@@ -22,7 +22,6 @@ public class UserRoleIntercepter implements HandlerInterceptor {
 		HttpSession session = request.getSession(false);
 		int opUrl = request.getRequestURI().indexOf("/opmanager");  //포함하고있을시
 
-
 		// 세션이 있으면
 		if (session != null) {
 			User loginUser = (User) session.getAttribute("loginUser");

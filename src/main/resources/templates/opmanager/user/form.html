@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
 
 <head lang="en">
     <meta charset="UTF-8"/>
     <title>회원등록</title>
-
 
     <style>
         input[type=text],input[type=password] {
@@ -29,47 +28,11 @@
             padding: 14px 20px; margin: 8px 0; border: none;
             border-radius: 4px; cursor: pointer; text-decoration: none;
         }
-        header {
-            background: lightgray;
-            height: 215px;
-        }
-        main {
-
-        }
-
-        #left{
-            background : #f2f4f7;
-            float : left;
-            width : 20%;
-            height : 1000px;
-            position : relative;
-            top : 30px;
-        }
-
-        #right{
-            float : right;
-            width : 78%;
-            height : 1000px;
-            position : relative;
-            top : 30px;
-        }
-
     </style>
 </head>
 <body>
 
-<header>
-    <br><br><br><br>
-    <span>[관리자 페이지]   </span>
-    <span th:text="${loginUser.loginId} +'님 안녕하세요'"></span>   <br><br><br>
-    <a class="btn" href="/opmanager/logout" >로그아웃</a>   <br><br><br>
-</header>
-<side id="left">
-    <br><br>
-    <a class="btn" href="/opmanager/user/list" >회원관리</a>
-</side>
-<main id="right">
-
+<th:block layout:fragment="content">
 
 <form method="post" id="target" th:object="${user}" >
     <span th:if="${id} != null">
@@ -110,7 +73,6 @@
     <label> <input type="radio" name="authority" value="ROLE_OPMANAGER" checked> 관리자 </label>
     <label> <input type="radio" name="authority" value="ROLE_USER"> 회원 </label><br>
 
-
     <span th:if="${id} != null">
     <input type="submit" class="submit" value="수정"  formaction="/opmanager/user/edit/${id}">
     </span>
@@ -119,7 +81,6 @@
     </span>
 
 </form>
-</main>
 
 <br><br>
 <span th:if="${authority} == 1">
@@ -222,5 +183,6 @@
 	});
 </script>
 
+</th:block>
 </body>
 </html>

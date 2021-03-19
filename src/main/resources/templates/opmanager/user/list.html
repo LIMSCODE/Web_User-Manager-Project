@@ -1,175 +1,139 @@
 <!DOCTYPE html>
-<html lang="en">
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<head>
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<head lang="en">
     <meta charset="UTF-8">
     <title>회원 목록</title>
+
+    <style>
+        ul {
+            list-style:none;
+        }
+        li {
+            float: left;
+        }
+        table.type09 {
+            border-collapse: collapse;
+            text-align: left;
+            line-height: 1.5;
+        }
+        table.type09 thead th {
+            padding: 10px;
+            font-weight: bold;
+            vertical-align: top;
+            color: #369;
+            border-bottom: 3px solid #036;
+        }
+        table.type09 tbody th {
+            width: 150px;
+            padding: 10px;
+            font-weight: bold;
+            vertical-align: top;
+            border-bottom: 1px solid #ccc;
+            background: #f3f6f7;
+        }
+        table.type09 td {
+            width: 350px;
+            padding: 10px;
+            vertical-align: top;
+            border-bottom: 1px solid #ccc;
+        }
+
+        input[type=submit]  {
+            width: 5%; background-color: darkslategrey; color: white;
+            padding: 10px 10px; margin: 5px 0; border: none;
+            border-radius: 3px; cursor:
+                pointer;
+        }
+
+        td button[type=submit] {
+            width:50px; background-color: darkslategrey; color: white;
+            padding: 10px 10px; margin: 5px 0; border: none;
+            border-radius: 3px; cursor:
+                pointer;
+        }
+
+        #edit {
+            width:25px; background-color: darkslategrey; color: white;
+            padding: 10px 10px; margin: 10px 0; border: none;
+            border-radius: 3px; cursor: pointer; text-decoration:none;
+            position: relative; top:10px;
+        }
+
+        #search {
+            float:left;
+        }
+
+        button[type=submit] {
+            width:100px; background-color: darkslategrey; color: white;
+            padding: 10px 10px; margin: 5px 0; border: none;
+            border-radius: 3px; cursor:
+                pointer;
+        }
+
+        .reset {
+            width:70px; background-color: darkslategrey; color: white;
+            padding: 10px 10px; margin: 5px 0; border: none;
+            border-radius: 3px; cursor: pointer; display: inline-block;
+        }
+
+        #reset {
+            text-decoration: none; color: white;  font-size: 13px;
+            text-align:center;
+        }
+
+        input[type=text],input[type=password] {
+            width: 15%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
+            padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        select,option {
+            width: 10X%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
+            padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .pagination .hide {
+            display:block;height:0;width:0;font-size:0;line-height:0;margin:0;padding:0;overflow:hidden;}
+
+        .pagination{padding:19px;text-align:center;}
+
+        .pagination a{display:inline-block;width:23px;height:23px;padding-top:2px;vertical-align:middle;}
+
+        .pagination .btn_arr{text-decoration:none;}
+
+        .pagination .btn_arr, .pagination .on{margin:0 3px;padding-top:0;border:1px solid #ddd; border-radius:30px;
+
+            /* background:url(/front/img/com/btn_pagination.png) no-repeat; */}
+
+        .pagination .on{padding-top:1px;height:22px;color:#fff;font-weight:bold;background:#000;}
+
+        .pagination .on:hover{text-decoration:none;}
+
+        .btn{
+            width: 20%; background-color: darkslategrey; color: white;
+            padding: 14px 20px; margin: 8px 0; border: none;
+            border-radius: 4px; cursor: pointer; text-decoration: none;
+        }
+    </style>
 </head>
-<style>
-    ul {
-        list-style:none;
-    }
-    li {
-        float: left;
-    }
-    table.type09 {
-        border-collapse: collapse;
-        text-align: left;
-        line-height: 1.5;
-    }
-    table.type09 thead th {
-        padding: 10px;
-        font-weight: bold;
-        vertical-align: top;
-        color: #369;
-        border-bottom: 3px solid #036;
-    }
-    table.type09 tbody th {
-        width: 150px;
-        padding: 10px;
-        font-weight: bold;
-        vertical-align: top;
-        border-bottom: 1px solid #ccc;
-        background: #f3f6f7;
-    }
-    table.type09 td {
-        width: 350px;
-        padding: 10px;
-        vertical-align: top;
-        border-bottom: 1px solid #ccc;
-    }
-
-    input[type=submit]  {
-        width: 5%; background-color: darkslategrey; color: white;
-        padding: 10px 10px; margin: 5px 0; border: none;
-        border-radius: 3px; cursor:
-            pointer;
-    }
-
-    td button[type=submit] {
-        width:50px; background-color: darkslategrey; color: white;
-        padding: 10px 10px; margin: 5px 0; border: none;
-        border-radius: 3px; cursor:
-            pointer;
-    }
-
-    #edit {
-        width:25px; background-color: darkslategrey; color: white;
-        padding: 10px 10px; margin: 10px 0; border: none;
-        border-radius: 3px; cursor: pointer; text-decoration:none;
-        position: relative; top:10px;
-    }
-
-    #search {
-        float:left;
-    }
-
-    button[type=submit] {
-        width:100px; background-color: darkslategrey; color: white;
-        padding: 10px 10px; margin: 5px 0; border: none;
-        border-radius: 3px; cursor:
-            pointer;
-    }
-
-    .reset {
-        width:70px; background-color: darkslategrey; color: white;
-        padding: 10px 10px; margin: 5px 0; border: none;
-        border-radius: 3px; cursor: pointer; display: inline-block;
-    }
-
-    #reset {
-        text-decoration: none; color: white;  font-size: 13px;
-        text-align:center;
-    }
-
-    input[type=text],input[type=password] {
-        width: 15%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
-        padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
-        box-sizing: border-box;
-    }
-
-    select,option {
-        width: 10X%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
-        padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
-        box-sizing: border-box;
-    }
-
-    .pagination .hide {
-        display:block;height:0;width:0;font-size:0;line-height:0;margin:0;padding:0;overflow:hidden;}
-
-    .pagination{padding:19px;text-align:center;}
-
-    .pagination a{display:inline-block;width:23px;height:23px;padding-top:2px;vertical-align:middle;}
-
-    .pagination .btn_arr{text-decoration:none;}
-
-    .pagination .btn_arr, .pagination .on{margin:0 3px;padding-top:0;border:1px solid #ddd; border-radius:30px;
-
-        /* background:url(/front/img/com/btn_pagination.png) no-repeat; */}
-
-    .pagination .on{padding-top:1px;height:22px;color:#fff;font-weight:bold;background:#000;}
-
-    .pagination .on:hover{text-decoration:none;}
-
-     .btn{
-         width: 20%; background-color: darkslategrey; color: white;
-         padding: 14px 20px; margin: 8px 0; border: none;
-         border-radius: 4px; cursor: pointer; text-decoration: none;
-     }
-    header {
-        background: lightgray;
-        height: 215px;
-    }
-    main {
-
-    }
-
-    #left{
-        background: #f2f4f7;
-        float: left;
-        width: 20%;
-        height: 1000px;
-        position : relative;
-        top:30px;
-    }
-
-    #right{
-        float:right;
-        width: 70%;
-        height: 1000px;
-        position : relative;
-        top:30px;
-    }
-
-</style>
 
 <body>
-<div class="container" >
-    <div class="page-header">
 
-        <header>
-            <br><br><br><br>
-            <span>[관리자 페이지]   </span>
-            <span th:text="${loginUser.loginId} +'님 안녕하세요'"></span>   <br><br><br>
-            <a class="btn" href="/opmanager/logout" >로그아웃</a>   <br><br><br>
-        </header>
-        <side id="left">
-            <br><br>
-            <a class="btn" href="/opmanager/user/list" >회원관리</a>
-        </side>
-    </div>
+<th:block layout:fragment="content">
+
+<div class="container" >
 
     <br /> <br /> <br />
-
-    <main id="right">
-
     <!--검색영역-->
     <div th:fragment="search" id="adv-search" class="input-group" >
         <div class="input-group-btn">
             <div class="btn-group" role="group">
                 <div class="dropdown dropdown-lg" >
-                    <div class="dropdown-menu dropdown-menu-right" role="menu"   >
+                    <div class="dropdown-menu dropdown-menu-right" role="menu">
 
                         <!--/* 검색 form */-->
                         <form id="searchForm" th:action="@{/opmanager/user/list}" method="get" th:onsubmit="return searchBoard(this)"
@@ -293,9 +257,6 @@
         <input type="submit" value="등록" style="float:right">
     </form>
 
-    </main>
-
-
 </div>
 
 <th:block layout:fragment="script">
@@ -316,5 +277,8 @@
 			}
 		});
 </script>
+
+</th:block>
+
 </body>
 </html>
