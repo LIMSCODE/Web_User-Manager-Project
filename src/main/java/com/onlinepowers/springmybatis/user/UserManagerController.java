@@ -32,16 +32,17 @@ public class UserManagerController {
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
 
-		//입력한 비밀번호를 해시함수로
-		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
-		log.debug(hashPassword);
-		log.debug(loginUser.getPassword());
-
 		//아이디가 널일때
 		if (loginUser == null) {
 			log.debug("아이디 안넘어옴");
 			return "redirect:/opmanager/user/login";
 		}
+
+		//입력한 비밀번호를 해시함수로
+		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
+		log.debug(hashPassword);
+		log.debug(loginUser.getPassword());
+
 		//비밀번호 일치하지않으면
 		if (!loginUser.getPassword().equals(hashPassword)) {
 			log.debug("비밀번호 일치하지 않음");

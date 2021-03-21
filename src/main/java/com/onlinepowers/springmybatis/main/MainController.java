@@ -45,6 +45,11 @@ public class MainController {
 		if (loginUser == null) {
 			return "/opmanager/user/login";
 		}
+
+		//로그인여부 체크
+		if ("ROLE_USER".equals(loginUser.getUserRole().getAuthority())) {
+			return "redirect:/";
+		}
 		
 		log.debug("메인창으로");
 
@@ -68,7 +73,7 @@ public class MainController {
 
 
 	//회원가입
-	@GetMapping("/regist-form")
+	@GetMapping("/create")
 	public String register(User user, Model model) {
 
 		model.addAttribute("authority", "1");   //form 뷰에서 id있을때로 처리됨.
@@ -76,7 +81,7 @@ public class MainController {
 		return "/user/form";
 	}
 
-	@PostMapping("/register")
+	@PostMapping("/create")
 	public String register(HttpSession session, User user, UserDetail userDetail, UserRole userRole, Model model) {
 
 		user.setUserDetail(userDetail);
@@ -99,7 +104,6 @@ public class MainController {
 
 			session.setAttribute("loginUser", loginUser);
 			model.addAttribute("loginUser", loginUser);
-
 
 			return "redirect:/";
 		}
