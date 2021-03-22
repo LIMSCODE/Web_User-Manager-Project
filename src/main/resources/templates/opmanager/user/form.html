@@ -50,7 +50,7 @@
 
     <span th:if="${id} == null">
     <button type ="button" class="checkId" id="idCheck"> 아이디중복확인 </button>
-        <input type="text" name="idCheckStatus" id="idCheckStatus" th:value="0" >
+        <input type="hidden" name="idCheckStatus" id="idCheckStatus" th:value="0" >
     <span class="msg" id="msg"> </span>
     </span>
     <br>
