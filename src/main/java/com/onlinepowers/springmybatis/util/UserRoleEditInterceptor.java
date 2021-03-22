@@ -15,16 +15,8 @@ public class UserRoleEditInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
 
-
-//		int editUrl = request.getRequestURI().indexOf("/user/edit/" + loginUser.getId());  //포함하고있을시
-//
-//		if (editUrl > -1) {		// 사용자일때 자기자신것만 수정창 뜨도록
-//
-//			return true;
-//		}
-
 		String requestURI = request.getRequestURI();
-		int idx = requestURI.lastIndexOf('/') +1;
+		int idx = requestURI.lastIndexOf('/') +1;        //url 마지막 '/'이후의 값 가져와서 세션의 Id와 비교
 		long id = Integer.parseInt(requestURI.substring(idx));
 
 		HttpSession session = request.getSession(false);
@@ -34,7 +26,6 @@ public class UserRoleEditInterceptor implements HandlerInterceptor {
 			
 			return true;
 		}
-		//출처: https://sourcestudy.tistory.com/372 [study]
 
 		return false;	//원래 MVC에서 설정한 url값에대해 기본값 false
 	}

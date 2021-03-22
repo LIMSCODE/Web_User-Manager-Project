@@ -20,7 +20,9 @@ public class MVCConfiguration implements WebMvcConfigurer {
 				.excludePathPatterns("/opmanager")
 				.excludePathPatterns("/opmanager/user/login")
 				.excludePathPatterns("/")
-				.excludePathPatterns("/user/login");
+				.excludePathPatterns("/user/login")
+				.excludePathPatterns("/user/create")
+				.excludePathPatterns("/user/check-id11");
 
 
 		UserRoleInterceptor userRoleInterceptor = new UserRoleInterceptor();	//user일때 관리자 접근x

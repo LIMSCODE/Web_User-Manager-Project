@@ -184,4 +184,17 @@ public class UserManagerController {
 	}
 
 
+	@ResponseBody
+	@PostMapping(value = "/check-id")
+	public int checkId(User user) throws Exception {
+
+		String loginId = user.getLoginId();
+		log.debug(loginId);
+
+		int userCount = userService.getUserCountByLoginId(loginId); //오류
+		log.debug(String.valueOf(userCount));
+
+		return userCount > 0 ? 1 : 0 ;
+	}
+
 }

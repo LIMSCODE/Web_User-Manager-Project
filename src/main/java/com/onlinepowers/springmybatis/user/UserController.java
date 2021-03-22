@@ -62,6 +62,29 @@ public class UserController {
 		return "redirect:/";
 	}
 
+	//회원가입 -유저만
+	@GetMapping("/create")
+	public String register(User user, Model model) {
+
+		return "/user/form";
+	}
+
+	@PostMapping("/create")
+	public String register(HttpSession session, User user, UserDetail userDetail, UserRole userRole, Model model) {
+
+		user.setUserDetail(userDetail);
+		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 받음
+
+		userService.insertUser(user);
+		User loginUser = userService.getUserByLoginId(user.getLoginId());
+
+		session.setAttribute("loginUser", loginUser);
+		model.addAttribute("loginUser", loginUser);
+
+		return "redirect:/";
+
+	}
+
 	//로그인 후 수정하려할때 비밀번호 확인
 	@GetMapping("/password-check")
 	public String checkPassword() {
@@ -143,7 +166,20 @@ public class UserController {
 
 		return "redirect:/";
 
-		}
+	}
+
+	@ResponseBody
+	@PostMapping(value = "/check-id11")
+	public int checkId(User user) throws Exception {
+		String loginId = user.getLoginId();
+		log.debug(loginId);
+
+		int userCount = userService.getUserCountByLoginId(loginId); //오류
+		log.debug(String.valueOf(userCount));
+
+		return userCount > 0 ? 1 : 0 ;
+	}
+
 }
 
 

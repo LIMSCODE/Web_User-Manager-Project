@@ -71,57 +71,6 @@ public class MainController {
 		return "/main/opmanager";
 	}
 
-
-	//회원가입
-	@GetMapping("/create")
-	public String register(User user, Model model) {
-
-		model.addAttribute("authority", "1");   //form 뷰에서 id있을때로 처리됨.
-
-		return "/user/form";
-	}
-
-	@PostMapping("/create")
-	public String register(HttpSession session, User user, UserDetail userDetail, UserRole userRole, Model model) {
-
-		user.setUserDetail(userDetail);
-		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 받음
-
-		//관리자로 체크했을때
-		if ("ROLE_OPMANAGER".equals(user.getUserRole().getAuthority())) {
-
-			userService.insertUser(user);
-			User loginUser = userService.getUserByLoginId(user.getLoginId());
-
-			session.setAttribute("loginUser", loginUser);
-			model.addAttribute("loginUser", loginUser);
-
-			return "redirect:/opmanager";
-		} else {
-
-			userService.insertUser(user);
-			User loginUser = userService.getUserByLoginId(user.getLoginId());
-
-			session.setAttribute("loginUser", loginUser);
-			model.addAttribute("loginUser", loginUser);
-
-			return "redirect:/";
-		}
-
-	}
-
-	@ResponseBody
-	@PostMapping(value = "/check-id")
-	public int checkId(User user) throws Exception {
-
-		String loginId = user.getLoginId();
-		log.debug(loginId);
-
-		int userCount = userService.getUserCountByLoginId(loginId); //오류
-
-		return userCount > 0 ? 1 : 0 ;
-	}
-
 	@GetMapping("/user/logout")
 	public String userLogout(HttpSession session) {
 		session.invalidate();

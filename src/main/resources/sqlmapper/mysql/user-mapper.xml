@@ -194,7 +194,7 @@
              AUTHORITY)
         VALUES
             (#{userId},
-            #{authority}
+             IFNULL(#{authority}, 'ROLE_USER')
             );
     </insert>
 

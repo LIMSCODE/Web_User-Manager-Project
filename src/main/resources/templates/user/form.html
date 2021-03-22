@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head lang="en">
     <meta charset="UTF-8"/>
     <title>회원등록</title>
+
     <style>
         input[type=text],input[type=password] {
             width: 45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
@@ -33,147 +35,221 @@
         <input type="hidden" name="id" th:value="${user.id}"/>
     </span>
 
-    <span th:if="${id} != null">
+        <span th:if="${id} != null">
     이름<input type="text" name="name" id="name" th:value="${user.name}" maxlength="12" readonly> <br>
     아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="12" readonly>
     </span>
-    <span th:if="${id} == null">
+        <span th:if="${id} == null">
     이름<input type="text" name="name" id="name" th:value="${user.name}" maxlength="12"> <br>
-    아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="12">
+    아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="12"  onkeyup="resetIdCheckStatus();">
     </span>
 
-    <span th:if="${id} == null">
-    <button type ="button" class="checkId" id="checkId"> 아이디중복확인 </button>
+        <span th:if="${id} == null">
+    <button type ="button" class="checkId" id="idCheck"> 아이디중복확인 </button>
+        <input type="text" name="idCheckStatus" id="idCheckStatus" th:value="0" >
     <span class="msg" id="msg"> </span>
     </span>
-    <br>
-    <span>
+        <br>
+        <span th:if="${id} != null">
         비밀번호 <input type="password" name="password" id="password"  maxlength="8" > <br>
     비밀번호 확인 <input type="password" name="passwordConfirm"  id="passwordConfirm"  maxlength="8"> <br>
     </span>
-
-    <span id="isSame" class="same"></span>
-    이메일 <input type="text" name="email" id="email" th:value="${user.email}"> <br>
-
-    우편번호 <input type="text" name="zipcode" id="zipcode" th:value="${user.userDetail?.zipcode}" > <br>
-    주소 <input type="text" name="address"  id="address" th:value="${user.userDetail?.address}" > <br>
-    상세주소 <input type="text" name="addressDetail" id="addressDetail"  th:value="${user.userDetail?.addressDetail}"> <br>
-    전화번호 <input type="text" name="phoneNumber" id="phoneNumber" th:value="${user.userDetail?.phoneNumber}" > <br>
-    SNS수신여부
-    <label> <input type="radio" name="receiveSms" value="1" checked> 수신 </label>
-    <label> <input type="radio" name="receiveSms" value="0"> 수신x </label><br>
-
-    <span th:if="${authority} == 1">
-        <!--등록일 경우에만 뜨도록 -->
-    직위
-    <label> <input type="radio" name="authority" value="ROLE_OPMANAGER" checked> 관리자 </label>
-    <label> <input type="radio" name="authority" value="ROLE_USER"> 회원 </label><br>
+        <span th:if="${id} == null">
+        비밀번호 <input type="password" name="password" id="createPassword"  maxlength="8" > <br>
+    비밀번호 확인 <input type="password" name="passwordConfirm"  id="createPasswordConfirm"  maxlength="8"> <br>
     </span>
+
+        <span id="isSame" class="same"></span>
+        이메일 <input type="text" name="email" id="email" th:value="${user.email}" maxlength="30"> <br>
+
+        우편번호 <input type="text" name="zipcode" id="zipcode" th:value="${user.userDetail?.zipcode}" maxlength="30"> <br>
+        주소 <input type="text" name="address"  id="address" th:value="${user.userDetail?.address}" maxlength="30"> <br>
+        상세주소 <input type="text" name="addressDetail" id="addressDetail"  th:value="${user.userDetail?.addressDetail}" maxlength="30"> <br>
+        전화번호 <input type="text" name="phoneNumber" id="phoneNumber" th:value="${user.userDetail?.phoneNumber}" maxlength="30"> <br>
+        SNS수신여부
+        <label> <input type="radio" name="receiveSms" value="1" checked> 수신 </label>
+        <label> <input type="radio" name="receiveSms" value="0"> 수신x </label><br>
+
+        직위
+        <label> <input type="radio" name="authority" value="ROLE_OPMANAGER" checked> 관리자 </label>
+        <label> <input type="radio" name="authority" value="ROLE_USER"> 회원 </label><br>
 
     <span th:if="${id} != null">
-    <input type="submit" class="submit" value="수정"  th:formaction="@{/user/edit/{id}(id = ${id})}" >
-        <!--https://www.baeldung.com/spring-thymeleaf-path-variables url파싱 $%7Bid%7D로 안넘어가는 방법 찾음.-->
+        <input type="submit" class="submit" value="수정"  formaction="/opmanager/user/edit/${id}">
     </span>
     <span th:if="${id} == null">
-    <input type="submit" class="submit" value="등록" formaction="/create">
+        <input type="submit" class="submit" value="등록" formaction="/opmanager/user/create">
     </span>
 </form>
 
-<br><br>
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script type="text/javascript">
 
-	//최종 제출시 이벤트
-	$("#target").on("submit", function() {
+    <br><br>
+    <span th:if="${authority} == 1">
+<div class="" th:object="${user}">
+    <td><a class="btn" th:href="|@{/opmanager/user/list}*{makeQueryString(currentPageNo)}|" th:text="목록"></a> </td>
+</div>
+</span>
 
-		//모두 입력되도록
-		let $name= $("#name");
-		let $loginId= $("#loginId");
-		let $password = $("#password");
-		let $passwordConfirm = $("#passwordConfirm");
-		let $email = $("#email");
-		let $receiveSms = $("#receiveSms");
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
 
-		if ($name.val() == "") {
-			alert("이름을 입력해주세요");
-			$name.focus();
-			return false;
-		}
-		if ($loginId.val() == "") {
-			alert("아이디 입력해주세요");
-			$loginId.focus();
-			return false;
-		}
-		// if ($password.val() == "") {
-		// 	alert("비밀번호 입력해주세요");
-		// 	$password.focus();
-		// 	return false;
-		// }
-		if ($email.val() == "") {
-			alert("이메일 입력해주세요");
-			$email.focus();
-			return false;
-		}
-		if ($receiveSms.val() == "") {
-			alert("sns수신여부 체크");
-			$receiveSms.focus();
-			return false;
-		}
-		if ($password.val() != $passwordConfirm.val()) {
-			alert("비밀번호 일치하지 않음");
-			$password.focus();
-			return false;
-		}
+		//최종 제출시 이벤트
+		$("#target").on("submit", function() {
 
-		//이메일 정규식
-		let exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+			//모두 입력되도록
+			let $name= $("#name");
+			let $loginId= $("#loginId");
+			let $password = $("#password");
+			let $passwordConfirm = $("#passwordConfirm");
+			let $createPassword = $("#createPassword");
+			let $createPasswordConfirm = $("#createPasswordConfirm");
+			let $email = $("#email");
 
-		//이메일 형식이 알파벳+숫자@알파벳+숫자.알파벳+숫자 형식이 아닐 경우
-		if (exptext.test($email.val()) == false) {
-			alert("이메일 형식이 올바르지 않습니다.");
-			return false;
-		}
-	});
+			let $zipcode = $("#zipcode");
+			let $address = $("#address");
+			let $addressDetail = $("#addressDetail");
+			let $phoneNumber = $("#phoneNumber");
+			let $receiveSms = $("#receiveSms");
 
-	//아이디 중복 체크
-	$("#checkId").click (function() {
+			let $idCheckStatus = $("#idCheckStatus");     //아이디 중복체크 했는지 여부
 
-		let $loginId = $("#loginId");
-		let $loginMessage = $("#msg");
-		if ($loginId.val() == "") {
-			alert("아이디를 입력해주세요");
-			return false;
-		}  // [Object object] 말고 id값으로 출력되도록
 
-		if ($loginMessage.val() == "사용 불가") {
-			return false;
-		}
-		let query = {"loginId" : $loginId.val() };
-		//alert(JSON.stringify(query));
+			if ($name.val() == "") {
+				alert("이름을 입력해주세요");
+				$name.focus();
+				return false;
+			}
+			if ($loginId.val() == "") {
+				alert("아이디 입력해주세요");
+				$loginId.focus();
+				return false;
+			}
 
-		$.ajax({
-			url : "check-id",
-			type : "post",
-			data : query,
-			datatype: "json",
-			success : function(data) {
-				if (data == 1) {
-					$("#msg").text("사용 불가");
-					$("#msg").attr("style", "color:#f00");
-					$(".submit").attr("disabled", "disabled");
-				} else {
-					$("#msg").text("사용 가능");
-					$("#msg").attr("style", "color:#00f");
-					$(".submit").removeAttr("disabled");
-				}
-			},
-			error : function() {
-				alert("실패");
+			if ($createPassword.val() == "") {
+				alert("비밀번호 입력해주세요");
+				$createPassword.focus();
+				return false;
+			}
+			if ($createPasswordConfirm.val() == "") {
+				alert("비밀번호 확인 입력해주세요");
+				$createPasswordConfirm.focus();
+				return false;
+			}
+			if ($createPassword.val() != $createPasswordConfirm.val()) {
+				alert("비밀번호 일치하지 않음");
+				$createPassword.focus();
+				return false;
+			}
+			if ($password.val() != $passwordConfirm.val()) {
+				alert("비밀번호 일치하지 않음");
+				$password.focus();
+				return false;
+			}
+
+			if ($email.val() == "") {
+				alert("이메일 입력해주세요");
+				$email.focus();
+				return false;
+			}
+			//이메일 정규식
+			let exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+
+			//이메일 형식이 알파벳+숫자@알파벳+숫자.알파벳+숫자 형식이 아닐 경우
+			if (exptext.test($email.val()) == false) {
+				alert("이메일 형식이 올바르지 않습니다.");
+				return false;
+			}
+
+			if ($zipcode.val() == "") {
+				alert("우편번호 입력해주세요");
+				$zipcode.focus();
+				return false;
+			}
+
+			if ($address.val() == "") {
+				alert("주소 입력해주세요");
+				$address.focus();
+				return false;
+			}
+
+			if ($addressDetail.val() == "") {
+				alert("상세주소 입력해주세요");
+				$addressDetail.focus();
+				return false;
+			}
+
+			if ($phoneNumber.val() == "") {
+				alert("전화번호 입력해주세요");
+				$phoneNumber.focus();
+				return false;
+			}
+
+			if ($receiveSms.val() == "") {
+				alert("sms수신여부 선택해주세요");
+				return false;
+			}
+
+			if ($idCheckStatus.val() == 0) {
+				alert("아이디 중복확인 체크해주세요.");
+				return false;
 			}
 		});
-	});
-</script>
+
+		//아이디 중복 체크시 이벤트
+		$("#idCheck").click (function() {
+
+			let $loginId = $("#loginId");
+			let $loginMessage = $("#msg");
+			let $idCheckStatus = $("#idCheckStatus");     //아이디 중복체크 누르면 1로 변경
+
+			if ($loginId.val() == "") {
+				alert("아이디를 입력해주세요");
+				return false;
+			}
+			if ($loginMessage.val() == "사용 불가") {
+				return false;
+			}
+			if ($idCheckStatus.val() == 0) {
+				$idCheckStatus.val(1) ;
+			}
+
+			let query = { "loginId" : $loginId.val() };
+			//alert(JSON.stringify(query));
+
+			$.ajax({
+				url : "/user/check-id11",
+				type : "post",
+				data : query,
+				datatype: "json",
+				success : function(data) {
+					if (data == 1) {
+						$("#msg").text("사용 불가");
+						$("#msg").attr("style", "color:#f00");
+						$(".submit").attr("disabled", "disabled");
+
+					} else {
+						$("#msg").text("사용 가능");
+						$("#msg").attr("style", "color:#00f");
+						$(".submit").removeAttr("disabled");
+					}
+				},
+				error : function() {
+					alert("실패");
+				}
+			});
+		});
+
+		function resetIdCheckStatus() {      //아이디값 다시입력시 0으로 바뀌도록 onkeyup , 사용가능 텍스트도 안뜨도록
+
+			let $idCheckStatus = $("#idCheckStatus");
+			$idCheckStatus.val(0);
+			$("#msg").text("");
+			$("#msg").removeAttr("style");
+			$(".submit").removeAttr("disabled");
+		}
+
+    </script>
 
 </body>
 </html>
