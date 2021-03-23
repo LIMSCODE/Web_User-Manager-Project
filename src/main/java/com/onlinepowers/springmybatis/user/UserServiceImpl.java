@@ -89,8 +89,12 @@ public class UserServiceImpl implements UserService {
 	public void updateUser(User user) {
 
 		String password = user.getPassword();
-		password = SHA256Util.getEncrypt(password, user.getId());
-		user.setPassword(password);
+
+		if (!"".equals(password)) {     //비밀번호 공백이 아닐때만 해시로 만든다.
+
+			password = SHA256Util.getEncrypt(password, user.getId());
+			user.setPassword(password);
+		}
 
 		userMapper.updateUser(user);
 		userMapper.updateUserDetail(user.userDetail);

@@ -35,22 +35,22 @@
         <input type="hidden" name="id" th:value="${user.id}"/>
     </span>
 
-        <span th:if="${id} != null">
+    <span th:if="${id} != null">
     이름<input type="text" name="name" id="name" th:value="${user.name}" maxlength="12" readonly> <br>
     아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="12" readonly>
     </span>
-        <span th:if="${id} == null">
+    <span th:if="${id} == null">
     이름<input type="text" name="name" id="name" th:value="${user.name}" maxlength="12"> <br>
     아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="12"  onkeyup="resetIdCheckStatus();">
     </span>
 
-        <span th:if="${id} == null">
+    <span th:if="${id} == null">
     <button type ="button" class="checkId" id="idCheck"> 아이디중복확인 </button>
         <input type="hidden" name="idCheckStatus" id="idCheckStatus" th:value="0" >
     <span class="msg" id="msg"> </span>
     </span>
         <br>
-        <span th:if="${id} != null">
+    <span th:if="${id} != null">
         비밀번호 <input type="password" name="password" id="password"  maxlength="8" > <br>
     비밀번호 확인 <input type="password" name="passwordConfirm"  id="passwordConfirm"  maxlength="8"> <br>
     </span>
@@ -59,7 +59,7 @@
     비밀번호 확인 <input type="password" name="passwordConfirm"  id="createPasswordConfirm"  maxlength="8"> <br>
     </span>
 
-        <span id="isSame" class="same"></span>
+    <span id="isSame" class="same"></span>
         이메일 <input type="text" name="email" id="email" th:value="${user.email}" maxlength="30"> <br>
 
         우편번호 <input type="text" name="zipcode" id="zipcode" th:value="${user.userDetail?.zipcode}" maxlength="30"> <br>
@@ -73,27 +73,24 @@
          <input type="hidden" id="receiveSms" th:value="${user.userDetail?.receiveSms}" >
     </span>
     <span th:if="${id} == null">
-        <label> <input type="radio" name="receiveSms" value="1"> 수신 </label>
+        <label> <input type="radio" name="receiveSms" value="1" > 수신 </label>
         <label> <input type="radio" name="receiveSms" value="0" > 수신x </label><br>
     </span>
 
+    <span th:if="${authority} != null">
+         직위
+        <label> <input type="radio" name="authority" value="ROLE_OPMANAGER" checked> 관리자 </label>
+    </span>
+
     <span th:if="${id} != null">
-    <input type="submit" class="submit" value="수정"  th:formaction="@{/user/edit/{id}(id = ${id})}" >
+        <input type="submit" class="submit" value="수정"  th:formaction="@{/user/edit/{id}(id = ${id})}" ><br><br>
         <!--https://www.baeldung.com/spring-thymeleaf-path-variables url파싱 $%7Bid%7D로 안넘어가는 방법 찾음.-->
+        <td><a class="btn" th:href="|@{/}|">메인화면</a> </td>
     </span>
     <span th:if="${id} == null">
-    <input type="submit" class="submit" value="등록" formaction="/user/create">
+        <input type="submit" class="submit" value="등록" formaction="/user/create">
     </span>
 </form>
-
-
-
-    <br><br>
-    <span th:if="${authority} == 1">
-<div class="" th:object="${user}">
-    <td><a class="btn" th:href="|@{/opmanager/user/list}*{makeQueryString(currentPageNo)}|" th:text="목록"></a> </td>
-</div>
-</span>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript">
@@ -114,7 +111,6 @@
 			let $address = $("#address");
 			let $addressDetail = $("#addressDetail");
 			let $phoneNumber = $("#phoneNumber");
-			let $receiveSms = $("#receiveSms");
 
 			let $idCheckStatus = $("#idCheckStatus");     //아이디 중복체크 했는지 여부
 
@@ -189,15 +185,17 @@
 				return false;
 			}
 
-			if ($receiveSms.val() == "") {
-				alert("sms수신여부 선택해주세요");
-				return false;
-			}
-
 			if ($idCheckStatus.val() == 0) {
 				alert("아이디 중복확인 체크해주세요.");
 				return false;
 			}
+
+
+			if(!$(':input:radio[name=receiveSms]:checked').val()) {
+				alert("sms 수신여부 선택해주세요");
+				return false;
+			}
+
 		});
 
 		//아이디 중복 체크시 이벤트
@@ -222,7 +220,7 @@
 			//alert(JSON.stringify(query));
 
 			$.ajax({
-				url : "/user/check-id11",
+				url : "/user/check-id",
 				type : "post",
 				data : query,
 				datatype: "json",
@@ -245,7 +243,7 @@
 			});
 		});
 
-		function resetIdCheckStatus() {      //아이디값 다시입력시 0으로 바뀌도록 onkeyup , 사용가능 텍스트도 안뜨도록
+		function resetIdCheckStatus() {      //아이디값 다시입력시 0으로 바뀌도록 onkeyup함수 , 사용가능 텍스트도 안뜨도록
 
 			let $idCheckStatus = $("#idCheckStatus");
 			$idCheckStatus.val(0);
@@ -254,31 +252,19 @@
 			$(".submit").removeAttr("disabled");
 		}
 
-        //아이디 중복 체크시 이벤트
-        // $("input:radio[name=receiveSms]").click(function() {
-        //     $(this).removeAttr('checked');
-        // });
 
         $(document).ready(function() {
-            $("input:radio[name=receiveSms]").each(function() {
 
-                let $receiveSms = $("#receiveSms");
+            let $receiveSmsTag =  $("input:radio[name=receiveSms]");
 
-                $(this).prop("checked", $(this).val() == $receiveSms.val());    //db에 저장된값 표시
+            $receiveSmsTag.each(function() {
+
+                let $receiveSms = $("#receiveSms");     //db에 저장된 값 가져옴 (수정시 값존재, 회원가입시 값존재 x)
+
+                $(this).prop("checked", $(this).val() == $receiveSms.val());    //db에 저장된값과 같은태그를 체크함.
+
             });
         });
-
-        $("input:radio[name=receiveSms]").click(function() {
-            $("input:radio[name=receiveSms]").each(function() {
-
-                //체크 값 해제 후
-                $(this).removeAttr("checked");
-
-                //
-            });
-        });
-
-
 
     </script>
 

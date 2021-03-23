@@ -64,7 +64,7 @@ public class UserController {
 
 	//회원가입 -유저만
 	@GetMapping("/create")
-	public String register(User user, Model model) {
+	public String register(User user) {
 
 		return "/user/form";
 	}
@@ -74,6 +74,13 @@ public class UserController {
 
 		user.setUserDetail(userDetail);
 		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 받음
+
+		//입력받은 아이디에 해당하는 DTO값이 db에 있으면 insert안되도록
+		User storedUser = userService.getUserByLoginId(user.getLoginId());
+		if (storedUser != null) {
+			log.debug("해당아이디 존재");
+			return "redirect:/user/create";
+		}
 
 		userService.insertUser(user);
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
@@ -87,7 +94,10 @@ public class UserController {
 
 	//로그인 후 수정하려할때 비밀번호 확인
 	@GetMapping("/password-check")
-	public String checkPassword() {
+	public String checkPassword(User user, HttpSession session) {
+
+		//세션 저장 정보
+		User loginUser = (User) session.getAttribute("loginUser");
 
 		return "/user/password-check";
 	}
@@ -111,10 +121,6 @@ public class UserController {
 
 			log.debug("비밀번호 일치, 수정폼으로 이동 ");
 
-			String authority = loginUser.getUserRole().authority;
-			log.debug(authority);  //0
-			model.addAttribute("authority", authority);
-
 			return "redirect:/user/edit/" + loginUser.getId();
 
 		} else {
@@ -134,13 +140,10 @@ public class UserController {
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
 		model.addAttribute("id", user.getId());   //form 뷰에서 id있을때로 처리됨.
 
-		//세션 저장 정보
-		User loginUser = (User) session.getAttribute("loginUser");
-
-		//관리자일때만 목록 링크, 권한 수정 보이도록한다.
-		String authority = loginUser.getUserRole().getAuthority();
+		String authority = user.getUserRole().getAuthority();
 		if ("ROLE_OPMANAGER".equals(authority)) {
-			model.addAttribute("authority", authority);   //form 뷰에서 id있을때로 처리됨.
+
+			model.addAttribute("authority", authority);   //관리자일때는 관리자라디오버튼 보이게
 		}
 
 		return "/user/form";
@@ -150,10 +153,7 @@ public class UserController {
 	public String updateUser(
 							 @ModelAttribute("cri") Criteria cri,
 	                         User user, UserDetail userDetail, UserRole userRole,
-	                         HttpSession session, Model model, RedirectAttributes rttr) {
-
-		//user.getLoginId 로 입력받은값이 loginUser.
-		User loginUser = (User) session.getAttribute("loginUser");
+	                         HttpSession session, Model model) {
 
 		//하위 테이블 수정안되는 현상 해결
 		userDetail.setUserId(user.getId());
@@ -161,15 +161,17 @@ public class UserController {
 
 		user.setUserDetail(userDetail);
 		user.setUserRole(userRole);
+		userService.updateUser(user);   //비밀번호 ''이 아닐때만 해시함수적용
 
-		userService.updateUser(user);
+		User updatedUser = userService.getUserByLoginId(user.getLoginId());
+		session.setAttribute("loginUser" ,  updatedUser);
 
 		return "redirect:/";
 
 	}
 
 	@ResponseBody
-	@PostMapping(value = "/check-id11")
+	@PostMapping(value = "/check-id")
 	public int checkId(User user) throws Exception {
 		String loginId = user.getLoginId();
 		log.debug(loginId);

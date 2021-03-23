@@ -73,13 +73,15 @@
     SNS수신여부
     <label> <input type="radio" name="receiveSms" value="1" checked> 수신 </label>
     <label> <input type="radio" name="receiveSms" value="0"> 수신x </label><br>
+    <input type="hidden" id="receiveSms" th:value="${user.userDetail?.receiveSms}" >
 
     직위
     <label> <input type="radio" name="authority" value="ROLE_OPMANAGER" checked> 관리자 </label>
     <label> <input type="radio" name="authority" value="ROLE_USER"> 회원 </label><br>
+    <input type="hidden" id="authority" th:value="${user.userRole?.authority}" >
 
     <span th:if="${id} != null">
-    <input type="submit" class="submit" value="수정"  formaction="/opmanager/user/edit/${id}">
+    <input type="submit" class="submit" value="수정"  th:formaction="@{/opmanager/user/edit/{id}(id = ${id})}">
     </span>
     <span th:if="${id} == null">
     <input type="submit" class="submit" value="등록" formaction="/opmanager/user/create">
@@ -187,13 +189,18 @@
 			return false;
 		}
 
-		if ($receiveSms.val() == "") {
-			alert("sms수신여부 선택해주세요");
+		if ($idCheckStatus.val() == 0) {
+			alert("아이디 중복확인 체크해주세요.");
 			return false;
 		}
 
-		if ($idCheckStatus.val() == 0) {
-			alert("아이디 중복확인 체크해주세요.");
+		if(!$(':input:radio[name=receiveSms]:checked').val()) {
+			alert("sms 수신여부 선택해주세요");
+			return false;
+		}
+
+		if(!$(':input:radio[name=authority]:checked').val()) {
+			alert("직위 선택해주세요");
 			return false;
 		}
 	});
@@ -228,6 +235,7 @@
 				if (data == 1) {
 					$("#msg").text("사용 불가");
 					$("#msg").attr("style", "color:#f00");
+					alert("해당 아이디 존재");
 					$(".submit").attr("disabled", "disabled");
 
 				} else {
@@ -250,6 +258,25 @@
 		$("#msg").removeAttr("style");
 		$(".submit").removeAttr("disabled");
 	}
+
+	$(document).ready(function() {
+
+		$("input:radio[name=receiveSms]").each(function() {
+
+			let $receiveSms = $("#receiveSms");     //db에 저장된 값 가져옴 (수정시 값존재, 회원가입시 값존재 x)
+
+			$(this).prop("checked", $(this).val() == $receiveSms.val());    //db에 저장된값과 같은태그를 체크함.
+
+		});
+
+		$("input:radio[name=authority]").each(function() {
+
+			let $authority = $("#authority");
+
+			$(this).prop("checked", $(this).val() == $authority.val());
+
+		});
+	});
 
 </script>
 

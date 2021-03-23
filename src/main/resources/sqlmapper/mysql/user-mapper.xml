@@ -202,11 +202,11 @@
             parameterType="com.onlinepowers.springmybatis.user.User">
         UPDATE OP_USER
         SET
-        <if test="password != null">
+        <if test='password != ""'>
             PASSWORD=#{password},
             EMAIL=#{email}
         </if>
-        <if test="password == null">
+        <if test='password == ""'>
             EMAIL=#{email}
         </if>
         WHERE ID=#{id};

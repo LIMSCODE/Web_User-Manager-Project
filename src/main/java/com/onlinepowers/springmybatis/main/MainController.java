@@ -26,6 +26,7 @@ public class MainController {
 
 		User loginUser = (User) session.getAttribute("loginUser");
 		log.debug("메인");
+
 		//뷰에서 null이 아니면 로그인버튼을 정보수정, 로그아웃버튼으로 변경
 		if (loginUser != null) {
 			log.debug("1");

@@ -66,11 +66,12 @@ public class UserManagerController {
 	                          User user,
 	                          HttpSession session, Model model) {
 
+		User loginUser = (User) session.getAttribute("loginUser");
+		model.addAttribute("loginUser", loginUser);
+
 		List<User> userList = userService.getUserList(user, cri);
 		model.addAttribute("userList", userList);
 
-		User loginUser = (User) session.getAttribute("loginUser");
-		model.addAttribute("loginUser", loginUser);
 
 		return "/opmanager/user/list";
 	}
@@ -93,6 +94,14 @@ public class UserManagerController {
 
 		user.setUserDetail(userDetail);
 		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 받음
+
+		//입력받은 아이디에 해당하는 DTO값이 db에 있으면 insert안되도록
+		User storedUser = userService.getUserByLoginId(user.getLoginId());
+		if (storedUser != null) {
+			log.debug("해당아이디 존재");
+			return "redirect:/user/create";
+		}
+
 		userService.insertUser(user);
 
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -144,11 +153,6 @@ public class UserManagerController {
 		user.setUserRole(userRole);
 
 		userService.updateUser(user);
-
-		if (user.getPassword() == "") {
-			log.debug("비밀번호 공란");
-			return "redirect:/opmanager/user/edit/" + user.getId();
-		}
 
 		rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
 		rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
