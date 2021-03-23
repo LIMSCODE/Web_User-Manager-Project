@@ -25,7 +25,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 		}
 
 		User loginUser = (User) session.getAttribute("loginUser");
-
 		if (loginUser == null) {
 
 			return false;
