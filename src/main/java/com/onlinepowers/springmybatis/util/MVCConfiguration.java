@@ -22,7 +22,7 @@ public class MVCConfiguration implements WebMvcConfigurer {
 				.excludePathPatterns("/")
 				.excludePathPatterns("/user/login")
 				.excludePathPatterns("/user/create")
-				.excludePathPatterns("/user/check-id11");
+				.excludePathPatterns("/user/check-id");
 
 
 		UserRoleInterceptor userRoleInterceptor = new UserRoleInterceptor();	//user일때 관리자 접근x
