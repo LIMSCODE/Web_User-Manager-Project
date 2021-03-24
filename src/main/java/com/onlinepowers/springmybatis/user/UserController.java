@@ -6,11 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
+import javax.validation.Valid;
 
 @Slf4j
 @Controller
@@ -70,7 +69,7 @@ public class UserController {
 	}
 
 	@PostMapping("/create")
-	public String register(HttpSession session, User user, UserDetail userDetail, UserRole userRole, Model model) {
+	public String register(HttpSession session, @Valid User user, BindingResult bindingResult, UserDetail userDetail, UserRole userRole, Model model) {
 
 		user.setUserDetail(userDetail);
 		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 받음
