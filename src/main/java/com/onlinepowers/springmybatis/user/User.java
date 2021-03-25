@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 public class User extends Criteria {
 
 	@Size(max = 64)
-	private long id;
+	private Long id;
 	private long pagingId;
 	private String name;
 	private String loginId;

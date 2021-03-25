@@ -30,7 +30,13 @@ public class MVCConfiguration implements WebMvcConfigurer {
 		registry.addInterceptor(userRoleInterceptor)
 				.addPathPatterns("/opmanager/**")
 				.excludePathPatterns("/opmanager")
+				.excludePathPatterns("/opmanager/index")
 				.excludePathPatterns("/opmanager/user/login");
+
+		ManagerRoleInterceptor managerRoleInterceptor = new ManagerRoleInterceptor();
+
+		registry.addInterceptor(managerRoleInterceptor)
+				.addPathPatterns("/**");
 
 
 		UserRoleEditInterceptor userRoleEditInterceptor = new UserRoleEditInterceptor();  //user일때 다른사람것 수정x

@@ -2,21 +2,25 @@ package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
 import com.onlinepowers.springmybatis.util.SHA256Util;
+import com.onlinepowers.springmybatis.util.UserUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Slf4j
 @Controller
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
-	@Autowired
-	private UserService userService;
+
+	private final UserService userService;
 
 	@GetMapping("/login")
 	public String login(User user) {
@@ -47,8 +51,9 @@ public class UserController {
 			log.debug("비밀번호 일치하지 않음");
 			return "redirect:/user/login";
 		}
+
 		//사용자가 아닐때
-		if ("ROLE_OPMANAGER".equals(loginUser.getUserRole().getAuthority())) {
+		if (!"ROLE_USER".equals(loginUser.getUserRole().getAuthority())) {
 			log.debug("권한이 사용자가 아닙니다.");
 			return "redirect:/user/login";
 		}
@@ -102,10 +107,9 @@ public class UserController {
 	}
 
 	@PostMapping("/password-check")
-	public String checkPassword(User user, HttpSession session, Model model) {
-		
-		//세션 저장 정보
-		User loginUser = (User) session.getAttribute("loginUser");
+	public String checkPassword(HttpServletRequest request, User user, HttpSession session, Model model) {
+
+		User loginUser = UserUtils.getLoginUser(session);
 
 		//입력받은 비밀번호
 		log.debug(user.getPassword());
@@ -116,18 +120,14 @@ public class UserController {
 		log.debug(loginUser.getPassword());
 
 		//로그인 세션의 비밀번호 값과 일치하는지 확인
-		if (hashPassword.equals(loginUser.getPassword())) {
-
-			log.debug("비밀번호 일치, 수정폼으로 이동 ");
-
-			return "redirect:/user/edit/" + loginUser.getId();
-
-		} else {
-
+		if (!hashPassword.equals(loginUser.getPassword())) {
 			log.debug("비밀번호 일치하지 않음 컨트롤러");
-
 			return "redirect:/user/password-check";
 		}
+
+		log.debug("비밀번호 일치, 수정폼으로 이동 ");
+		return "redirect:/user/edit/" + loginUser.getId();
+
 	}
 
 	@GetMapping("/edit/{id}")
@@ -138,12 +138,6 @@ public class UserController {
 		user = userService.getUserById(id);
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
 		model.addAttribute("id", user.getId());   //form 뷰에서 id있을때로 처리됨.
-
-		String authority = user.getUserRole().getAuthority();
-		if ("ROLE_OPMANAGER".equals(authority)) {
-
-			model.addAttribute("authority", authority);   //관리자일때는 관리자라디오버튼 보이게
-		}
 
 		return "/user/form";
 	}

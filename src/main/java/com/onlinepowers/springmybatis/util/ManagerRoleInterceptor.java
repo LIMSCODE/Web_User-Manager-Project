@@ -2,13 +2,14 @@ package com.onlinepowers.springmybatis.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Slf4j
-public class UserRoleInterceptor implements HandlerInterceptor {
+public class ManagerRoleInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
@@ -19,7 +20,8 @@ public class UserRoleInterceptor implements HandlerInterceptor {
 			return true;
 		}
 
-		if (UserUtils.isUserLogin(session)) {	//유저일떄는 접근불가능
+		int isManagerPage = request.getRequestURI().indexOf("/opmanager");
+		if (UserUtils.isManagerLogin(session) && isManagerPage == -1) {  // opmanager로 시작하지 않으면 모두 막는다.
 			return false;
 		}
 

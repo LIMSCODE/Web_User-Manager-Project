@@ -20,13 +20,12 @@ public class LoginInterceptor implements HandlerInterceptor {
 		HttpSession session = request.getSession(false);  //false이면 세션없을때 null됨,  true는 새로생성
 
 		if (session == null) {
-
 			return false;
 		}
 
-		User loginUser = (User) session.getAttribute("loginUser");
-		if (loginUser == null) {
+		User loginUser = UserUtils.getLoginUser(session);
 
+		if (loginUser == null) {
 			return false;
 		}
 

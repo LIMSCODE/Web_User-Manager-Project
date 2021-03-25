@@ -20,10 +20,11 @@ public class UserRoleEditInterceptor implements HandlerInterceptor {
 		long id = Integer.parseInt(requestURI.substring(idx));
 
 		HttpSession session = request.getSession(false);
-		User loginUser = (User) session.getAttribute("loginUser");
+		User loginUser = UserUtils.getLoginUser(session);
 
-		if (loginUser.getId() == id) { 		//본인페이지는 수정가능
-			
+		String referer = request.getHeader("REFERER");      //직전 페이지에서만 접근허용
+
+		if (loginUser.getId() == id && referer.indexOf("/user/password-check") > -1) { 		//본인페이지만 수정가능
 			return true;
 		}
 

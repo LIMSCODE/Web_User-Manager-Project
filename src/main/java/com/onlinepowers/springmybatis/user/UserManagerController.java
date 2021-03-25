@@ -2,6 +2,8 @@ package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
 import com.onlinepowers.springmybatis.util.SHA256Util;
+import com.onlinepowers.springmybatis.util.UserUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,9 +18,10 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/opmanager/user")
 @Controller
+@RequiredArgsConstructor
 public class UserManagerController {
-	@Autowired
-	private UserService userService;
+
+	private final UserService userService;
 
 	@GetMapping("/login")
 	public String login(User user) {
@@ -48,10 +51,11 @@ public class UserManagerController {
 			log.debug("비밀번호 일치하지 않음");
 			return "redirect:/opmanager/user/login";
 		}
+
 		//관리자가 아닐때
-		if ("ROLE_USER".equals(loginUser.getUserRole().getAuthority())) {
-			log.debug("권한이 관리자가 아닙니다.");
-			return "redirect:/opmanager/user/login";
+		if (!"ROLE_OPMANAGER".equals(loginUser.getUserRole().getAuthority())) {
+			log.debug("권한이 사용자가 아닙니다.");
+			return "redirect:/user/login";
 		}
 
 		session.setAttribute("loginUser", loginUser);
@@ -60,18 +64,16 @@ public class UserManagerController {
 		return "redirect:/opmanager";
 	}
 
-
 	@GetMapping("/list")
 	public String getUserList(@ModelAttribute("cri") Criteria cri,
 	                          User user,
 	                          HttpSession session, Model model) {
 
-		User loginUser = (User) session.getAttribute("loginUser");
+		User loginUser = UserUtils.getLoginUser(session);
 		model.addAttribute("loginUser", loginUser);
 
 		List<User> userList = userService.getUserList(user, cri);
 		model.addAttribute("userList", userList);
-
 
 		return "/opmanager/user/list";
 	}
@@ -79,9 +81,9 @@ public class UserManagerController {
 	@GetMapping("/create")
 	public String registerForm(User user, HttpSession session, Model model) {
 
-		User loginUser = (User) session.getAttribute("loginUser");
-		model.addAttribute("authority", loginUser.getUserRole().getAuthority());
+		User loginUser = UserUtils.getLoginUser(session);
 
+		model.addAttribute("authority", loginUser.getUserRole().getAuthority());
 		model.addAttribute("loginUser", loginUser);
 
 		return "/opmanager/user/form";
@@ -104,14 +106,13 @@ public class UserManagerController {
 
 		userService.insertUser(user);
 
-		User loginUser = (User) session.getAttribute("loginUser");
+		User loginUser = UserUtils.getLoginUser(session);
 		model.addAttribute("loginUser", loginUser);
 
 		//관리자페이지에서 등록하는 경우
 		return "redirect:/opmanager/user/list";
 
 	}
-
 
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id,
@@ -124,7 +125,7 @@ public class UserManagerController {
 		model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
 
 		//세션 저장 정보
-		User loginUser = (User) session.getAttribute("loginUser");
+		User loginUser = UserUtils.getLoginUser(session);
 
 		//관리자일때만 목록 링크, 권한 수정 보이도록한다.
 		String authority = loginUser.getUserRole().getAuthority();
@@ -143,7 +144,7 @@ public class UserManagerController {
 							 RedirectAttributes rttr, HttpSession session, Model model) {
 
 		//user.getLoginId 로 입력받은값이 loginUser.
-		User loginUser = (User) session.getAttribute("loginUser");
+		//User loginUser = (User) session.getAttribute("loginUser");
 
 		//하위 테이블 수정안되는 현상 해결
 		userDetail.setUserId(user.getId());
@@ -164,13 +165,6 @@ public class UserManagerController {
 
 	}
 
-	/**
-	 * 삭제
-	 * @param cri
-	 * @param rttr
-	 * @param model
-	 * @return
-	 */
 	@PostMapping("/delete/{id}")
 	public String deleteUser(@PathVariable("id") long id, @ModelAttribute("cri") Criteria cri,
 	                         RedirectAttributes rttr, Model model) {
@@ -186,7 +180,6 @@ public class UserManagerController {
 
 		return "redirect:/opmanager/user/list";
 	}
-
 
 	@ResponseBody
 	@PostMapping(value = "/check-id")

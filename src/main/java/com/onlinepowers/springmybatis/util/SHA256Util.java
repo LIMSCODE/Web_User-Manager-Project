@@ -1,7 +1,5 @@
 package com.onlinepowers.springmybatis.util;
 
-import com.onlinepowers.springmybatis.user.User;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
