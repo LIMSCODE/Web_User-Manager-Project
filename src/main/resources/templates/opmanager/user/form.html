@@ -40,8 +40,10 @@
     </span>
 
     <span th:if="${id} != null">
-    이름<input type="text" name="name" id="name" th:value="${user.name}" maxlength="12" readonly> <br>
-    아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="12" readonly>
+    이름<input type="text" name="name" id="name"  th:field="*{name}"  th:value="${user.name}" maxlength="12" readonly> <br>
+    <td class="err" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
+
+        아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" maxlength="12" readonly>
     </span>
     <span th:if="${id} == null">
     이름<input type="text" name="name" id="name" th:value="${user.name}" maxlength="12"> <br>

@@ -74,10 +74,16 @@ public class UserController {
 	}
 
 	@PostMapping("/create")
-	public String register(HttpSession session, @Valid User user, BindingResult bindingResult, UserDetail userDetail, UserRole userRole, Model model) {
+	public String register(HttpSession session,
+	                       @Valid User user, BindingResult userResult,
+	                       Model model) {
 
-		user.setUserDetail(userDetail);
-		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 받음
+		log.debug("th:field값 전송되는가" + user.getUserDetail().zipcode); //전송됨
+
+		if (userResult.hasErrors()) {        //userResult에 하위Dto들 오류났는지 정보까지 모두 담김
+			model.addAttribute("user", user);
+			return "/user/form";
+		}
 
 		//입력받은 아이디에 해당하는 DTO값이 db에 있으면 insert안되도록
 		User storedUser = userService.getUserByLoginId(user.getLoginId());
@@ -93,8 +99,8 @@ public class UserController {
 		model.addAttribute("loginUser", loginUser);
 
 		return "redirect:/";
-
 	}
+
 
 	//로그인 후 수정하려할때 비밀번호 확인
 	@GetMapping("/password-check")
@@ -156,7 +162,7 @@ public class UserController {
 		user.setUserRole(userRole);
 		userService.updateUser(user);   //비밀번호 ''이 아닐때만 해시함수적용
 
-		User updatedUser = userService.getUserByLoginId(user.getLoginId());
+		User updatedUser = userService.getUserByLoginId(user.getLoginId());     //비밀번호 수정후 바뀐 DTO를 session에 set해줘야함.!!
 		session.setAttribute("loginUser" ,  updatedUser);
 
 		return "redirect:/";
