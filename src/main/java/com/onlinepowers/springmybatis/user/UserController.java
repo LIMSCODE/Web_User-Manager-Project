@@ -74,13 +74,10 @@ public class UserController {
 	}
 
 	@PostMapping("/create")
-	public String register(HttpSession session,
-	                       @Valid User user, BindingResult userResult,
-	                       Model model) {
+	public String register(@Valid User user, BindingResult userResult,
+						   HttpSession session, Model model) {
 
-		log.debug("th:field값 전송되는가" + user.getUserDetail().zipcode); //전송됨
-
-		if (userResult.hasErrors()) {        //userResult에 하위Dto들 오류났는지 정보까지 모두 담김
+		if (userResult.hasErrors()) {
 			model.addAttribute("user", user);
 			return "/user/form";
 		}
@@ -104,16 +101,13 @@ public class UserController {
 
 	//로그인 후 수정하려할때 비밀번호 확인
 	@GetMapping("/password-check")
-	public String checkPassword(User user, HttpSession session) {
-
-		//세션 저장 정보
-		User loginUser = (User) session.getAttribute("loginUser");
+	public String checkPassword() {
 
 		return "/user/password-check";
 	}
 
 	@PostMapping("/password-check")
-	public String checkPassword(HttpServletRequest request, User user, HttpSession session, Model model) {
+	public String checkPassword(User user, HttpSession session, Model model) {
 
 		User loginUser = UserUtils.getLoginUser(session);
 
@@ -133,7 +127,6 @@ public class UserController {
 
 		log.debug("비밀번호 일치, 수정폼으로 이동 ");
 		return "redirect:/user/edit/" + loginUser.getId();
-
 	}
 
 	@GetMapping("/edit/{id}")
@@ -142,6 +135,7 @@ public class UserController {
 	                         User user, HttpSession session,  Model model) {
 
 		user = userService.getUserById(id);
+
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
 		model.addAttribute("id", user.getId());   //form 뷰에서 id있을때로 처리됨.
 
@@ -149,20 +143,20 @@ public class UserController {
 	}
 
 	@PostMapping("/edit/{id}")
-	public String updateUser(
+	public String updateUser(@PathVariable("id") long id,
 							 @ModelAttribute("cri") Criteria cri,
-	                         User user, UserDetail userDetail, UserRole userRole,
+	                         @Valid User user, BindingResult userResult,
 	                         HttpSession session, Model model) {
 
-		//하위 테이블 수정안되는 현상 해결
-		userDetail.setUserId(user.getId());
-		userRole.setUserId(user.getId());
+		if (userResult.hasErrors()) {
+			model.addAttribute("id", user.getId());
+			model.addAttribute("user", user);
+			return "/user/form";
+		}
 
-		user.setUserDetail(userDetail);
-		user.setUserRole(userRole);
-		userService.updateUser(user);   //비밀번호 ''이 아닐때만 해시함수적용
+		userService.updateUser(user);
 
-		User updatedUser = userService.getUserByLoginId(user.getLoginId());     //비밀번호 수정후 바뀐 DTO를 session에 set해줘야함.!!
+		User updatedUser = userService.getUserByLoginId(user.getLoginId());     //비밀번호 수정후 바뀐 DTO를 session에 set해줘야함.
 		session.setAttribute("loginUser" ,  updatedUser);
 
 		return "redirect:/";

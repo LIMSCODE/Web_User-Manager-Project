@@ -8,11 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -82,8 +84,6 @@ public class UserManagerController {
 	public String registerForm(User user, HttpSession session, Model model) {
 
 		User loginUser = UserUtils.getLoginUser(session);
-
-		model.addAttribute("authority", loginUser.getUserRole().getAuthority());
 		model.addAttribute("loginUser", loginUser);
 
 		return "/opmanager/user/form";
@@ -91,11 +91,16 @@ public class UserManagerController {
 
 	@PostMapping("/create")
 	public String createUser(@ModelAttribute("cri") Criteria cri,
-	                         User user, UserDetail userDetail, UserRole userRole,
-	                         HttpSession session, Model model) {
+							 @Valid User user, BindingResult userResult,
+							 HttpSession session, Model model) {
 
-		user.setUserDetail(userDetail);
-		user.setUserRole(userRole); //th:object = user , name이 authority인 태그 받음
+		if (userResult.hasErrors()) {
+			User loginUser = UserUtils.getLoginUser(session);
+
+			model.addAttribute("loginUser", loginUser);
+			model.addAttribute("user", user);
+			return "/opmanager/user/form";
+		}
 
 		//입력받은 아이디에 해당하는 DTO값이 db에 있으면 insert안되도록
 		User storedUser = userService.getUserByLoginId(user.getLoginId());
@@ -126,32 +131,27 @@ public class UserManagerController {
 
 		//세션 저장 정보
 		User loginUser = UserUtils.getLoginUser(session);
-
-		//관리자일때만 목록 링크, 권한 수정 보이도록한다.
-		String authority = loginUser.getUserRole().getAuthority();
-		if ("ROLE_OPMANAGER".equals(authority)) {
-			model.addAttribute("authority", authority);   //form 뷰에서 id있을때로 처리됨.
-		}
-
 		model.addAttribute("loginUser", loginUser);
 
 		return "/opmanager/user/form";
 	}
 
 	@PostMapping("/edit/{id}")
-	public String updateUser(@ModelAttribute("cri") Criteria cri,
-	                         User user, UserDetail userDetail, UserRole userRole,
-							 RedirectAttributes rttr, HttpSession session, Model model) {
+	public String updateUser(@PathVariable("id") long id, @ModelAttribute("cri") Criteria cri,
+							 @Valid User user,  BindingResult userResult,
+							 HttpSession session, Model model, RedirectAttributes rttr) {
 
-		//user.getLoginId 로 입력받은값이 loginUser.
-		//User loginUser = (User) session.getAttribute("loginUser");
+		if (userResult.hasErrors()) {
+			User loginUser = UserUtils.getLoginUser(session);
 
-		//하위 테이블 수정안되는 현상 해결
-		userDetail.setUserId(user.getId());
-		userRole.setUserId(user.getId());
+			model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
+			model.addAttribute("loginUser", loginUser);
+			model.addAttribute("user", user);
+			return "opmanager/user/form";
+		}
 
-		user.setUserDetail(userDetail);
-		user.setUserRole(userRole);
+		user.getUserDetail().setUserId(user.getId());
+		user.getUserRole().setUserId(user.getId());
 
 		userService.updateUser(user);
 

@@ -5,7 +5,7 @@ import javax.servlet.http.HttpSession;
 
 public class UserUtils {
 
-	private static String LOGIN_USER = "loginUser";     //치환???
+	private static String LOGIN_USER = "loginUser";
 
 	/**
 	 * 로그인 세션 가져오기
@@ -15,7 +15,7 @@ public class UserUtils {
 	public static User getLoginUser(HttpSession session) {
 
 		if (session == null || session.getAttribute(LOGIN_USER) == null) {     //세션에 저장된게 없을때
-			return null;      //혹은 new User() - "/" 컨트롤러에서 로그인된 상태로 인식됨
+			return null;      //혹은 new User() - "/" 컨트롤러에서 로그인된 상태로 인식
 		}
 
 		return (User) session.getAttribute(LOGIN_USER);
@@ -46,7 +46,7 @@ public class UserUtils {
 
 		User loginUser = getLoginUser (session);  //위의 로그인세션 가져옴
 
-		if (loginUser.getId() == null || loginUser.getUserRole().getAuthority() == null) {   // 로그인유저에서
+		if (loginUser.getId() == null || loginUser.getUserRole().getAuthority() == null) {
 			return false;
 		}
 

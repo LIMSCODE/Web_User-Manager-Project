@@ -39,7 +39,7 @@ public class User extends Criteria {
 
 	@Valid
 	public UserDetail userDetail;
-
+	@Valid
 	public UserRole userRole;
 
 }

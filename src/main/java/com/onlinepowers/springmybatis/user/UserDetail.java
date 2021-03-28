@@ -22,7 +22,6 @@ public class UserDetail extends Criteria {
     public String zipcode;
 
     @NotNull (message="주소 입력해주세요")
-    @Size (min = 2, max= 30, message="30글자 이하로 입력하세요")
     public String address;
 
     @NotNull (message="상세주소 입력해주세요")
@@ -33,13 +32,14 @@ public class UserDetail extends Criteria {
     @Size (max= 30, message="30글자 이하로 입력하세요")
     public String phoneNumber;
 
+    @NotNull (message="수신여부 체크해주세요")
     public String receiveSms;
 
     public String getReceiveSmsTitle() {
         if (this.receiveSms == null) {
-            return " ";
+            return "";
         } else {
-            return "1".equals (this.receiveSms) ? "수신" : "수신안함" ;
+            return "1".equals(this.receiveSms) ? "수신" : "수신안함" ;
         }
     }
 

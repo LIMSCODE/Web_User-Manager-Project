@@ -131,7 +131,7 @@
         FROM
             OP_USER U
         INNER JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
-        INNER JOIN OP_USER_ROLE AS UR ON UD.USER_ID = UR.USER_ID
+        INNER JOIN OP_USER_ROLE UR ON UD.USER_ID = UR.USER_ID
         WHERE ID=#{id}
     </select>
 

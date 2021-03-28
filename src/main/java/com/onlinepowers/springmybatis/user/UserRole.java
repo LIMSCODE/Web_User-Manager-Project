@@ -18,9 +18,9 @@ public class UserRole extends Criteria {
 
     public String getAuthorityTitle() {
         if (this.authority == null) {
-            return " ";
+            return "";
         } else {
-            return "ROLE_OPMANAGER".equals (this.authority) ? "관리자" : "회원" ;
+            return "ROLE_OPMANAGER".equals(this.authority) ? "관리자" : "회원" ;
         }
     }
 

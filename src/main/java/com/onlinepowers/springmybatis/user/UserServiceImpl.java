@@ -99,15 +99,19 @@ public class UserServiceImpl implements UserService {
 		}
 
 		userMapper.updateUser(user);
-		userMapper.updateUserDetail(user.userDetail);
-		userMapper.updateUserRole(user.userRole);
+		userMapper.updateUserDetail(user.getUserDetail());
+		userMapper.updateUserRole(user.getUserRole());
 
 	}
 
+	/**
+	 * 페이지 넘버링 (최대 PK값 + 1)
+	 * @return
+	 */
 	@Override
 	public int getMaxPk() {
 		int maxPk = userMapper.getMaxPk();
-		return maxPk+1;
+		return maxPk + 1;
 	}
 
 	@Override
