@@ -28,7 +28,7 @@ public class UserUtils {
 
 		User loginUser = getLoginUser(session);    //위의 로그인세션 가져옴
 
-		if (loginUser.getId() == null || loginUser.getUserRole().getAuthority() == null) {    // 로그인유저가
+		if (loginUser.getId() == null || loginUser.getUserRole().getAuthority() == null) {
 			return false;
 		}
 
