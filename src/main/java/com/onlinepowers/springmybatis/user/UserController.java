@@ -127,7 +127,6 @@ public class UserController {
 
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id,
-	                         @ModelAttribute("cri") Criteria cri,
 	                         User user, HttpSession session,  Model model) {
 
 		user = userService.getUserById(id);
@@ -140,7 +139,6 @@ public class UserController {
 
 	@PostMapping("/edit/{id}")
 	public String updateUser(@PathVariable("id") long id,
-							 @ModelAttribute("cri") Criteria cri,
 	                         @Valid User user, BindingResult userResult,
 	                         HttpSession session, Model model) {
 
