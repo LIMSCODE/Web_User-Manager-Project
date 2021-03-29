@@ -90,8 +90,7 @@ public class UserManagerController {
 	}
 
 	@PostMapping("/create")
-	public String createUser(@ModelAttribute("cri") Criteria cri,
-							 @Valid User user, BindingResult userResult,
+	public String createUser(@Valid User user, BindingResult userResult,
 							 HttpSession session, Model model) {
 
 		if (userResult.hasErrors()) {
@@ -120,7 +119,6 @@ public class UserManagerController {
 
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id,
-	                         @ModelAttribute("cri") Criteria cri,
 	                         User user,
 	                         HttpSession session, Model model) {
 

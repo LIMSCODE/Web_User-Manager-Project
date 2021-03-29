@@ -39,7 +39,7 @@ public class User extends Criteria {
 
 	@Valid
 	public UserDetail userDetail;
-	@Valid
+	@NotNull (message = "직위 체크해주세요")
 	public UserRole userRole;
 
 }

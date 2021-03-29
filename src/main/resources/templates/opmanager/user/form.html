@@ -175,13 +175,19 @@
         </span>
 
         직위
-        <span>
+        <span th:if="${id} != null">
             <label> <input type="radio" th:field="${user.userRole.authority}" value="ROLE_OPMANAGER"
                            checked> 관리자 </label>
             <label> <input type="radio" th:field="${user.userRole.authority}" value="ROLE_USER"> 회원 </label><br>
             <input type="hidden" id="authority" th:value="${user.userRole?.authority}">
             <p th:if="${#fields.hasErrors('userRole.authority')}"
                th:errors="*{userRole.authority}">Incorrect date</p>
+        </span>
+        <span th:if="${id} == null">
+            <label> <input type="radio" th:field="${user.userRole.authority}" value="ROLE_OPMANAGER"> 관리자 </label>
+            <label> <input type="radio" th:field="${user.userRole.authority}" value="ROLE_USER"> 회원 </label><br>
+            <p th:if="${#fields.hasErrors('userRole')}"
+               th:errors="*{userRole}">Incorrect date</p>
         </span>
 
         <span th:if="${id} != null">
@@ -303,7 +309,7 @@
                 return false;
             }
 
-            if (!$(':input:radio[name=userDetail.authority]:checked').val()) {
+            if (!$(':input:radio[name=userRole.authority]:checked').val()) {
                 alert("직위 선택해주세요");
                 return false;
             }
@@ -373,7 +379,7 @@
 
             });
 
-            $("input:radio[name=userDetail.authority]").each(function () {
+            $("input:radio[name=userRole.authority]").each(function () {
 
                 let $authority = $("#authority");
 
