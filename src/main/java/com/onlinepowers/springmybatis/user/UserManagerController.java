@@ -116,7 +116,6 @@ public class UserManagerController {
 
 		//관리자페이지에서 등록하는 경우
 		return "redirect:/opmanager/user/list";
-
 	}
 
 	@GetMapping("/edit/{id}")

@@ -28,7 +28,6 @@ public class UserController {
 		return "/user/login";
 	}
 
-	//사용자일때 로그인
 	@PostMapping("/login")
 	public String login(User user, HttpSession session, Model model) {
 
@@ -66,7 +65,6 @@ public class UserController {
 		return "redirect:/";
 	}
 
-	//회원가입 -유저만
 	@GetMapping("/create")
 	public String register(User user) {
 
@@ -98,7 +96,6 @@ public class UserController {
 		return "redirect:/";
 	}
 
-	//로그인 후 수정하려할때 비밀번호 확인
 	@GetMapping("/password-check")
 	public String checkPassword() {
 

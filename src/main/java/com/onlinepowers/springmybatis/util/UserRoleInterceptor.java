@@ -15,10 +15,6 @@ public class UserRoleInterceptor implements HandlerInterceptor {
 
 		HttpSession session = request.getSession(false);
 
-		if (session == null) {		//로그아웃시
-			return true;
-		}
-
 		if (UserUtils.isUserLogin(session)) {	//유저일떄는 접근불가능
 			return false;
 		}

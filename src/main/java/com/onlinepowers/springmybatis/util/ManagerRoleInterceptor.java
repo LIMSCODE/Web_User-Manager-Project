@@ -16,10 +16,6 @@ public class ManagerRoleInterceptor implements HandlerInterceptor {
 
 		HttpSession session = request.getSession(false);
 
-		if (session == null) {		//로그아웃시
-			return true;
-		}
-
 		if (UserUtils.getLoginUser(session) == null) {
 			return true;
 		}

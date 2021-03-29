@@ -168,7 +168,6 @@
 
 			let $idCheckStatus = $("#idCheckStatus");     //아이디 중복체크 했는지 여부
 
-
 			if ($name.val() == "") {
 				alert("이름을 입력해주세요");
 				$name.focus();
@@ -185,16 +184,19 @@
 				$createPassword.focus();
 				return false;
 			}
+
 			if ($createPasswordConfirm.val() == "") {
 				alert("비밀번호 확인 입력해주세요");
 				$createPasswordConfirm.focus();
 				return false;
 			}
+
 			if ($createPassword.val() != $createPasswordConfirm.val()) {
 				alert("비밀번호 일치하지 않음");
 				$createPassword.focus();
 				return false;
 			}
+
 			if ($password.val() != $passwordConfirm.val()) {
 				alert("비밀번호 일치하지 않음");
 				$password.focus();
@@ -206,6 +208,7 @@
 				$email.focus();
 				return false;
 			}
+
 			//이메일 정규식
 			let exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 
@@ -262,9 +265,11 @@
 				alert("아이디를 입력해주세요");
 				return false;
 			}
+
 			if ($loginMessage.val() == "사용 불가") {
 				return false;
 			}
+
 			if ($idCheckStatus.val() == 0) {
 				$idCheckStatus.val(1) ;
 			}
