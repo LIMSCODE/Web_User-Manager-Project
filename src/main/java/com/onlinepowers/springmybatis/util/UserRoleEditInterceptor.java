@@ -24,6 +24,10 @@ public class UserRoleEditInterceptor implements HandlerInterceptor {
 
 		String referer = request.getHeader("REFERER");      //직전 페이지에서만 접근허용
 
+		if (referer == null) {
+			return false;
+		}
+
 		if (loginUser.getId() == id && referer.indexOf("/user/password-check") > -1) { 		//본인페이지만 수정가능
 			return true;
 		}
