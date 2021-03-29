@@ -14,6 +14,7 @@ public class UserRole extends Criteria {
 
     public long userId;
 
+    @NotNull (message="직위 체크해주세요")
     public String authority;
 
     public String getAuthorityTitle() {

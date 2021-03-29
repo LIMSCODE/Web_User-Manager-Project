@@ -98,7 +98,6 @@ public class UserController {
 		return "redirect:/";
 	}
 
-
 	//로그인 후 수정하려할때 비밀번호 확인
 	@GetMapping("/password-check")
 	public String checkPassword() {
@@ -153,6 +152,8 @@ public class UserController {
 			model.addAttribute("user", user);
 			return "/user/form";
 		}
+
+		user.getUserDetail().setUserId(user.getId());
 
 		userService.updateUser(user);
 

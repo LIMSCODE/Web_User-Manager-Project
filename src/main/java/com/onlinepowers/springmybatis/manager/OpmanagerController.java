@@ -13,7 +13,13 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class OpmanagerController {
 
-	//매니저일때 메인
+	/**
+	 * 관리자 메인페이지
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/opmanager")
 	public String managerMain(User user, HttpSession session, Model model) {
 

@@ -180,8 +180,8 @@
                            checked> 관리자 </label>
             <label> <input type="radio" th:field="${user.userRole.authority}" value="ROLE_USER"> 회원 </label><br>
             <input type="hidden" id="authority" th:value="${user.userRole?.authority}">
-            <p th:if="${#fields.hasErrors('userDetail.receiveSms')}"
-               th:errors="*{userDetail.receiveSms}">Incorrect date</p>
+            <p th:if="${#fields.hasErrors('userRole.authority')}"
+               th:errors="*{userRole.authority}">Incorrect date</p>
         </span>
 
         <span th:if="${id} != null">
