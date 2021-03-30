@@ -18,6 +18,11 @@ public class MainController {
 
 	private final UserService userService;
 
+	@GetMapping("/hello")
+	public String welcome() {
+		return "/hello";
+	}
+
 	//유저일때 메인
 	@GetMapping("/")
 	public String userMain(HttpSession session, Model model) {
