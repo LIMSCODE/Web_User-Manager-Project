@@ -78,7 +78,7 @@
                     th:field="*{password}" class="form-control" > <br>
         <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Incorrect date</p>
 
-        비밀번호 확인 <input type="password" name="passwordConfirm"  id="createPasswordConfirm" th:value="${user.password}" maxlength="8"> <br>
+        비밀번호 확인 <input type="password" name="passwordConfirm"  id="createPasswordConfirm" maxlength="8"> <br>
         <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Incorrect date</p>
     </span>
     <span id="isSame" class="same"></span>
@@ -135,6 +135,10 @@
         <label> <input type="radio"  th:field="${user.userDetail.receiveSms}" value="1" > 수신 </label>
         <label> <input type="radio"  th:field="${user.userDetail.receiveSms}" value="0" > 수신x </label><br>
     <p th:if="${#fields.hasErrors('userDetail.receiveSms')}" th:errors="*{userDetail.receiveSms}">Incorrect date</p>
+    </span>
+
+    <span>
+        <input type="hidden" name="userRole.authority" value="ROLE_USER" >
     </span>
 
     <span th:if="${id} != null">
