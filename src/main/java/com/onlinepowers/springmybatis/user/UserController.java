@@ -1,6 +1,5 @@
 package com.onlinepowers.springmybatis.user;
 
-import com.onlinepowers.springmybatis.paging.Criteria;
 import com.onlinepowers.springmybatis.util.SHA256Util;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -73,7 +71,7 @@ public class UserController {
 
 	@PostMapping("/create")
 	public String register(@Valid User user, BindingResult userResult,
-						   HttpSession session, Model model) {
+	                       HttpSession session, Model model) {
 
 		if (userResult.hasErrors()) {
 			model.addAttribute("user", user);
@@ -127,7 +125,7 @@ public class UserController {
 
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id,
-	                         User user, HttpSession session,  Model model) {
+	                         User user, HttpSession session, Model model) {
 
 		user = userService.getUserById(id);
 
@@ -153,7 +151,7 @@ public class UserController {
 		userService.updateUser(user);
 
 		User updatedUser = userService.getUserByLoginId(user.getLoginId());     //비밀번호 수정후 바뀐 DTO를 session에 set해줘야함.
-		session.setAttribute("loginUser" ,  updatedUser);
+		session.setAttribute("loginUser", updatedUser);
 
 		return "redirect:/";
 
@@ -161,14 +159,14 @@ public class UserController {
 
 	@ResponseBody
 	@PostMapping(value = "/check-id")
-	public int checkId(User user) throws Exception {
+	public int checkId(User user) {
 		String loginId = user.getLoginId();
 		log.debug(loginId);
 
 		int userCount = userService.getUserCountByLoginId(loginId); //오류
 		log.debug(String.valueOf(userCount));
 
-		return userCount > 0 ? 1 : 0 ;
+		return userCount > 0 ? 1 : 0;
 	}
 
 }

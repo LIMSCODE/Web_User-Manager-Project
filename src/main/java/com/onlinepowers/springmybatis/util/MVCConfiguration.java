@@ -1,11 +1,8 @@
 package com.onlinepowers.springmybatis.util;
 
-import com.onlinepowers.springmybatis.user.User;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import javax.servlet.http.HttpSession;
 
 @Configuration
 public class MVCConfiguration implements WebMvcConfigurer {

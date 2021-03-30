@@ -5,7 +5,6 @@ import com.onlinepowers.springmybatis.paging.PaginationInfo;
 import com.onlinepowers.springmybatis.util.SHA256Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -93,7 +92,6 @@ public class UserServiceImpl implements UserService {
 		String password = user.getPassword();
 
 		if (!"".equals(password)) {     //비밀번호 공백이 아닐때만 해시로 만든다.
-
 			password = SHA256Util.getEncrypt(password, user.getId());
 			user.setPassword(password);
 		}

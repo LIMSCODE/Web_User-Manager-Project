@@ -21,9 +21,7 @@ public interface UserMapper {
 
 	int getUserCountByLoginId(String loginId);
 	int getMaxPk();
-	String getPasswordById(long id);
 
-	//로그인
 	User getUserByLoginId(String loginId);
 
 

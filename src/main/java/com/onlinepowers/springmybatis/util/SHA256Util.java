@@ -1,9 +1,10 @@
 package com.onlinepowers.springmybatis.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Random;
-
+@Slf4j
 public class SHA256Util {
 
 	public static String getEncrypt(String source, long id) {
@@ -35,7 +36,7 @@ public class SHA256Util {
 			result = sb.toString();
 
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			log.error("getEncrypt : {}", "오류", e);
 		}
 
 		return result;

@@ -20,8 +20,9 @@ public class ManagerRoleInterceptor implements HandlerInterceptor {
 			return true;
 		}
 
-		int isManagerPage = request.getRequestURI().indexOf("/opmanager");
-		if (UserUtils.isManagerLogin(session) && isManagerPage == -1) {  // 관리자 로그인시, opmanager을 포함하지 않으면 모두 막는다.
+		boolean isManagerUrl = request.getRequestURI().startsWith("/opmanager");
+
+		if (UserUtils.isManagerLogin(session) && !isManagerUrl) {  // 관리자 로그인시, opmanager을 포함하지 않으면 모두 막는다.
 			return false;
 		}
 
