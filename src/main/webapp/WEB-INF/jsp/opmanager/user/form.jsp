@@ -2,6 +2,7 @@
 <%request.setCharacterEncoding("UTF-8");%>
 <%response.setContentType("text/html; charset=UTF-8");%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head><meta charset="UTF-8"/>
@@ -35,35 +36,28 @@
 </head>
 
 <body>
-<form method="post" id="target" >
+<%--@elvariable id="user" type="User"--%>
+<form:form modelAttribute="user" method="post" id="target" >
     <c:if test="${id != null}">
         <input type="hidden" name="id" value="${user.id}"/>
     </c:if>
 
     <c:if test="${id != null}">
     <span>
-        이름<input type="text" name="name" id="name" value="${user.name}" maxlength="12" readonly
-                  field="*{name}" > <br>
-        <p if="${#fields.hasErrors('name')}" errors="*{name}">Incorrect date</p>
-
-         아이디<input type="text" name="loginId" id="loginId" value="${user.loginId}" maxlength="12" readonly
-                   field="*{loginId}" > <br>
-        <p if="${#fields.hasErrors('loginId')}" errors="*{loginId}">Incorrect date</p>
+        이름<form:input path="name" id="name" value="${user.name}" maxlength="12"/> <br>
+        <p><form:errors path="name"/></p>
+        아이디<form:input path="loginId" maxlength="12" readonly=""/> <br>
+        <p><form:errors path="loginId"/></p>
     </span>
     </c:if>
-
     <c:if test="${id == null}">
     <span>
-        이름<input type="text" name="name" id="name" value="${user.name}" maxlength="12"
-                 field="*{name}" > <br>
-        <p if="${#fields.hasErrors('name')}" errors="*{name}">Incorrect date</p>
-
-        아이디<input type="text" name="loginId" id="loginId" value="${user.loginId}" onkeyup="resetIdCheckStatus();"  maxlength="12"
-                  field="*{loginId}" >
-        <p if="${#fields.hasErrors('loginId')}" errors="*{loginId}">Incorrect date</p>
+        이름<form:input path="name" maxlength="12"> <br>
+        <p><form:errors path="name"/></p>
+        아이디<form:input path="loginId" onkeyup="resetIdCheckStatus();"  maxlength="12">
+        <p><form:errors path="loginId"/></p>
     </span>
     </c:if>
-
     <c:if test="${id == null}">
     <span>
     <button type ="button" class="checkId" id="idCheck"> 아이디중복확인 </button>
@@ -74,104 +68,93 @@
     <br>
     <c:if test="${id != null}">
     <span>
-        비밀번호 <input type="password" name="password" id="password"  value="${user.password}" maxlength="8"
-                    field="*{password}" > <br>
-        <p if="${#fields.hasErrors('password')}" errors="*{password}">Incorrect date</p>
-
+        비밀번호 <form:input path="password" maxlength="8"/> <br>
+         <p><form:errors path="password"/></p>
         비밀번호 확인 <input type="password" name="passwordConfirm"  id="passwordConfirm" maxlength="8"> <br>
-        <p if="${#fields.hasErrors('password')}" errors="*{password}">Incorrect date</p>
     </span>
     </c:if>
-
     <c:if test="${id == null}">
     <span>
-        비밀번호 <input type="password" name="password" id="createPassword" value="${user.password}" maxlength="8"
-                    field="*{password}" class="form-control" > <br>
-        <p if="${#fields.hasErrors('password')}" errors="*{password}">Incorrect date</p>
-
+        비밀번호 <form:input path="password" id="createPassword" maxlength="8" /> <br>
+         <p><form:errors path="password"/></p>
         비밀번호 확인 <input type="password" name="passwordConfirm"  id="createPasswordConfirm" maxlength="8"> <br>
-        <p if="${#fields.hasErrors('password')}" errors="*{password}">Incorrect date</p>
     </span>
     </c:if>
     <span id="isSame" class="same"></span>
     <span>
-        이메일 <input type="text" name="email" id="email" value="${user.email}" maxlength="30"
-                   field="*{email}" class="form-control" > <br>
-        <p if="${#fields.hasErrors('email')}" errors="*{email}">Incorrect date</p>
+        이메일 <form:input path="email"  maxlength="30"> <br>
+       <p><form:errors path="email"/></p>
     </span>
+
 
     <c:if test="${id != null}">
     <span>
-        우편번호 <input type="text" name="zipcode" id="zipcode" maxlength="30" value="${user.userDetail.zipcode}"
-                    field="${user.userDetail.zipcode}"  > <br>
-        <p if="${#fields.hasErrors('userDetail.zipcode')}" errors="*{userDetail.zipcode}">Incorrect date</p>
-
-        주소 <input type="text" name="address"  id="address"  maxlength="30" value="${user.userDetail.address}"
-                  field="${user.userDetail.address}" > <br>
-        <p if="${#fields.hasErrors('userDetail.address')}" errors="*{userDetail.address}">Incorrect date</p>
-
-        상세주소 <input type="text" name="addressDetail" id="addressDetail"  maxlength="30" value="${user.userDetail.addressDetail}"
-                    field="${user.userDetail.addressDetail}" ><br>
-        <p if="${#fields.hasErrors('userDetail.addressDetail')}" errors="*{userDetail.addressDetail}">Incorrect date</p>
-
-        전화번호 <input type="text" name="phoneNumber" id="phoneNumber"  maxlength="30" value="${user.userDetail.phoneNumber}"
-                    field="${user.userDetail.phoneNumber}" ><br>
-        <p if="${#fields.hasErrors('userDetail.phoneNumber')}" errors="*{userDetail.phoneNumber}">Incorrect date</p>
+        우편번호 <form:input path="userDetail.zipcode" maxlength="30" /> <br>
+        <p> <form:errors path="userDetail.zipcode"/></p>
+        주소 <form:input path="userDetail.address" maxlength="30" /> <br>
+        <p> <form:errors path="userDetail.address"/></p>
+        상세주소 <form:input path="userDetail.addressDetail" maxlength="30" /> <br>
+        <p> <form:errors path="userDetail.addressDetail"/></p>
+        전화번호 <form:input path="userDetail.phoneNumber"  maxlength="30" /> <br>
+         <p> <form:errors path="userDetail.phoneNumber"/></p>
     </span>
     </c:if>
-
     <c:if test="${id == null}">
     <span>
-        우편번호 <input type="text" name="zipcode" id="zipcode" maxlength="30"
-                    field="${user.userDetail.zipcode}"  > <br>
-        <p if="${#fields.hasErrors('userDetail.zipcode')}" errors="*{userDetail.zipcode}">Incorrect date</p>
-
-        주소 <input type="text" name="address"  id="address"  maxlength="30"
-                  field="${user.userDetail.address}" > <br>
-        <p if="${#fields.hasErrors('userDetail.address')}" errors="*{userDetail.address}">Incorrect date</p>
-
-        상세주소 <input type="text" name="addressDetail" id="addressDetail"  maxlength="30"
-                    field="${user.userDetail.addressDetail}" ><br>
-        <p if="${#fields.hasErrors('userDetail.addressDetail')}" errors="*{userDetail.addressDetail}">Incorrect date</p>
-
-        전화번호 <input type="text" name="phoneNumber" id="phoneNumber"  maxlength="30"
-                    field="${user.userDetail.phoneNumber}" ><br>
-        <p if="${#fields.hasErrors('userDetail.phoneNumber')}" errors="*{userDetail.phoneNumber}">Incorrect date</p>
+        우편번호 <form:input path="userDetail.zipcode" maxlength="30" /> <br>
+        <p> <form:errors path="userDetail.zipcode"/></p>
+        주소 <form:input path="userDetail.address" maxlength="30" /> <br>
+        <p> <form:errors path="userDetail.address"/></p>
+        상세주소 <form:input path="userDetail.addressDetail" maxlength="30" /> <br>
+        <p> <form:errors path="userDetail.addressDetail"/></p>
+        전화번호 <form:input path="userDetail.phoneNumber"  maxlength="30" /> <br>
+        <p> <form:errors path="userDetail.phoneNumber"/></p>
     </span>
     </c:if>
 
     SNS수신여부
     <c:if test="${id != null}">
     <span>
-        <label> <input type="radio" field="${user.userDetail.receiveSms}" value="1" > 수신 </label>
-        <label> <input type="radio" field="${user.userDetail.receiveSms}" value="0" > 수신x </label><br>
+        <form:radiobutton path="userDetail.receiveSms" value="1" label="수신" />
+        <form:radiobutton path="userDetail.receiveSms" value="0" label="수신x" />
         <input type="hidden" id="receiveSms" value="${user.userDetail.receiveSms}">   <!--DB에서 가져온 값-->
-    <p if="${#fields.hasErrors('userDetail.receiveSms')}" errors="*{userDetail.receiveSms}">Incorrect date</p>
+        <p><form:errors path="userDetail.receiveSms"/></p>
     </span>
     </c:if>
     <c:if test="${id == null}">
     <span>
-        <label> <input type="radio"  field="${user.userDetail.receiveSms}" value="1" > 수신 </label>
-        <label> <input type="radio"  field="${user.userDetail.receiveSms}" value="0" > 수신x </label><br>
-    <p if="${#fields.hasErrors('userDetail.receiveSms')}" errors="*{userDetail.receiveSms}">Incorrect date</p>
+        <form:radiobutton path="userDetail.receiveSms" value="1" label="수신" />
+        <form:radiobutton path="userDetail.receiveSms" value="0" label="수신x" />
+        <p><form:errors path="userDetail.receiveSms"/></p>
     </span>
     </c:if>
-    <span>
-        <input type="hidden" name="userRole.authority" value="ROLE_USER" >
-    </span>
+
+    직위
+    <c:if test="${id != null}">
+        <label> <form:radiobutton path="userRole.authority" value="ROLE_OPMANAGER"/> 관리자 </label>
+        <label> <form:radiobutton path="userRole.authority" value="ROLE_USER"/> 회원 </label><br>
+        <input type="hidden" id="authority" value="${user.userRole.authority}">
+        <p><form:errors path="userRole.authority"/></p>
+    </c:if>
+    <c:if test="${id == null}">
+        <label> <form:radiobutton path="userRole.authority" value="ROLE_OPMANAGER" /> 관리자 </label>
+        <label> <form:radiobutton path="userRole.authority" value="ROLE_USER" /> 회원 </label><br>
+        <p><form:errors path="userRole.authority"/></p>
+    </c:if>
 
     <c:if test="${id != null}">
     <span>
-        <input type="submit" class="submit" value="수정"  formaction="@{/user/edit/{id}(id = ${id})}" ><br><br>
+        <input type="submit" class="submit" value="수정"  formaction="/user/edit/{id}" ><br><br>
         <!--https://www.baeldung.com/spring-thymeleaf-path-variables url파싱 $%7Bid%7D로 안넘어가는 방법 찾음.-->
-        <td><a class="btn" href="|@{/}|">메인화면</a> </td>
+        <td><a class="btn" href="/">메인화면</a> </td>
     </span>
     </c:if>
-    <span if="${id} == null">
+    <c:if test="${id != null}">
+    <span>
         <input type="submit" class="submit" value="등록" formaction="/user/create">
     </span>
+    </c:if>
 </form>
-
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">

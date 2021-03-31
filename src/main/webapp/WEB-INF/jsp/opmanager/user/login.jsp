@@ -1,7 +1,11 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%request.setCharacterEncoding("UTF-8");%>
+<%response.setContentType("text/html; charset=UTF-8");%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head lang="en">
-    <meta charset="UTF-8"/>
+<html lang="ko">
+<head><meta charset="UTF-8"/>
     <title>회원등록</title>
     <style>
         input[type=text],input[type=password] {
@@ -26,16 +30,17 @@
         }
     </style>
 </head>
+
 <body>
 
-<form id="target" th:object="${user}" method="post" >
+<%--@elvariable id="user" type="User"--%>
+<form:form modelAttribute="user" method="post" id="target" >
     <span>
-         아이디 <input type="text" name="loginId"  id="loginId" th:value="${user.loginId}" maxlength="15" > <br>
-         비밀번호 <input type="password" name="password"  id="password" th:value="${user.password}" maxlength="15" > <br>
+        <form:input path="loginId" maxlength="12" readonly=""/> <br>
+        <form:password path="password" maxlength="8" readonly=""/> <br>
     </span>
-
-    <input type="submit" class="submit" value="로그인"  formaction="/user/login">
-</form>
+    <input type="submit" class="submit" value="로그인"  formaction="/opmanager/user/login">
+</form:form>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
@@ -59,6 +64,5 @@
 
 	});
 </script>
-
 </body>
 </html>

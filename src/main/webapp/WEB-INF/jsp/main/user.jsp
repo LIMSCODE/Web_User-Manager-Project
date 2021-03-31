@@ -22,7 +22,7 @@
 
     <c:if test="${loginUser != null}">
     <span>
-        <span>'${loginUser.name} 님 안녕하세요'</span>   <br><br><br>
+        <span>${loginUser.name} 님 안녕하세요</span>   <br><br><br>
          <a class="btn" href="/user/password-check"  >정보수정</a>      <br><br><br>
          <a class="btn" href="/user/logout" >로그아웃</a>
     </span>

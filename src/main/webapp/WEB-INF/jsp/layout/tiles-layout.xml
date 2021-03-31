@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+
+    <definition name="defaultLayout" template="/WEB-INF/jsp/layout/default.jsp">
+        <put-attribute name="topbar" value="/WEB-INF/jsp/layout/topbar.jsp" />
+        <put-attribute name="sidebar" value="/WEB-INF/jsp/layout/sidebar.jsp" />
+        <put-attribute name="content" />
+    </definition>
+
+    <definition name="/opmanager/index" extends="defaultLayout">
+        <put-attribute name="content" value="/WEB-INF/jsp/opmanager/index.jsp" />
+    </definition>
+
+    <definition name="/opmanager/user/*" extends="defaultLayout">
+        <put-attribute name="content" value="/WEB-INF/jsp/opmanager/user/{1}.jsp" />
+    </definition>
+
+</tiles-definitions>

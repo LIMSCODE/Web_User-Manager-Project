@@ -95,7 +95,7 @@ public class UserController {
 	}
 
 	@GetMapping("/password-check")
-	public String checkPassword() {
+	public String checkPassword(User user) {
 
 		return "/user/password-check";
 	}
@@ -154,7 +154,6 @@ public class UserController {
 		session.setAttribute("loginUser", updatedUser);
 
 		return "redirect:/";
-
 	}
 
 	@ResponseBody
