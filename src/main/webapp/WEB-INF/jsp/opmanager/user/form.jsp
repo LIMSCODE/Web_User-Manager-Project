@@ -2,6 +2,7 @@
 <%request.setCharacterEncoding("UTF-8");%>
 <%response.setContentType("text/html; charset=UTF-8");%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -44,17 +45,17 @@
 
     <c:if test="${id != null}">
     <span>
-        이름<form:input path="name" id="name" value="${user.name}" maxlength="12"/> <br>
+        이름<form:input path="name" maxlength="12" readonly="true"/> <br>
         <p><form:errors path="name"/></p>
-        아이디<form:input path="loginId" maxlength="12" readonly=""/> <br>
+        아이디<form:input path="loginId" maxlength="12" readonly="true"/>
         <p><form:errors path="loginId"/></p>
     </span>
     </c:if>
     <c:if test="${id == null}">
     <span>
-        이름<form:input path="name" maxlength="12"> <br>
+        이름<form:input path="name" maxlength="12" /> <br>
         <p><form:errors path="name"/></p>
-        아이디<form:input path="loginId" onkeyup="resetIdCheckStatus();"  maxlength="12">
+        아이디<form:input path="loginId" onkeyup="resetIdCheckStatus();"  maxlength="12" />
         <p><form:errors path="loginId"/></p>
     </span>
     </c:if>
@@ -66,26 +67,27 @@
     </span>
     </c:if>
     <br>
+
     <c:if test="${id != null}">
     <span>
-        비밀번호 <form:input path="password" maxlength="8"/> <br>
+        비밀번호 <form:password path="password" maxlength="8"/> <br>
          <p><form:errors path="password"/></p>
         비밀번호 확인 <input type="password" name="passwordConfirm"  id="passwordConfirm" maxlength="8"> <br>
     </span>
     </c:if>
     <c:if test="${id == null}">
     <span>
-        비밀번호 <form:input path="password" id="createPassword" maxlength="8" /> <br>
+        비밀번호 <form:password path="password" id="createPassword" maxlength="8" /> <br>
          <p><form:errors path="password"/></p>
         비밀번호 확인 <input type="password" name="passwordConfirm"  id="createPasswordConfirm" maxlength="8"> <br>
     </span>
     </c:if>
     <span id="isSame" class="same"></span>
+
     <span>
-        이메일 <form:input path="email"  maxlength="30"> <br>
+        이메일 <form:input path="email"  maxlength="30" /> <br>
        <p><form:errors path="email"/></p>
     </span>
-
 
     <c:if test="${id != null}">
     <span>
@@ -131,30 +133,36 @@
 
     직위
     <c:if test="${id != null}">
+    <span>
         <label> <form:radiobutton path="userRole.authority" value="ROLE_OPMANAGER"/> 관리자 </label>
         <label> <form:radiobutton path="userRole.authority" value="ROLE_USER"/> 회원 </label><br>
         <input type="hidden" id="authority" value="${user.userRole.authority}">
-        <p><form:errors path="userRole.authority"/></p>
+        <p><form:errors path="userRole"/></p>
+    </span>
     </c:if>
     <c:if test="${id == null}">
+    <span>
         <label> <form:radiobutton path="userRole.authority" value="ROLE_OPMANAGER" /> 관리자 </label>
         <label> <form:radiobutton path="userRole.authority" value="ROLE_USER" /> 회원 </label><br>
-        <p><form:errors path="userRole.authority"/></p>
+        <p><form:errors path="userRole"/></p>
+    </span>
     </c:if>
 
     <c:if test="${id != null}">
     <span>
-        <input type="submit" class="submit" value="수정"  formaction="/user/edit/{id}" ><br><br>
+        <input type="submit" class="submit" value="수정"  formaction="/opmanager/user/edit/${id}" ><br><br>
         <!--https://www.baeldung.com/spring-thymeleaf-path-variables url파싱 $%7Bid%7D로 안넘어가는 방법 찾음.-->
-        <td><a class="btn" href="/">메인화면</a> </td>
+        <td><a class="btn" href="/opmanager">메인화면</a> </td>
     </span>
     </c:if>
-    <c:if test="${id != null}">
+    <c:if test="${id == null}">
     <span>
-        <input type="submit" class="submit" value="등록" formaction="/user/create">
+        <input type="submit" class="submit" value="등록" formaction="/opmanager/user/create"><br><br>
+        <td><a class="btn" href="/opmanager">메인화면</a> </td>
     </span>
     </c:if>
-</form>
+
+</form:form>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
@@ -287,7 +295,7 @@
         //alert(JSON.stringify(query));
 
         $.ajax({
-            url : "/user/check-id",
+            url : "/opmanager/user/check-id",
             type : "post",
             data : query,
             datatype: "json",

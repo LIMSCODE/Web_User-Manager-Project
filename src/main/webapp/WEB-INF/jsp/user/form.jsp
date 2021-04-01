@@ -43,9 +43,9 @@
     </c:if>
     <c:if test="${id != null}">
     <span>
-        이름<form:input type="text" path="name" maxlength="12" readonly=""/> <br>
+        이름<form:input type="text" path="name" maxlength="12" readonly="true"/> <br>
         <p><form:errors path="name"/></p>
-        아이디<form:input path="loginId" maxlength="12" readonly=""/> <br>
+        아이디<form:input path="loginId" maxlength="12" readonly="true"/>
         <p><form:errors path="loginId"/></p>
     </span>
     </c:if>

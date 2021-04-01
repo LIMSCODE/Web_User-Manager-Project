@@ -44,7 +44,7 @@
 </form:form>
 
 <br><br>
-<td><a class="btn" th:href="|@{/}|">메인화면</a> </td>
+<td><a class="btn" href="/">메인화면</a> </td>
 
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

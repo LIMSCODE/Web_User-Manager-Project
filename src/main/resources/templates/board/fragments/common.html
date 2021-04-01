@@ -13,11 +13,15 @@
             th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${user.makeQueryString(info.firstPage - 1)} ]])">
             <a href="javascript:void(0)" class="btn_arr prev" aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a>
         </li>
+
+
         <li th:each="pageNo : *{#numbers.sequence( firstPage, lastPage )}"
             th:class="${pageNo == user.currentPageNo} ? 'active'">
             <a href="javascript:void(0)" th:text="${pageNo}"  class="on"
                th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${user.makeQueryString(pageNo)} ]])">&andslope; </a>
         </li>
+
+
         <li th:if="*{hasNextPage == true}"
             th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${user.makeQueryString(info.lastPage + 1)} ]])">
             <a href="javascript:void(0)" class="btn_arr next"

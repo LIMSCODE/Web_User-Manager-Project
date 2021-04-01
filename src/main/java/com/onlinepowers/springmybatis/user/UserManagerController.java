@@ -103,7 +103,7 @@ public class UserManagerController {
 		User storedUser = userService.getUserByLoginId(user.getLoginId());
 		if (storedUser != null) {
 			log.debug("해당아이디 존재");
-			return "redirect:/user/create";
+			return "redirect:/opmanager/user/create";
 		}
 
 		userService.insertUser(user);
@@ -117,8 +117,7 @@ public class UserManagerController {
 
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id,
-	                         User user,
-	                         HttpSession session, Model model) {
+	                         User user, HttpSession session, Model model) {
 
 		user = userService.getUserById(id);
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
@@ -142,7 +141,7 @@ public class UserManagerController {
 			model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
 			model.addAttribute("loginUser", loginUser);
 			model.addAttribute("user", user);
-			return "opmanager/user/form";
+			return "/opmanager/user/form";
 		}
 
 		user.getUserDetail().setUserId(user.getId());
@@ -166,7 +165,6 @@ public class UserManagerController {
 
 		userService.deleteUserById(id);
 
-		//redirect : 컨트롤러에서 뷰로 주소창에 연결된 값 보낼때 사용
 		rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
 		rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
 		rttr.addAttribute("pageSize", cri.getPageSize());

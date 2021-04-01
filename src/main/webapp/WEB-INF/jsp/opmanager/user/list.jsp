@@ -28,7 +28,7 @@
             border-bottom: 3px solid #036;
         }
         table.type09 tbody th {
-            width: 150px;
+            wid 150px;
             padding: 10px;
             font-weight: bold;
             vertical-align: top;
@@ -36,28 +36,28 @@
             background: #f3f6f7;
         }
         table.type09 td {
-            width: 350px;
+            wid 350px;
             padding: 10px;
             vertical-align: top;
             border-bottom: 1px solid #ccc;
         }
 
         input[type=submit]  {
-            width: 5%; background-color: darkslategrey; color: white;
+            wid 5%; background-color: darkslategrey; color: white;
             padding: 10px 10px; margin: 5px 0; border: none;
             border-radius: 3px; cursor:
                 pointer;
         }
 
         td button[type=submit] {
-            width:50px; background-color: darkslategrey; color: white;
+            wid50px; background-color: darkslategrey; color: white;
             padding: 10px 10px; margin: 5px 0; border: none;
             border-radius: 3px; cursor:
                 pointer;
         }
 
         #edit {
-            width:25px; background-color: darkslategrey; color: white;
+            wid25px; background-color: darkslategrey; color: white;
             padding: 10px 10px; margin: 10px 0; border: none;
             border-radius: 3px; cursor: pointer; text-decoration:none;
             position: relative; top:10px;
@@ -68,14 +68,14 @@
         }
 
         button[type=submit] {
-            width:100px; background-color: darkslategrey; color: white;
+            wid100px; background-color: darkslategrey; color: white;
             padding: 10px 10px; margin: 5px 0; border: none;
             border-radius: 3px; cursor:
                 pointer;
         }
 
         .reset {
-            width:70px; background-color: darkslategrey; color: white;
+            wid70px; background-color: darkslategrey; color: white;
             padding: 10px 10px; margin: 5px 0; border: none;
             border-radius: 3px; cursor: pointer; display: inline-block;
         }
@@ -85,24 +85,30 @@
             text-align:center;
         }
 
+        #create {
+            position : relative;
+            right : 1200px;
+            bottom: 50px;
+        }
+
         input[type=text],input[type=password] {
-            width: 15%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
+            wid 15%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
             padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
             box-sizing: border-box;
         }
 
         select,option {
-            width: 10X%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
+            wid 10X%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
             padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
             box-sizing: border-box;
         }
 
         .pagination .hide {
-            display:block;height:0;width:0;font-size:0;line-height:0;margin:0;padding:0;overflow:hidden;}
+            display:block;height:0;wid0;font-size:0;line-height:0;margin:0;padding:0;overflow:hidden;}
 
         .pagination{padding:19px;text-align:center;}
 
-        .pagination a{display:inline-block;width:23px;height:23px;padding-top:2px;vertical-align:middle;}
+        .pagination a{display:inline-block;wid23px;height:23px;padding-top:2px;vertical-align:middle;}
 
         .pagination .btn_arr{text-decoration:none;}
 
@@ -115,67 +121,57 @@
         .pagination .on:hover{text-decoration:none;}
 
         .btn{
-            width: 20%; background-color: darkslategrey; color: white;
+            wid 20%; background-color: darkslategrey; color: white;
             padding: 14px 20px; margin: 8px 0; border: none;
             border-radius: 4px; cursor: pointer; text-decoration: none;
         }
     </style>
 </head>
-
 <body>
 <br /> <br /> <br />
 <!--검색영역-->
-<div th:fragment="search" id="adv-search" class="input-group" >
+<div id="adv-search" class="input-group" >
     <div class="input-group-btn">
         <div class="btn-group" role="group">
             <div class="dropdown dropdown-lg" >
                 <div class="dropdown-menu dropdown-menu-right" role="menu">
 
                     <!--/* 검색 form */-->
-                    <form id="searchForm" th:action="@{/opmanager/user/list}" method="get" th:onsubmit="return searchBoard(this)"
-                          class="form-horizontal" role="form">
+                    <form id="searchForm" action="/opmanager/user/list" method="get"
+                               class="form-horizontal" role="form">
                         <!-- /* 현재 페이지 번호, 페이지당 출력할 데이터 개수, 페이지 하단에 출력할 페이지 개수 Hidden 파라미터 */ -->
                         <input type="hidden" name="currentPageNo" value="1"/>
-                        <input type="hidden" name="recordsPerPage" th:value="${user.recordsPerPage}"/>
-                        <input type="hidden" name="pageSize" th:value="${user.pageSize}"/>
+                        <input type="hidden" name="recordsPerPage" value="${user.recordsPerPage}"/>
+                        <input type="hidden" name="pageSize" value="${user.pageSize}"/>
 
                         <div class="form-group">
                             <label>검색 유형</label>
-
                             <select name="searchType" class="form-control">
-                                <option value="" th:selected="${#strings.isEmpty (user.searchType) }">전체</option>
-                                <option value="name" th:selected="${#strings.equals (user.searchType, 'name') }">
-                                    이름
+                                <option value="">전체</option>
+                                <option value="name">이름
                                 </option>
-                                <option value="loginId"
-                                        th:selected="${#strings.equals(user.searchType, 'loginId')}">아이디
+                                <option value="loginId">아이디
                                 </option>
-                                <option value="email"
-                                        th:selected="${#strings.equals(user.searchType, 'email')}">이메일
+                                <option value="email">이메일
                                 </option>
-                                <option value="zipcode"
-                                        th:selected="${#strings.equals(user.searchType, 'zipcode')}">우편번호
+                                <option value="zipcode">우편번호
                                 </option>
-                                <option value="address"
-                                        th:selected="${#strings.equals(user.searchType, 'address')}">주소
+                                <option value="address">주소
                                 </option>
-                                <option value="addressDetail"
-                                        th:selected="${#strings.equals(user.searchType, 'addressDetail')}">상세주소
+                                <option value="addressDetail">상세주소
                                 </option>
-                                <option value="phoneNumber"
-                                        th:selected="${#strings.equals(user.searchType, 'phoneNumber')}">전화번호
+                                <option value="phoneNumber">전화번호
                                 </option>
                             </select>
 
-                            <input type="text" name="searchKeyword" class="form-control"
-                                   th:value="${user.searchKeyword}"/>
+                            <input type="text" name="searchKeyword" class="form-control"/>
 
-                            <button type="submit" class="btn btn-primary"><span
-                                    class="glyphicon glyphicon-search" aria-hidden="true"></span>검색
+                            <button type="submit" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>검색
                             </button>
 
-                            <div th:object="${user}"  class="reset">
-                                <td><a id="reset" th:href="|@{/opmanager/user/list}|">검색 초기화</a> </td>
+                            <div class="reset">
+                                <td><a id="reset" href="/opmanager/user/list">검색 초기화</a> </td>
                             </div>
                         </div>
                     </form>
@@ -209,58 +205,96 @@
             </thead>
 
             <tbody>
-            <tr th:each="userList : ${userList}">
+            <c:forEach items="${userList}" var="userList">
+            <tr>
+                <td>${userList.pagingId}</td>
+                <td>${userList.name}</td>
+                <td>${userList.loginId}</td>
+                <td>${userList.email}</td>
+                <td>${userList.createdDate}</td>
 
-                <td th:text="${userList.pagingId}"></td>
-                <td th:text="${userList.name}"></td>
-                <td th:text="${userList.loginId}"></td>
-                <td th:text="${userList.email}"></td>
-                <td th:text="${userList.createdDate}"></td>
+                <td>${userList.userDetail.zipcode}</td>
+                <td>${userList.userDetail.address}</td>
+                <td>${userList.userDetail.addressDetail}</td>
+                <td>${userList.userDetail.phoneNumber}</td>
+                <td>${userList.userDetail.getReceiveSmsTitle()}</td>
+                <td>${userList.userRole.getAuthorityTitle()}</td>
 
-                <td th:text="${userList.userDetail?.zipcode}"></td>
-                <td th:text="${userList.userDetail?.address}"></td>
-                <td th:text="${userList.userDetail?.addressDetail}"></td>
-                <td th:text="${userList.userDetail?.phoneNumber}"></td>
-                <td th:text="${userList.UserDetail?.getReceiveSmsTitle()}"></td>
-                <td th:text="${userList.UserRole?.getAuthorityTitle()}"></td>
-
-                <div class=""  th:object="${user}">
-                    <!--수정  아이디 넘어감 성공-->
-                    <td><a id="edit" th:href="|@{/opmanager/user/edit/}${userList.id}*{makeQueryString(currentPageNo)}|" th:text="수정"></a> </td>
-                </div>
-
-                <form method="post"  th:object="${user}" th:action="|@{/opmanager/user/delete/}${userList.id}|">
-                    <input type="hidden" name="id" th:value="${userList.id}">
-                    <td>
-                        <!--href는 get으로 처리된다.-->
+                <!--수정  아이디 넘어감 성공-->
+                <td>
+                    <c:set var="currentPageNo" value="${user.currentPageNo}" scope="session"/>
+                    <a id="edit" href="/opmanager/user/edit/${userList.id}${user.makeQueryString(currentPageNo)}">수정</a>
+                </td>
+                <td>
+                    <form action="/opmanager/user/delete/${userList.id}${user.makeQueryString(currentPageNo)}" method="post">
+                        <!--href는 get으로 처리된다. form도 안될땐 method="post"써줘야한다.-->
                         <button class="delete" type="submit" >삭제</button>
-                    </td>
-                </form>
+                    </form>
+                </td>
             </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>
 </div>
 
 <!--페이징영역-->
-<th:block layout:fragment="paging">
-    <nav th:replace="board/fragments/common :: pagination"></nav>
-</th:block>
+<c:if test="${user != null and user.paginationInfo.totalRecordCount > 0}">
+
+    <div fragment="pagination" aria-label="Page navigation" class="text-center">
+
+        <ul class="pagination">
+            <c:if test="${user.paginationInfo.hasPreviousPage == true}">
+                <li onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(1)}'">
+                    <a href="javascript:void(0)" class="btn_arr first" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+                </li>
+            </c:if>
+            <c:if test="${user.paginationInfo.hasPreviousPage == true}">
+                <c:set var="firstPage" value="${user.paginationInfo.firstPage}" scope="session"/>
+                <li onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(firstPage - 1)}'">
+                    <a href="javascript:void(0)" class="btn_arr prev" aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a>
+                </li>
+            </c:if>
+
+            <c:forEach begin="${user.paginationInfo.firstPage}" end="${user.paginationInfo.lastPage}" var="idx">
+                <c:if test="${idx == user.currentPageNo}">
+                    <li class="active">
+                        <a href="javascript:void(0)" class="on"
+                           onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(idx)}'">${idx}</a>
+                    </li>
+                </c:if>
+                <c:if test="${idx != user.currentPageNo}">
+                    <li class="">
+                        <a href="javascript:void(0)" class="on"
+                           onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(idx)}'">${idx}</a>
+                    </li>
+                </c:if>
+            </c:forEach>
+
+            <c:if test="${user.paginationInfo.hasNextPage == true}">
+                <c:set var="nextPage" value="${user.paginationInfo.lastPage}" scope="session"/>
+                <li onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(nextPage + 1)}'">
+                    <a href="javascript:void(0)" class="btn_arr next"
+                       aria-label="Next"><span aria-hidden="true">&rsaquo;</span></a>
+                </li>
+            </c:if>
+            <c:if test="${user.paginationInfo.hasNextPage == true}">
+                <c:set var="lastPage" value="${user.paginationInfo.totalPageCount}" scope="session"/>
+                <li onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(lastPage)}'">
+                    <a href="javascript:void(0)" class="btn_arr last" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+                </li>
+            </c:if>
+        </ul>
+    </div>
+</c:if>
 
 <!--등록 성공-->
-<form th:action="|@{/opmanager/user/create}|" th:object="${user}" >
-    <input type="submit" value="등록" style="float:right">
+<form action="/opmanager/user/create">
+    <input type="submit" value="등록" id="create" style="float:right">
 </form>
 
 </div>
 
-<th:block layout:fragment="script">
-    <script th:inline="javascript">
-		function movePage (uri, queryString) {
-			location.href = uri + queryString ;
-		}
-    </script>
-</th:block>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
@@ -271,12 +305,9 @@
 			} else {
 				return false;
 			}
+        });
 
-
-		});
 </script>
-
-
 </body>
 
 </html>

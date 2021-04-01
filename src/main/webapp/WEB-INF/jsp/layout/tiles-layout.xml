@@ -14,8 +14,12 @@
         <put-attribute name="content" value="/WEB-INF/jsp/opmanager/index.jsp" />
     </definition>
 
-    <definition name="/opmanager/user/*" extends="defaultLayout">
-        <put-attribute name="content" value="/WEB-INF/jsp/opmanager/user/{1}.jsp" />
+    <definition name="/opmanager/user/list" extends="defaultLayout">
+        <put-attribute name="content" value="/WEB-INF/jsp/opmanager/user/list.jsp" />
+    </definition>
+
+    <definition name="/opmanager/user/form" extends="defaultLayout">
+        <put-attribute name="content" value="/WEB-INF/jsp/opmanager/user/form.jsp" />
     </definition>
 
 </tiles-definitions>
