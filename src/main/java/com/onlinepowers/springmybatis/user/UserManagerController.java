@@ -23,12 +23,26 @@ public class UserManagerController {
 
 	private final UserService userService;
 
+
+	/**
+	 * 관리자 로그인
+	 * @param user
+	 * @return
+	 */
 	@GetMapping("/login")
 	public String login(User user) {
 
 		return "/opmanager/user/login";
 	}
 
+
+	/**
+	 * 관리자 로그인
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("/login")
 	public String login(User user, HttpSession session, Model model) {
 
@@ -64,6 +78,15 @@ public class UserManagerController {
 		return "redirect:/opmanager";
 	}
 
+
+	/**
+	 * 회원 목록
+	 * @param cri
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/list")
 	public String getUserList(@ModelAttribute("cri") Criteria cri,
 	                          User user,
@@ -78,6 +101,14 @@ public class UserManagerController {
 		return "/opmanager/user/list";
 	}
 
+
+	/**
+	 * 회원 등록
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/create")
 	public String registerForm(User user, HttpSession session, Model model) {
 
@@ -87,6 +118,15 @@ public class UserManagerController {
 		return "/opmanager/user/form";
 	}
 
+
+	/**
+	 * 회원 등록
+	 * @param user
+	 * @param userResult
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("/create")
 	public String createUser(@Valid User user, BindingResult userResult,
 							 HttpSession session, Model model) {
@@ -115,6 +155,15 @@ public class UserManagerController {
 		return "redirect:/opmanager/user/list";
 	}
 
+
+	/**
+	 * 회원정보 수정
+	 * @param id
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id,
 	                         User user, HttpSession session, Model model) {
@@ -130,6 +179,18 @@ public class UserManagerController {
 		return "/opmanager/user/form";
 	}
 
+
+	/**
+	 * 회원정보 수정
+	 * @param id
+	 * @param cri
+	 * @param user
+	 * @param userResult
+	 * @param session
+	 * @param model
+	 * @param rttr
+	 * @return
+	 */
 	@PostMapping("/edit/{id}")
 	public String updateUser(@PathVariable("id") long id, @ModelAttribute("cri") Criteria cri,
 							 @Valid User user,  BindingResult userResult,
@@ -159,6 +220,14 @@ public class UserManagerController {
 
 	}
 
+
+	/**
+	 * 회원 삭제
+	 * @param id
+	 * @param cri
+	 * @param rttr
+	 * @return
+	 */
 	@PostMapping("/delete/{id}")
 	public String deleteUser(@PathVariable("id") long id, @ModelAttribute("cri") Criteria cri,
 	                         RedirectAttributes rttr) {
@@ -174,6 +243,12 @@ public class UserManagerController {
 		return "redirect:/opmanager/user/list";
 	}
 
+
+	/**
+	 * 회원 등록시 아이디 중복 확인
+	 * @param user
+	 * @return
+	 */
 	@ResponseBody
 	@PostMapping(value = "/check-id")
 	public int checkId(User user) {

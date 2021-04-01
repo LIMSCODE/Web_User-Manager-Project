@@ -23,7 +23,13 @@ public class MainController {
 		return "/hello";
 	}
 
-	//유저일때 메인
+
+	/**
+	 * 유저 메인페이지
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/")
 	public String userMain(HttpSession session, Model model) {
 
@@ -39,12 +45,24 @@ public class MainController {
 		return "/main/user";
 	}
 
+
+	/**
+	 * 유저 로그아웃
+	 * @param session
+	 * @return
+	 */
 	@GetMapping("/user/logout")
 	public String userLogout(HttpSession session) {
 		session.invalidate();
 		return "redirect:/";
 	}
 
+
+	/**
+	 * 관리자 로그아웃
+	 * @param session
+	 * @return
+	 */
 	@GetMapping("/opmanager/logout")
 	public String managerLogout(HttpSession session) {
 		session.invalidate();

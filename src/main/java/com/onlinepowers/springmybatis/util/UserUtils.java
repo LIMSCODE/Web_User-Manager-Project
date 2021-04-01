@@ -6,6 +6,8 @@ import javax.servlet.http.HttpSession;
 public class UserUtils {
 
 	private static String LOGIN_USER = "loginUser";
+	private static String ROLE_USER = "ROLE_USER";
+	private static String ROLE_OPMANAGER = "ROLE_OPMANAGER";
 
 	/**
 	 * 로그인 세션 가져오기
@@ -32,7 +34,7 @@ public class UserUtils {
 			return false;
 		}
 
-		if ("ROLE_USER".equals(loginUser.getUserRole().getAuthority())) {
+		if (ROLE_USER.equals(loginUser.getUserRole().getAuthority())) {
 			return true;
 		}
 
@@ -50,7 +52,7 @@ public class UserUtils {
 			return false;
 		}
 
-		if ("ROLE_OPMANAGER".equals(loginUser.getUserRole().getAuthority())) {
+		if (ROLE_OPMANAGER.equals(loginUser.getUserRole().getAuthority())) {
 			return true;
 		}
 

@@ -20,12 +20,26 @@ public class UserController {
 
 	private final UserService userService;
 
+
+	/**
+	 * 유저 로그인
+	 * @param user
+	 * @return
+	 */
 	@GetMapping("/login")
 	public String login(User user) {
 
 		return "/user/login";
 	}
 
+
+	/**
+	 * 유저 로그인
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("/login")
 	public String login(User user, HttpSession session, Model model) {
 
@@ -63,12 +77,27 @@ public class UserController {
 		return "redirect:/";
 	}
 
+
+	/**
+	 * 회원가입
+	 * @param user
+	 * @return
+	 */
 	@GetMapping("/create")
 	public String register(User user) {
 
 		return "/user/form";
 	}
 
+
+	/**
+	 * 회원가입
+	 * @param user
+	 * @param userResult
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("/create")
 	public String register(@Valid User user, BindingResult userResult,
 	                       HttpSession session, Model model) {
@@ -94,12 +123,26 @@ public class UserController {
 		return "redirect:/";
 	}
 
+
+	/**
+	 * 수정 전 비밀번호 확인
+	 * @param user
+	 * @return
+	 */
 	@GetMapping("/password-check")
 	public String checkPassword(User user) {
 
 		return "/user/password-check";
 	}
 
+
+	/**
+	 * 수정 전 비밀번호 확인
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("/password-check")
 	public String checkPassword(User user, HttpSession session, Model model) {
 
@@ -123,6 +166,15 @@ public class UserController {
 		return "redirect:/user/edit/" + loginUser.getId();
 	}
 
+
+	/**
+	 * 개인정보 수정
+	 * @param id
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id,
 	                         User user, HttpSession session, Model model) {
@@ -135,6 +187,16 @@ public class UserController {
 		return "/user/form";
 	}
 
+
+	/**
+	 * 개인정보 수정
+	 * @param id
+	 * @param user
+	 * @param userResult
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("/edit/{id}")
 	public String updateUser(@PathVariable("id") long id,
 	                         @Valid User user, BindingResult userResult,
@@ -156,6 +218,12 @@ public class UserController {
 		return "redirect:/";
 	}
 
+
+	/**
+	 * 아이디 중복 확인
+	 * @param user
+	 * @return
+	 */
 	@ResponseBody
 	@PostMapping(value = "/check-id")
 	public int checkId(User user) {

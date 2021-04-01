@@ -102,10 +102,6 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-	/**
-	 * 페이지 넘버링 (최대 PK값 + 1)
-	 * @return
-	 */
 	@Override
 	public int getMaxPk() {
 		int maxPk = userMapper.getMaxPk();
@@ -118,7 +114,7 @@ public class UserServiceImpl implements UserService {
 		return userCount;
 	}
 
-	//로그인
+
 	public User getUserByLoginId(String loginId) {
 		return userMapper.getUserByLoginId(loginId);
 	}

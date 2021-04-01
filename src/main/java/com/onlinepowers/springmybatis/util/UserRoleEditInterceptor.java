@@ -12,6 +12,8 @@ import java.io.IOException;
 @Slf4j
 public class UserRoleEditInterceptor implements HandlerInterceptor {
 
+	private static String REFERER = "REFERER";
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
 
@@ -22,7 +24,7 @@ public class UserRoleEditInterceptor implements HandlerInterceptor {
 		HttpSession session = request.getSession(false);
 		User loginUser = UserUtils.getLoginUser(session);
 
-		String referer = request.getHeader("REFERER");      //직전 페이지에서만 접근허용
+		String referer = request.getHeader(REFERER);      //직전 페이지에서만 접근허용
 
 		if (referer == null) {
 			return false;
