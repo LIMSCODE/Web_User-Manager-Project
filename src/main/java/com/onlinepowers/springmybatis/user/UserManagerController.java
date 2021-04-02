@@ -165,7 +165,7 @@ public class UserManagerController {
 	 * @return
 	 */
 	@GetMapping("/edit/{id}")
-	public String updateForm(@PathVariable("id") long id,
+	public String updateForm(@PathVariable("id") long id, @ModelAttribute("cri") Criteria cri,
 	                         User user, HttpSession session, Model model) {
 
 		user = userService.getUserById(id);

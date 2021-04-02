@@ -41,6 +41,11 @@
 <form:form modelAttribute="user" method="post" id="target" >
     <c:if test="${id != null}">
         <input type="hidden" name="id" value="${user.id}"/>
+        <input type="hidden" name="currentPageNo" value="${cri.currentPageNo}" />
+        <input type="hidden" name="recordsPerPage" value="${cri.recordsPerPage}" />
+        <input type="hidden" name="pageSize" value="${cri.pageSize}" />
+        <input type="hidden" name="searchType" value="${cri.searchType}" />
+        <input type="hidden" name="searchKeyword" value="${cri.searchKeyword}" />
     </c:if>
 
     <c:if test="${id != null}">
@@ -57,7 +62,7 @@
         이름<form:input path="name" maxlength="12" /> <br>
         <p><form:errors path="name"/></p>
         아이디<form:input path="loginId" onkeyup="resetIdCheckStatus();"  maxlength="12" />
-        <p><form:errors path="loginId"/></p>
+        <form:errors path="loginId"/>
     </span>
     </c:if>
 

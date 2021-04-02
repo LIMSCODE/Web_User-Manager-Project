@@ -56,7 +56,7 @@
         이름<form:input path="name" maxlength="12"/> <br>
         <p><form:errors path="name"/></p>
         아이디<form:input path="loginId" onkeyup="resetIdCheckStatus();"  maxlength="12"/>
-        <p><form:errors path="loginId"/></p>
+       <form:errors path="loginId"/>
     </span>
     </c:if>
 
