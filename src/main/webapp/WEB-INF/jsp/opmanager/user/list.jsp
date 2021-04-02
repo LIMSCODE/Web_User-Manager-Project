@@ -87,7 +87,7 @@
 
         #create {
             position : relative;
-            right : 1200px;
+            right : 300px;
             bottom: 50px;
         }
 
