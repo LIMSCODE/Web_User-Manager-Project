@@ -41,6 +41,7 @@
         <form:hidden path="id" value="${user.id}"/>
     </span>
     </c:if>
+
     <c:if test="${id != null}">
     <span>
         이름<form:input type="text" path="name" maxlength="12" readonly="true"/> <br>
@@ -49,6 +50,7 @@
         <p><form:errors path="loginId"/></p>
     </span>
     </c:if>
+
     <c:if test="${id == null}">
     <span>
         이름<form:input path="name" maxlength="12"/> <br>
@@ -57,6 +59,7 @@
         <p><form:errors path="loginId"/></p>
     </span>
     </c:if>
+
     <c:if test="${id == null}">
     <span>
     <button type ="button" class="checkId" id="idCheck"> 아이디중복확인 </button>
@@ -73,6 +76,7 @@
         비밀번호 확인 <input type="password" name="passwordConfirm"  id="passwordConfirm" maxlength="8"> <br>
     </span>
     </c:if>
+
     <c:if test="${id == null}">
     <span>
         비밀번호 <form:password path="password" id="createPassword" maxlength="8"/> <br>
@@ -122,6 +126,7 @@
         <p><form:errors path="userDetail.receiveSms"/></p>
     </span>
     </c:if>
+
     <c:if test="${id == null}">
     <span>
         <form:radiobutton path="userDetail.receiveSms" value="1" label="수신" />
@@ -141,6 +146,7 @@
         <td><a class="btn" href="/">메인화면</a> </td>
     </span>
     </c:if>
+
     <c:if test="${id == null}">
     <span>
         <input type="submit" class="submit" value="등록" formaction="/user/create">

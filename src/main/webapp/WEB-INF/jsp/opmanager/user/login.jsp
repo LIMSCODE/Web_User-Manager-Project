@@ -61,7 +61,6 @@
 			$password.focus();
 			return false;
 		}
-
 	});
 </script>
 </body>

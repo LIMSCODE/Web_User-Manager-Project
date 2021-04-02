@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 public class OpmanagerController {
 
 	/**
-	 * 관리자 메인페이지
+	 * 관리자 메인 페이지
 	 * @param user
 	 * @param session
 	 * @param model

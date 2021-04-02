@@ -18,6 +18,7 @@
             <a href="javascript:void(0)" class="btn_arr first" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
             </li>
         </c:if>
+
         <c:if test="${user.paginationInfo.hasPreviousPage == true}">
             <li onclick="movePage([[ ${pageContext.request.requestURI} ]], [[ ${user.makeQueryString(info.firstPage - 1)} ]])">
             <a href="javascript:void(0)" class="btn_arr prev" aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a>
@@ -37,6 +38,7 @@
                aria-label="Next"><span aria-hidden="true">&rsaquo;</span></a>
             </li>
         </c:if>
+
         <c:if test="${user.paginationInfo.hasNextPage == true}">
             <li onclick="movePage([[ ${pageContext.request.requestURI} ]], [[ ${user.makeQueryString(info.totalPageCount)} ]])">
             <a href="javascript:void(0)" class="btn_arr last" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>

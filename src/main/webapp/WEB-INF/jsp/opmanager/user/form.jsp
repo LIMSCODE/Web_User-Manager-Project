@@ -51,6 +51,7 @@
         <p><form:errors path="loginId"/></p>
     </span>
     </c:if>
+
     <c:if test="${id == null}">
     <span>
         이름<form:input path="name" maxlength="12" /> <br>
@@ -59,6 +60,7 @@
         <p><form:errors path="loginId"/></p>
     </span>
     </c:if>
+
     <c:if test="${id == null}">
     <span>
     <button type ="button" class="checkId" id="idCheck"> 아이디중복확인 </button>
@@ -75,6 +77,7 @@
         비밀번호 확인 <input type="password" name="passwordConfirm"  id="passwordConfirm" maxlength="8"> <br>
     </span>
     </c:if>
+
     <c:if test="${id == null}">
     <span>
         비밀번호 <form:password path="password" id="createPassword" maxlength="8" /> <br>
@@ -82,6 +85,7 @@
         비밀번호 확인 <input type="password" name="passwordConfirm"  id="createPasswordConfirm" maxlength="8"> <br>
     </span>
     </c:if>
+
     <span id="isSame" class="same"></span>
 
     <span>
@@ -101,6 +105,7 @@
          <p> <form:errors path="userDetail.phoneNumber"/></p>
     </span>
     </c:if>
+
     <c:if test="${id == null}">
     <span>
         우편번호 <form:input path="userDetail.zipcode" maxlength="30" /> <br>
@@ -123,6 +128,7 @@
         <p><form:errors path="userDetail.receiveSms"/></p>
     </span>
     </c:if>
+
     <c:if test="${id == null}">
     <span>
         <form:radiobutton path="userDetail.receiveSms" value="1" label="수신" />
@@ -140,6 +146,7 @@
         <p><form:errors path="userRole"/></p>
     </span>
     </c:if>
+
     <c:if test="${id == null}">
     <span>
         <label> <form:radiobutton path="userRole.authority" value="ROLE_OPMANAGER" /> 관리자 </label>
@@ -326,7 +333,6 @@
         $("#msg").removeAttr("style");
         $(".submit").removeAttr("disabled");
     }
-
 
     $(document).ready(function() {
 
