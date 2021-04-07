@@ -17,9 +17,7 @@ public class CriteriaTest {
 		paginationInfo.setTotalRecordCount(4);
 
 		criteria.setPaginationInfo(paginationInfo);
-
 		assertThat(criteria.getStartPage()).isEqualTo(0);
-
 
 	}
 

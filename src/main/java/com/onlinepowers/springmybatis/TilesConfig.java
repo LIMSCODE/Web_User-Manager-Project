@@ -19,7 +19,8 @@ public class TilesConfig {
 	@Bean
 	public TilesConfigurer tilesConfigurer() {
 		TilesConfigurer tiles = new TilesConfigurer();
-		tiles.setDefinitions(new String[] { "/WEB-INF/jsp/layout/tiles-layout.xml" });
+		tiles.setDefinitions(new String[] { "/WEB-INF/views/layouts/layouts.xml" });
 		return tiles;
 	}
+
 }

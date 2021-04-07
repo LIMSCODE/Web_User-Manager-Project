@@ -168,10 +168,10 @@
 		let $createPasswordConfirm = $("#createPasswordConfirm");
 		let $email = $("#email");
 
-		let $zipcode = $("#zipcode");
-		let $address = $("#address");
-		let $addressDetail = $("#addressDetail");
-		let $phoneNumber = $("#phoneNumber");
+		let $zipcode = $("#userDetail.zipcode");
+		let $address = $("#userDetail.address");
+		let $addressDetail = $("#userDetail.addressDetail");
+		let $phoneNumber = $("#userDetail.phoneNumber");
 
 		let $idCheckStatus = $("#idCheckStatus");     //아이디 중복체크 했는지 여부
 
@@ -231,6 +231,7 @@
 			return false;
 		}
 
+		console.log($zipcode.val());
 		if ($address.val() == "") {
 			alert("주소 입력해주세요");
 			$address.focus();
@@ -254,7 +255,7 @@
 			return false;
 		}
 
-		if(!$(':input:radio[name=userDetail.receiveSms]:checked').val()) {
+		if(!$("input:radio[name=userDetail.receiveSms]:checked").val()) {
 			alert("sms 수신여부 선택해주세요");
 			return false;
 		}

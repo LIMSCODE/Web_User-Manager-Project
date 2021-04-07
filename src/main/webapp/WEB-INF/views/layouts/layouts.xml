@@ -4,9 +4,9 @@
         "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
 <tiles-definitions>
 
-    <definition name="defaultLayout" template="/WEB-INF/jsp/layout/default.jsp">
-        <put-attribute name="topbar" value="/WEB-INF/jsp/layout/topbar.jsp" />
-        <put-attribute name="sidebar" value="/WEB-INF/jsp/layout/sidebar.jsp" />
+    <definition name="defaultLayout" template="/WEB-INF/views/layouts/layout-default.jsp">
+        <put-attribute name="topbar" value="/WEB-INF/views/layouts/topbar.jsp" />
+        <put-attribute name="sidebar" value="/WEB-INF/views/layouts/sidebar.jsp" />
         <put-attribute name="content" />
     </definition>
 
