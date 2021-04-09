@@ -4,31 +4,10 @@ import com.onlinepowers.springmybatis.paging.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface UserService {
-
-    /**
-     * 검색된 회원수
-     * @param user
-     * @return
-     */
-    int getCountByParam(User user);
-
-    /**
-     * 회원 목록
-     * @param user
-     * @param cri
-     * @return
-     */
-    List<User> getUserList(User user,  @ModelAttribute("cri") Criteria cri) ;
-
-    /**
-     * ID로 회원정보 가져오기
-     * @param id
-     * @return
-     */
-    User getUserById(long id);
 
     /**
      * 회원 삭제
@@ -49,6 +28,31 @@ public interface UserService {
     void updateUser(User user);
 
     /**
+     * 로그인시 회원정보 가져오기 (세션저장 등)
+     * @param loginId
+     * @return
+     */
+    User getUserByLoginId(String loginId);
+
+
+
+
+    /**
+     * 검색된 회원수
+     * @param user
+     * @return
+     */
+    int getCountByParam(User user);
+
+    /**
+     * 회원 목록
+     * @param user
+     * @param cri
+     * @return
+     */
+    List<User> getUserList(User user,  @ModelAttribute("cri") Criteria cri) ;
+
+    /**
      * 페이지 넘버링 (최대 PK값 + 1)
      * @return
      */
@@ -61,11 +65,15 @@ public interface UserService {
      */
     int getUserCountByLoginId(String loginId);
 
+
     /**
-     * 로그인시 회원정보 가져오기
-     * @param loginId
+     * ID로 회원정보 가져오기 (수정시)
+     * @param id
      * @return
      */
-    User getUserByLoginId(String loginId);
+    Optional<User> getUserById(long id);
+
+
+
 
 }

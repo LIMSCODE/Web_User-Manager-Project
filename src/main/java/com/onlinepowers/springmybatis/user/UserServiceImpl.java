@@ -11,13 +11,82 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+	private final UserRepository userRepository;
 	private final UserMapper userMapper;
+
+	@Override
+	public void deleteUserById(long id) {
+
+		userRepository.deleteById(id);
+	}
+
+	@Transactional
+	@Override
+	public void insertUser(User user) {
+
+		String password = user.getPassword();
+		password = SHA256Util.getEncrypt(password, getMaxPk());
+		user.setPassword(password);
+		log.debug(password);
+
+		userRepository.save(user);  //Jpa에서는 user만 save하면 하위테이블도 모두 저장되는지 -된다.
+//		userMapper.insertUserDetail(user.userDetail);   //mybatis 에서는 xml에서 insertDetail 따로 처리하기때문에
+//		userMapper.insertUserRole(user.userRole);
+
+	}
+
+	@Transactional
+	@Override
+	public void updateUser(User user) {
+
+		String password = user.getPassword();
+
+		if (!"".equals(password)) {     //비밀번호 공백이 아닐때만 해시로 만든다.
+			password = SHA256Util.getEncrypt(password, user.getId());
+			user.setPassword(password);
+		}
+
+		userRepository.save(user);
+//		userRepository.save(user.getUserDetail());
+//		userRepository.save(user.getUserRole());
+
+	}
+
+	@Override
+	public User getUserByLoginId(String loginId) {
+		//return userMapper.getUserByLoginId(loginId);
+		return userRepository.findByLoginId(loginId);
+	}
+
+
+	@Override
+	public Optional<User> getUserById(long id) {
+		return userRepository.findById(id);
+	}
+
+	@Override
+	public int getUserCountByLoginId(String loginId) {
+		//int userCount = userMapper.getUserCountByLoginId(loginId);
+		int userCount = userRepository.countByLoginId(loginId);
+		return userCount;
+	}
+
+
+
+
+	@Override
+	public int getMaxPk() {
+		int maxPk = userMapper.getMaxPk();
+		return maxPk + 1;
+	}
+
 
 	@Override
 	public int getCountByParam(User user) {
@@ -58,65 +127,6 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return userList;
-	}
-
-	@Override
-	public User getUserById(long id) {
-		return userMapper.getUserById(id);
-	}
-
-	@Override
-	public void deleteUserById(long id) {
-		userMapper.deleteUserById(id);
-	}
-
-	@Transactional
-	@Override
-	public void insertUser(User user) {
-
-		String password = user.getPassword();
-		password = SHA256Util.getEncrypt(password, getMaxPk());
-		user.setPassword(password);
-		log.debug(password);
-
-		userMapper.insertUser(user);
-		userMapper.insertUserDetail(user.userDetail);
-		userMapper.insertUserRole(user.userRole);
-
-	}
-
-	@Transactional
-	@Override
-	public void updateUser(User user) {
-
-		String password = user.getPassword();
-
-		if (!"".equals(password)) {     //비밀번호 공백이 아닐때만 해시로 만든다.
-			password = SHA256Util.getEncrypt(password, user.getId());
-			user.setPassword(password);
-		}
-
-		userMapper.updateUser(user);
-		userMapper.updateUserDetail(user.getUserDetail());
-		userMapper.updateUserRole(user.getUserRole());
-
-	}
-
-	@Override
-	public int getMaxPk() {
-		int maxPk = userMapper.getMaxPk();
-		return maxPk + 1;
-	}
-
-	@Override
-	public int getUserCountByLoginId(String loginId) {
-		int userCount = userMapper.getUserCountByLoginId(loginId);
-		return userCount;
-	}
-
-
-	public User getUserByLoginId(String loginId) {
-		return userMapper.getUserByLoginId(loginId);
 	}
 
 }

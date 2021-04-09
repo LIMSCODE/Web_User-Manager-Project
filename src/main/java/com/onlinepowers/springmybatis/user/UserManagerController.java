@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequestMapping("/opmanager/user")
@@ -166,7 +167,7 @@ public class UserManagerController {
 	 */
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id, @ModelAttribute("cri") Criteria cri,
-	                         User user, HttpSession session, Model model) {
+	                         Optional<User> user, HttpSession session, Model model) {
 
 		user = userService.getUserById(id);
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸

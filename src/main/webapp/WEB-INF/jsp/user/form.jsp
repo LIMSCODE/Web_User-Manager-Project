@@ -169,6 +169,7 @@
 		let $email = $("#email");
 
 		let $zipcode = $("#userDetail.zipcode");
+
 		let $address = $("#userDetail.address");
 		let $addressDetail = $("#userDetail.addressDetail");
 		let $phoneNumber = $("#userDetail.phoneNumber");
@@ -225,13 +226,12 @@
 			return false;
 		}
 
-		if ($zipcode.val() == "") {
+		if ($("#userDetail.zipcode").val() == "") {
 			alert("우편번호 입력해주세요");
 			$zipcode.focus();
 			return false;
 		}
 
-		console.log($zipcode.val());
 		if ($address.val() == "") {
 			alert("주소 입력해주세요");
 			$address.focus();
@@ -257,6 +257,8 @@
 
 		if(!$("input:radio[name=userDetail.receiveSms]:checked").val()) {
 			alert("sms 수신여부 선택해주세요");
+
+			console.log($zipcode.val());
 			return false;
 		}
 

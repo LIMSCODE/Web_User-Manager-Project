@@ -240,7 +240,7 @@
     <select id="getMaxPk" resultType = "INT">
         SELECT
             IFNULL(MAX(ID),0)
-        FROM OP_USER
+        FROM op_user
     </select>
     <select id="getUserByLoginId"  resultMap="userMap">
         SELECT

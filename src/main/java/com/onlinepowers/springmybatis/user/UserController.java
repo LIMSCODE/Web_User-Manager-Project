@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -60,6 +61,7 @@ public class UserController {
 		//비밀번호 일치하지않으면
 		if (!loginUser.getPassword().equals(hashPassword)) {
 			log.debug("비밀번호 일치하지 않음");
+
 			return "redirect:/user/login";
 		}
 
@@ -177,12 +179,12 @@ public class UserController {
 	 */
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id,
-	                         User user, HttpSession session, Model model) {
+	                         Optional<User> user, HttpSession session, Model model) {
 
 		user = userService.getUserById(id);
 
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
-		model.addAttribute("id", user.getId());   //form 뷰에서 id있을때로 처리됨.
+		model.addAttribute("id", user.get().getId());   //form 뷰에서 id있을때로 처리됨.
 
 		return "/user/form";
 	}
