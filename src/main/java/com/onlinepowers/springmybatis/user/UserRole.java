@@ -1,3 +1,4 @@
+
 package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
@@ -20,7 +21,7 @@ public class UserRole extends Criteria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
-    public long userId;
+    public Long userId;
 
     @Column(name = "AUTHORITY")
     public String authority;

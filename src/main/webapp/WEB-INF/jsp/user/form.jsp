@@ -38,7 +38,7 @@
 <form:form modelAttribute="user" method="post" id="target" >
     <c:if test="${id != null}">
     <span>
-        <form:hidden path="id" value="${user.id}"/>
+        <form:hidden path="id" value="${id}"/>
     </span>
     </c:if>
 
@@ -122,7 +122,7 @@
     <span>
         <form:radiobutton path="userDetail.receiveSms" value="1" label="수신" />
         <form:radiobutton path="userDetail.receiveSms" value="0" label="수신x" />
-        <input type="hidden" id="receiveSms" value="${user.userDetail.receiveSms}">   <!--DB에서 가져온 값-->
+        <input type="hidden" id="receiveSms" value="${userDetail.receiveSms}">   <!--DB에서 가져온 값-->
         <p><form:errors path="userDetail.receiveSms"/></p>
     </span>
     </c:if>

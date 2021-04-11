@@ -40,7 +40,7 @@
 <%--@elvariable id="user" type="User"--%>
 <form:form modelAttribute="user" method="post" id="target" >
     <c:if test="${id != null}">
-        <input type="hidden" name="id" value="${user.id}"/>
+        <input type="hidden" name="id" value="${id}"/>
         <input type="hidden" name="currentPageNo" value="${cri.currentPageNo}" />
         <input type="hidden" name="recordsPerPage" value="${cri.recordsPerPage}" />
         <input type="hidden" name="pageSize" value="${cri.pageSize}" />
@@ -129,7 +129,7 @@
     <span>
         <form:radiobutton path="userDetail.receiveSms" value="1" label="수신" />
         <form:radiobutton path="userDetail.receiveSms" value="0" label="수신x" />
-        <input type="hidden" id="receiveSms" value="${user.userDetail.receiveSms}">   <!--DB에서 가져온 값-->
+        <input type="hidden" id="receiveSms" value="${userDetail.receiveSms}">   <!--DB에서 가져온 값-->
         <p><form:errors path="userDetail.receiveSms"/></p>
     </span>
     </c:if>
@@ -147,7 +147,7 @@
     <span>
         <label> <form:radiobutton path="userRole.authority" value="ROLE_OPMANAGER"/> 관리자 </label>
         <label> <form:radiobutton path="userRole.authority" value="ROLE_USER"/> 회원 </label><br>
-        <input type="hidden" id="authority" value="${user.userRole.authority}">
+        <input type="hidden" id="authority" value="${userRole.authority}">
         <p><form:errors path="userRole"/></p>
     </span>
     </c:if>

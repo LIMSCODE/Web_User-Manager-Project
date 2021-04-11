@@ -4,7 +4,6 @@ import com.onlinepowers.springmybatis.paging.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface UserService {
@@ -56,7 +55,7 @@ public interface UserService {
      * 페이지 넘버링 (최대 PK값 + 1)
      * @return
      */
-    int getMaxPk();
+    long getMaxPk();
 
     /**
      * 아이디 중복 확인시 해당 아이디 몇개인지
@@ -71,7 +70,7 @@ public interface UserService {
      * @param id
      * @return
      */
-    Optional<User> getUserById(long id);
+    User getUserById(long id);
 
 
 

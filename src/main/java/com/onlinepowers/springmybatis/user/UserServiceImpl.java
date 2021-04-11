@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -36,9 +35,15 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(password);
 		log.debug(password);
 
-		userRepository.save(user);  //Jpa에서는 user만 save하면 하위테이블도 모두 저장되는지 -된다.
-//		userMapper.insertUserDetail(user.userDetail);   //mybatis 에서는 xml에서 insertDetail 따로 처리하기때문에
-//		userMapper.insertUserRole(user.userRole);
+//		이렇게 안하고 DB에서 PK+1구해서 FK에 넣음
+//		user.getUserDetail().setUserId(user.getId());
+//		user.getUserRole().setUserId(user.getId());
+
+		//userRepository.setUserFK(userRepository.getMaxPK()+1);
+		userRepository.save(user);  //Jpa에서는 user만 save하면 하위테이블도 모두 저장되는지 : 결과는 된다.
+//		userRepository.save(user.userDetail);   //mybatis 에서는 xml에서 insertDetail 따로 처리하기때문에
+//		userRepository.save(user.userRole);
+		userRepository.setUserFK(userRepository.getMaxPK());
 
 	}
 
@@ -53,9 +58,9 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(password);
 		}
 
+		user.getUserDetail().setUserId(user.getId());	//하위테이블 수정안되는 현상 해결
+		user.getUserRole().setUserId(user.getId());
 		userRepository.save(user);
-//		userRepository.save(user.getUserDetail());
-//		userRepository.save(user.getUserRole());
 
 	}
 
@@ -67,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public Optional<User> getUserById(long id) {
+	public User getUserById(long id) {
 		return userRepository.findById(id);
 	}
 
@@ -79,15 +84,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 
-
-
 	@Override
-	public int getMaxPk() {
-		int maxPk = userMapper.getMaxPk();
+	public long getMaxPk() {
+		long maxPk = userRepository.getMaxPK();
 		return maxPk + 1;
 	}
 
 
+//여기부터 쿼리DSL로
+	
 	@Override
 	public int getCountByParam(User user) {
 

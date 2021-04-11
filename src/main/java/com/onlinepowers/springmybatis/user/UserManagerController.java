@@ -169,7 +169,7 @@ public class UserManagerController {
 	public String updateForm(@PathVariable("id") long id, @ModelAttribute("cri") Criteria cri,
 	                         Optional<User> user, HttpSession session, Model model) {
 
-		user = userService.getUserById(id);
+		user = Optional.ofNullable(userService.getUserById(id));
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
 		model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
 
@@ -206,8 +206,8 @@ public class UserManagerController {
 			return "/opmanager/user/form";
 		}
 
-		user.getUserDetail().setUserId(user.getId());
-		user.getUserRole().setUserId(user.getId());
+//		user.getUserDetail().setUserId(user.getId());
+//		user.getUserRole().setUserId(user.getId());
 
 		userService.updateUser(user);
 

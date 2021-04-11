@@ -1,3 +1,4 @@
+
 package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
@@ -21,10 +22,8 @@ public class UserDetail extends Criteria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long id;
-
     @Column(name = "USER_ID")
-    public long userId;
+    public Long userId;
 
     @NotNull (message="우편번호 입력해주세요")
     @Size (max= 30, message="30글자 이하로 입력하세요")

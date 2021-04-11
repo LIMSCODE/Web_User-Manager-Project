@@ -51,12 +51,12 @@ public class User extends Criteria {
 
 	@Valid
 	@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinColumn(name="LOGIN_ID", insertable = false, updatable = false, nullable = false)
+	@JoinColumn(name="USER_ID", insertable = false, updatable = false)
 	public UserDetail userDetail;
 
 	@NotNull(message = "직위 체크 해주세요")
 	@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinColumn(name="USER_ID", insertable = false, updatable = false, nullable = false)
+	@JoinColumn(name="USER_ID", insertable = false, updatable = false)
 	public UserRole userRole;
 
 
@@ -65,7 +65,5 @@ public class User extends Criteria {
 	public void prePersist() {
 		this.userRole.authority = this.userRole.authority == null ? "ROLE_USER" : this.userRole.authority;
 	}
-
-
 
 }
