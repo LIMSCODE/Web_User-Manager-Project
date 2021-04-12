@@ -242,16 +242,12 @@ public class UserController {
 
 		if (userCount > 0) {
 			map.put("isDuplicated", false);
+
 		} else {
 			map.put("isDuplicated", true);
-		}
-		return map; //map을 Json타입으로 뷰에서 쓰려면 jackson gradle 추가해줘야함
-		//0보다 크면 map.put("canUse", false);
-		//0보다 작으면 map.put("canUse", true);
-		//return map;
-		//뷰에서 success:function(data) {
-		//          if(data.canUse) {사용가능 첨가}
 
+		}
+		return map;
 
 	}
 

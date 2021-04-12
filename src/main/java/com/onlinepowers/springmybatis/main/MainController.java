@@ -36,10 +36,18 @@ public class MainController {
 		User loginUser = UserUtils.getLoginUser(session);
 		log.debug("메인");
 
-		//뷰에서 null이 아니면 로그인버튼을 정보수정, 로그아웃버튼으로 변경
-		if (loginUser != null) {
-			log.debug("1");
+		if (loginUser == null) {
+			return "/main/user";
+		}
+
+		if (UserUtils.isManagerLogin(session)) {    //로그인 안되있을시 null 뜸
+			session.invalidate();
+			return "/main/user";
+		}
+
+		if (UserUtils.isUserLogin(session)) {
 			model.addAttribute("loginUser", loginUser);
+			return "/main/user";    //null이 아니면 정보수정 뜨고, null이면 회원가입 뜬다.
 		}
 
 		return "/main/user";
