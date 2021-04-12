@@ -6,40 +6,20 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head><meta charset="UTF-8"/>
+    <link rel="stylesheet"  type="text/css" href="${pageContext.request.contextPath}/webapp/content/common.css">
     <title>회원등록</title>
-    <style>
-        input[type=text],input[type=password] {
-            width: 45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
-            padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
-            box-sizing: border-box; }
-
-        input[type=submit] {
-            width: 50%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-        input[type=button], button[type=button] {
-            width: 20%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-        .btn{
-            width: 20%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-    </style>
 </head>
 
 <body>
-
 <%--@elvariable id="user" type="User"--%>
 <form:form modelAttribute="user" method="post" id="target" >
+    <p>
     <span>
-        <form:input path="loginId" maxlength="12" readonly=""/> <br>
-        <form:password path="password" maxlength="8" readonly=""/> <br>
-    </span>
+        아이디 <form:input path="loginId" maxlength="12" readonly=""/> <br>
+        비밀번호 <form:password path="password" maxlength="8" readonly=""/> <br>
     <input type="submit" class="submit" value="로그인"  formaction="/opmanager/user/login">
+    </span>
+    </p>
 </form:form>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

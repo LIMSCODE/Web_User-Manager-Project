@@ -7,13 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <style>
-        .btn{
-            width: 20%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-    </style>
+    <link rel="stylesheet"  type="text/css" href="${pageContext.request.contextPath}/webapp/content/common.css">
 </head>
 
 <body>

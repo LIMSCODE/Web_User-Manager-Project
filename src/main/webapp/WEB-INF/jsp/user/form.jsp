@@ -8,26 +8,9 @@
 <head>
     <meta charset="UTF-8"/>
     <title>회원등록</title>
+    <link rel="stylesheet"  type="text/css" href="${pageContext.request.contextPath}/webapp/content/common.css">
     <style>
-        input[type=text],input[type=password] {
-            wid 45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
-            padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
-            box-sizing: border-box; }
-        input[type=submit] {
-            wid 50%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-        input[type=button], button[type=button] {
-            wid 20%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-        .btn{
-            wid 20%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
+
         span>p {
             color: #bd2130;
         }
@@ -45,9 +28,9 @@
 
     <c:if test="${id != null}">
     <span>
-        이름<form:input type="text" path="name" maxlength="12" readonly="true"/> <br>
+        *이름<form:input type="text" path="name" maxlength="12" readonly="true"/> <br>
         <p><form:errors path="name"/></p>
-        아이디<form:input path="loginId" maxlength="12" readonly="true"/>
+        *아이디<form:input path="loginId" maxlength="12" readonly="true"/>
         <p><form:errors path="loginId"/></p>
     </span>
     </c:if>
@@ -72,9 +55,9 @@
 
     <c:if test="${id != null}">
     <span>
-        비밀번호 <form:password path="password" maxlength="8"/> <br>
+        *비밀번호 <form:password path="password" maxlength="8"/> <br>
         <p><form:errors path="password"/></p>
-        비밀번호 확인 <input type="password" name="passwordConfirm"  id="passwordConfirm" maxlength="8"> <br>
+        *비밀번호 확인 <input type="password" name="passwordConfirm"  id="passwordConfirm" maxlength="8"> <br>
     </span>
     </c:if>
 
@@ -94,13 +77,13 @@
 
     <c:if test="${id != null}">
     <span>
-        우편번호 <form:input path="userDetail.zipcode" maxlength="30" /> <br>
+        *우편번호 <form:input path="userDetail.zipcode" maxlength="30" /> <br>
         <p> <form:errors path="userDetail.zipcode"/></p>
-        주소 <form:input path="userDetail.address" maxlength="30" /> <br>
+        *주소 <form:input path="userDetail.address" maxlength="30" /> <br>
         <p> <form:errors path="userDetail.address"/></p>
-        상세주소 <form:input path="userDetail.addressDetail" maxlength="30" /> <br>
+        *상세주소 <form:input path="userDetail.addressDetail" maxlength="30" /> <br>
         <p> <form:errors path="userDetail.addressDetail"/></p>
-        전화번호 <form:input path="userDetail.phoneNumber"  maxlength="30" /> <br>
+        *전화번호 <form:input path="userDetail.phoneNumber"  maxlength="30" /> <br>
          <p> <form:errors path="userDetail.phoneNumber"/></p>
     </span>
     </c:if>

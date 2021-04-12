@@ -4,37 +4,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<!DOCTYPE html>
-<html lang="ko">
-<head><meta charset="UTF-8"/>
+
     <title>회원등록</title>
-
-    <style>
-        input[type=text],input[type=password] {
-            wid 45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
-            padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
-            box-sizing: border-box; }
-
-        input[type=submit] {
-            wid 50%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-        input[type=button], button[type=button] {
-            wid 20%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-        .btn{
-            wid 20%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-        span>p {
-            color: #bd2130;
-        }
-    </style>
-</head>
 
 <body>
 <%--@elvariable id="user" type="User"--%>
@@ -355,4 +326,3 @@
 </script>
 
 </body>
-</html>

@@ -5,30 +5,9 @@
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <!DOCTYPE html>
 <html lang="ko">
-<header>
-    <style>
-        header {
-            background: lightgray;
-            height: 130px;
-        }
-
-        sidebar {
-            background : #f2f4f7;
-            float : left;
-            width : 20%;
-            height : 1000px;
-            position : relative;
-            top : 30px;
-        }
-        contentbar {
-            float : right;
-            width : 78%;
-            height : 1000px;
-            position : relative;
-            top : 30px;
-        }
-    </style>
-</header>
+<head>
+    <link rel="stylesheet"  type="text/css" href="${pageContext.request.contextPath}/webapp/content/common.css">
+</head>
 
 <body id="page-top">
 <div id="wrapper">
