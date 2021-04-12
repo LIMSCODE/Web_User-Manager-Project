@@ -5,6 +5,8 @@ import com.onlinepowers.springmybatis.paging.PaginationInfo;
 import com.onlinepowers.springmybatis.util.SHA256Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,6 +20,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
+	private final UserRepositorySupport userRepositorySupport;
 	private final UserMapper userMapper;
 
 	@Override
@@ -35,14 +38,13 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(password);
 		log.debug(password);
 
-//		이렇게 안하고 DB에서 PK+1구해서 FK에 넣음
-//		user.getUserDetail().setUserId(user.getId());
-//		user.getUserRole().setUserId(user.getId());
+		/*
+		이렇게 안하고 DB에서 PK+1구해서 FK에 넣음
+		user.getUserDetail().setUserId(user.getId());
+		user.getUserRole().setUserId(user.getId());
+		*/
 
-		//userRepository.setUserFK(userRepository.getMaxPK()+1);
-		userRepository.save(user);  //Jpa에서는 user만 save하면 하위테이블도 모두 저장되는지 : 결과는 된다.
-//		userRepository.save(user.userDetail);   //mybatis 에서는 xml에서 insertDetail 따로 처리하기때문에
-//		userRepository.save(user.userRole);
+		userRepository.save(user);  //Jpa에서는 user만 save하면 하위테이블도 모두 저장된다.
 		userRepository.setUserFK(userRepository.getMaxPK());
 
 	}
@@ -92,7 +94,7 @@ public class UserServiceImpl implements UserService {
 
 
 //여기부터 쿼리DSL로
-	
+
 	@Override
 	public int getCountByParam(User user) {
 
@@ -112,7 +114,8 @@ public class UserServiceImpl implements UserService {
 		user.setPaginationInfo(paginationInfo);
 
 		if (userCount > 0) {
-			userList = userMapper.getUserList(user);
+			//userList = userMapper.getUserList(user);
+			userList = userRepositorySupport.findDynamicQueryAdvance(user);
 			Criteria criteria = new Criteria();
 
 			int currentPageNo = cri.getCurrentPageNo(); //현재 페이지

@@ -22,9 +22,23 @@ class UserRepositorySupportTest {
 	private UserRepositorySupport userRepositorySupport;
 
 	@Test
-	public void searchTest() {
+	public void findDynamicQueryAdvance() {
+
+		//검색조건 설정
+		User user = new User();
+		user.setName("123ABC");
+		user.setSearchType("name");
+		user.setSearchKeyword("ABC");
+
+		//qUser.name에서 searchKeyword를 포함한 값을 찾는다.
+		//검색 결과 - searchKeyword가 ABC인 값이 담긴다.
+		List<User> result = userRepositorySupport.findDynamicQueryAdvance(user);
+
+		//then
+		Assertions.assertThat(result.get(0).getName()).isEqualTo("123ABC");
 
 	}
+
 	/*
 	@Test
 	public void querydsl() {
@@ -35,7 +49,8 @@ class UserRepositorySupportTest {
 		List<User> result = userRepositorySupport.findByName(user.getName());
 
 		//then
-		Assertions.assertThat(result.get(0).getName()).isEqualTo("1");
+		Assertions.assertThat(result.get(0).getName()).isEqualTo("1");	//result안에 든 이름이 1인지 확인
+																		//findByName함수가 작동하는지 확인
 
 	}
 	 */
