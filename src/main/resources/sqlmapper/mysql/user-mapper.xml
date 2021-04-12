@@ -30,14 +30,14 @@
         SELECT
             COUNT(*)
         FROM
-            OP_USER U
-        INNER JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
+            op_user U
+        INNER JOIN op_user_detail UD ON U.ID = UD.USER_ID
         <include refid="search" />
     </select>
 
     <select id="getPasswordById" resultType="String"
             parameterType="com.onlinepowers.springmybatis.user.User">
-        SELECT PASSWORD FROM OP_USER WHERE ID = #{id}
+        SELECT PASSWORD FROM op_user WHERE ID = #{id}
     </select>
 
     <select id="getUserList" resultMap="userMap"
@@ -56,9 +56,9 @@
             RECEIVE_SMS,
             AUTHORITY
         FROM
-            OP_USER AS U
-        INNER JOIN OP_USER_DETAIL AS UD ON U.ID = UD.USER_ID
-        INNER JOIN OP_USER_ROLE AS UR ON UD.USER_ID = UR.USER_ID
+            op_user AS U
+        INNER JOIN op_user_detail AS UD ON U.ID = UD.USER_ID
+        INNER JOIN op_user_role AS UR ON UD.USER_ID = UR.USER_ID
         <include refid="search" />
         ORDER BY ID DESC
         <include refid="paging" />
@@ -129,23 +129,23 @@
             RECEIVE_SMS,
             AUTHORITY
         FROM
-            OP_USER U
-        INNER JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
-        INNER JOIN OP_USER_ROLE UR ON UD.USER_ID = UR.USER_ID
+            op_user U
+        INNER JOIN op_user_detail UD ON U.ID = UD.USER_ID
+        INNER JOIN op_user_role UR ON UD.USER_ID = UR.USER_ID
         WHERE ID=#{id}
     </select>
 
     <delete id="deleteUserById"
             parameterType="com.onlinepowers.springmybatis.user.User">
         DELETE
-        FROM OP_USER
+        FROM op_user
         WHERE id = #{id}
     </delete>
 
     <insert id="insertUser"
             parameterType="com.onlinepowers.springmybatis.user.User"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO OP_USER
+        INSERT INTO op_user
             (ID,
             NAME,
             LOGIN_ID,
@@ -167,7 +167,7 @@
         <selectKey resultType="int" keyProperty="userId" order="BEFORE">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        INSERT INTO OP_USER_DETAIL
+        INSERT INTO op_user_detail
             (USER_ID,
             ZIPCODE,
             ADDRESS,
@@ -189,7 +189,7 @@
         <selectKey resultType="int" keyProperty="userId" order="BEFORE">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        INSERT INTO OP_USER_ROLE
+        INSERT INTO op_user_role
             (USER_ID,
              AUTHORITY)
         VALUES
@@ -200,7 +200,7 @@
 
     <update id="updateUser"
             parameterType="com.onlinepowers.springmybatis.user.User">
-        UPDATE OP_USER
+        UPDATE op_user
         SET
         <if test='password != ""'>
             PASSWORD=#{password},
@@ -213,7 +213,7 @@
     </update>
     <update id="updateUserDetail"
             parameterType="com.onlinepowers.springmybatis.user.User">
-        UPDATE OP_USER_DETAIL
+        UPDATE op_user_detail
         SET
             ZIPCODE=#{zipcode},
             ADDRESS=#{address},
@@ -224,7 +224,7 @@
     </update>
     <update id="updateUserRole"
             parameterType="com.onlinepowers.springmybatis.user.User">
-        UPDATE OP_USER_ROLE
+        UPDATE op_user_role
         SET
            AUTHORITY= IFNULL(#{authority}, 'ROLE_USER')
         WHERE USER_ID=#{userId};
@@ -234,7 +234,7 @@
     <select id="getUserCountByLoginId" resultType = "INT">
         SELECT
             COUNT(*)
-        FROM OP_USER
+        FROM op_user
         WHERE LOGIN_ID = #{loginId}
     </select>
     <select id="getMaxPk" resultType = "INT">
@@ -257,9 +257,9 @@
             RECEIVE_SMS,
             AUTHORITY
         FROM
-            OP_USER U
-                INNER JOIN OP_USER_DETAIL UD ON U.ID = UD.USER_ID
-                INNER JOIN OP_USER_ROLE AS UR ON UD.USER_ID = UR.USER_ID
+            op_user U
+                INNER JOIN op_user_detail UD ON U.ID = UD.USER_ID
+                INNER JOIN op_user_role AS UR ON UD.USER_ID = UR.USER_ID
         WHERE LOGIN_ID=#{loginId}
     </select>
 </mapper>

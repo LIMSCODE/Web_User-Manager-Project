@@ -31,6 +31,7 @@
         span>p {
             color: #bd2130;
         }
+
     </style>
 </head>
 <body>
@@ -53,10 +54,10 @@
 
     <c:if test="${id == null}">
     <span>
-        이름<form:input path="name" maxlength="12"/> <br>
+         *이름<form:input path="name" maxlength="12"/> <br>
         <p><form:errors path="name"/></p>
-        아이디<form:input path="loginId" onkeyup="resetIdCheckStatus();"  maxlength="12"/>
-       <form:errors path="loginId"/>
+         *아이디<form:input path="loginId" onkeyup="resetIdCheckStatus();"  maxlength="12"/>
+        <form:errors path="loginId"/>
     </span>
     </c:if>
 
@@ -79,15 +80,15 @@
 
     <c:if test="${id == null}">
     <span>
-        비밀번호 <form:password path="password" id="createPassword" maxlength="8"/> <br>
+         *비밀번호<form:password path="password" id="createPassword" maxlength="8"/> <br>
         <p><form:errors path="password"/></p>
-        비밀번호 확인 <input type="password" name="passwordConfirm"  id="createPasswordConfirm" maxlength="8"> <br>
+         *비밀번호 확인<input type="password" name="passwordConfirm"  id="createPasswordConfirm" maxlength="8"> <br>
     </span>
     </c:if>
     <span id="isSame" class="same"></span>
 
     <span>
-        이메일 <form:input path="email" maxlength="30"/> <br>
+         *이메일<form:input path="email" maxlength="30"/> <br>
         <p><form:errors path="email"/></p>
     </span>
 
@@ -106,18 +107,18 @@
 
     <c:if test="${id == null}">
     <span>
-        우편번호 <form:input path="userDetail.zipcode" maxlength="30" /> <br>
+         *우편번호<form:input path="userDetail.zipcode" maxlength="30" /> <br>
         <p> <form:errors path="userDetail.zipcode"/></p>
-        주소 <form:input path="userDetail.address" maxlength="30" /> <br>
+         *주소<form:input path="userDetail.address" maxlength="30" /> <br>
         <p> <form:errors path="userDetail.address"/></p>
-        상세주소 <form:input path="userDetail.addressDetail" maxlength="30" /> <br>
+         *상세주소<form:input path="userDetail.addressDetail" maxlength="30" /> <br>
         <p> <form:errors path="userDetail.addressDetail"/></p>
-        전화번호 <form:input path="userDetail.phoneNumber"  maxlength="30" /> <br>
+         *전화번호<form:input path="userDetail.phoneNumber"  maxlength="30" /> <br>
         <p> <form:errors path="userDetail.phoneNumber"/></p>
     </span>
     </c:if>
 
-    SNS수신여부
+    *SNS수신여부
     <c:if test="${id != null}">
     <span>
         <form:radiobutton path="userDetail.receiveSms" value="1" label="수신" />
@@ -183,6 +184,13 @@
 		}
 		if ($loginId.val() == "") {
 			alert("아이디 입력해주세요");
+			$loginId.focus();
+			return false;
+		}
+
+		var idReg = /^[a-z]+[a-z0-9]{5,19}/g;
+		if(idReg.test($loginId.val()) == false) {
+			alert("아이디는 영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.");
 			$loginId.focus();
 			return false;
 		}
@@ -285,15 +293,18 @@
 		}
 
 		let query = { "loginId" : $loginId.val() };
-		//alert(JSON.stringify(query));
-
+		//alert(JSON.stringify(data));
+        //data['isDuplicated']
+//JSON.stringify(data)['isDuplicated']
+        //data.isDuplicated : 안됨
 		$.ajax({
 			url : "/user/check-id",
 			type : "post",
 			data : query,
 			datatype: "json",
 			success : function(data) {
-				if (data == 1) {
+
+				if (data.isDuplicated == false) {
 					$("#msg").text("사용 불가");
 					$("#msg").attr("style", "color:#f00");
 					alert("해당 아이디 존재");

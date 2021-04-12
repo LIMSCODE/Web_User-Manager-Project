@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	User findByLoginId(String loginId); //로그인시, 세션저장시
 	User findById(long id); //수정창 띄울때
 
-	@Query(value = "SELECT IFNULL(MAX(ID), 0) FROM OP_USER", nativeQuery = true)
+	@Query(value = "SELECT IFNULL(MAX(id), 0) FROM op_user", nativeQuery = true)
 	long getMaxPK();
 
 	@Modifying

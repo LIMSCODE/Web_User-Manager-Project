@@ -9,6 +9,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -25,27 +27,28 @@ public class UserDetail extends Criteria {
     @Column(name = "USER_ID")
     public Long userId;
 
-    @NotNull (message="우편번호 입력해주세요")
+
+    @NotEmpty(message="우편번호 입력해주세요")// null, 빈 문자열(스페이스 포함X) 불가
     @Size (max= 30, message="30글자 이하로 입력하세요")
     @Column(name = "ZIPCODE")
     public String zipcode;
 
-    @NotNull (message="주소 입력해주세요")
+    @NotEmpty(message="주소 입력해주세요")
     @Size (max= 30, message="30글자 이하로 입력하세요")
     @Column(name = "ADDRESS")
     public String address;
 
-    @NotNull (message="상세주소 입력해주세요")
+    @NotEmpty(message="상세주소 입력해주세요")
     @Size (max= 30, message="30글자 이하로 입력하세요")
     @Column(name = "ADDRESS_DETAIL")
     public String addressDetail;
 
-    @NotNull (message="전화번호 입력해주세요")
+    @NotEmpty(message="전화번호 입력해주세요")
     @Size (max= 30, message="30글자 이하로 입력하세요")
     @Column(name = "PHONE_NUMBER")
     public String phoneNumber;
 
-    @NotNull (message="수신여부 체크해주세요")
+    @NotNull(message="수신여부 체크해주세요")
     @Column(name = "RECEIVE_SMS")
     public String receiveSms;
 

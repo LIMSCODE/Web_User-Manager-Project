@@ -49,11 +49,11 @@
     </span>
 
     <span th:if="${id} == null">
-        이름<input type="text" name="name" id="name" th:value="${user.name}" maxlength="12"
+        이름 *<input type="text" name="name" id="name" th:value="${user.name}" maxlength="12"
                  th:field="*{name}" > <br>
         <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Incorrect date</p>
 
-        아이디<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" onkeyup="resetIdCheckStatus();"  maxlength="12"
+        아이디 *<input type="text" name="loginId" id="loginId" th:value="${user.loginId}" onkeyup="resetIdCheckStatus();"  maxlength="12"
                   th:field="*{loginId}" >
         <p th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">Incorrect date</p>
     </span>
@@ -74,16 +74,16 @@
     </span>
 
     <span th:if="${id} == null">
-        비밀번호 <input type="password" name="password" id="createPassword" th:value="${user.password}" maxlength="8"
+        비밀번호 *<input type="password" name="password" id="createPassword" th:value="${user.password}" maxlength="8"
                     th:field="*{password}" class="form-control" > <br>
         <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Incorrect date</p>
 
-        비밀번호 확인 <input type="password" name="passwordConfirm"  id="createPasswordConfirm" maxlength="8"> <br>
+        비밀번호 확인 *<input type="password" name="passwordConfirm"  id="createPasswordConfirm" maxlength="8"> <br>
         <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Incorrect date</p>
     </span>
     <span id="isSame" class="same"></span>
     <span>
-        이메일 <input type="text" name="email" id="email" th:value="${user.email}" maxlength="30"
+        이메일 *<input type="text" name="email" id="email" th:value="${user.email}" maxlength="30"
                    th:field="*{email}" class="form-control" > <br>
         <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Incorrect date</p>
     </span>
@@ -124,7 +124,7 @@
         <p th:if="${#fields.hasErrors('userDetail.phoneNumber')}" th:errors="*{userDetail.phoneNumber}">Incorrect date</p>
     </span>
 
-        SNS수신여부
+        SNS수신여부 *
     <span th:if="${id} != null">
         <label> <input type="radio" th:field="${user.userDetail.receiveSms}" value="1" > 수신 </label>
         <label> <input type="radio" th:field="${user.userDetail.receiveSms}" value="0" > 수신x </label><br>
@@ -165,7 +165,7 @@
 			let $createPasswordConfirm = $("#createPasswordConfirm");
 			let $email = $("#email");
 
-			let $zipcode = $("#zipcode");
+			let $zipcode = $("#userDetail.zipcode");
 			let $address = $("#address");
 			let $addressDetail = $("#addressDetail");
 			let $phoneNumber = $("#phoneNumber");

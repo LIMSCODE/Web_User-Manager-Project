@@ -7,8 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
-
-//import static com.onlinepowers.springmybatis.user.QUser.user;
+import static com.onlinepowers.springmybatis.user.QUser.user;
 import java.util.List;
 
 @Repository
@@ -29,6 +28,15 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
 //    }
 
 
+    public List<User> findByName(String name) {     //Junit 테스트 성공
+        QUser qUser = new QUser("m");
+
+        return queryFactory
+                .selectFrom(qUser)	//빨간줄
+                .where(qUser.name.eq(name))
+                .fetch();
+    }
+
     ////검색조건
     //member.username.eq("member1") // username = 'member1'
     //member.username.eq("member1").not() // username != 'member1'
@@ -40,6 +48,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
     //복잡하니 BuileanExpression사용한다.
     //phoneNumber 1개만 오면 where phoneNumber = phoneNumber
     //2개 이상이 오면 모두 포함 where name = name and address = address and phoneNumber = phoneNumber
+
 
     //일단 전체검색 제외하고 각각 검색시에만. (searchType=name일경우 - when으로 걸어야 한다.)
     public List<User> findDynamicQueryAdvance(User user) {
@@ -57,6 +66,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         // .offset(10).limit(20)
         // .list(qUser);;
     }
+    
 
     private BooleanExpression eqName(User user) {
         QUser qUser = new QUser("m");
@@ -84,6 +94,10 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
+
+
+
+    
     //변형하기 전 원래 BooleanExpression 인터넷에 있는것
 //    private BooleanExpression eqAddress(String name) {
 //        if (StringUtils.isEmpty(name)) {

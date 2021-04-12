@@ -24,23 +24,22 @@ public class User extends Criteria {
 	private Long id;
 	private long pagingId;
 
-	@NotNull(message = "이름 입력해주세요")
-	@NotEmpty // null, 빈 문자열(스페이스 포함X) 불가
-	@NotBlank // null, 빈 문자열, 스페이스만 포함한 문자열 불가
+	@NotEmpty(message = "이름 입력해주세요")
 	@Size(max = 12, message = "12글자 이하로 입력하세요")
 	@Column(name="NAME", nullable=false)
 	private String name;
 
-	@NotNull(message = "아이디 입력해주세요")
+	@NotEmpty(message = "아이디 입력해주세요")
 	@Size(max = 12, message = "12글자 이하로 입력하세요")
+	@Pattern(regexp = "^[a-z]+[a-z0-9]{5,19}", message = "아이디는 영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.")
 	@Column(name="LOGIN_ID")
 	private String loginId;
 
-	@NotNull(message = "패스워드 입력해주세요")
+	@NotEmpty(message = "패스워드 입력해주세요")
 	@Column(name="PASSWORD")
 	private String password;
 
-	@NotNull(message = "이메일 입력해주세요")
+	@NotEmpty(message = "이메일 입력해주세요")
 	@Size(max = 30, message = "30글자 이하로 입력하세요")
 	@Email
 	@Column(name="EMAIL")
@@ -59,11 +58,5 @@ public class User extends Criteria {
 	@JoinColumn(name="USER_ID", insertable = false, updatable = false)
 	public UserRole userRole;
 
-
-
-	@PrePersist
-	public void prePersist() {
-		this.userRole.authority = this.userRole.authority == null ? "ROLE_USER" : this.userRole.authority;
-	}
 
 }

@@ -4,6 +4,7 @@ import com.onlinepowers.springmybatis.util.SHA256Util;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -228,14 +231,28 @@ public class UserController {
 	 */
 	@ResponseBody
 	@PostMapping(value = "/check-id")
-	public int checkId(User user) {
+	public Map<String, Object> checkId(User user) {
 		String loginId = user.getLoginId();
 		log.debug(loginId);
 
 		int userCount = userService.getUserCountByLoginId(loginId); //오류
 		log.debug(String.valueOf(userCount));
 
-		return userCount > 0 ? 1 : 0;
+		Map<String, Object> map=new HashMap<String, Object>();
+
+		if (userCount > 0) {
+			map.put("isDuplicated", false);
+		} else {
+			map.put("isDuplicated", true);
+		}
+		return map; //map을 Json타입으로 뷰에서 쓰려면 jackson gradle 추가해줘야함
+		//0보다 크면 map.put("canUse", false);
+		//0보다 작으면 map.put("canUse", true);
+		//return map;
+		//뷰에서 success:function(data) {
+		//          if(data.canUse) {사용가능 첨가}
+
+
 	}
 
 }
