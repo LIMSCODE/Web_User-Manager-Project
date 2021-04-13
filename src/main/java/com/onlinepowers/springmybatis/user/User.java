@@ -59,4 +59,6 @@ public class User extends Criteria {
 	public UserRole userRole;
 
 
+	public User(User user) {
+	}
 }

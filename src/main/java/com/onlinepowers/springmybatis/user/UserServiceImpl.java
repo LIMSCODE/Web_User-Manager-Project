@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -104,33 +104,44 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getUserList(User user, @ModelAttribute("cri") Criteria cri) {
+	public Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("cri") Criteria cri) {
 
-		List<User> userList = Collections.emptyList();
-		int userCount = userMapper.getCountByParam(user);
+		Page<User> posts = userRepositorySupport.getUserListPagination(user, pageable);
+		List<User> results = posts.getContent().stream()
+				.collect(Collectors.toList());
+		long totalCount = posts.getTotalElements();
+
+		log.debug(String.valueOf(posts));
+		log.debug(String.valueOf(results));
+		log.debug(String.valueOf(totalCount));  //9개 뜸
+
+
+		Page<User> userList = userRepositorySupport.getUserListPagination(user, pageable);
+		int userCount = userList.getSize() + 1;   //List안의 갯수
 
 		PaginationInfo paginationInfo = new PaginationInfo(user);
 		paginationInfo.setTotalRecordCount(userCount);
 		user.setPaginationInfo(paginationInfo);
 
 		if (userCount > 0) {
-			//userList = userMapper.getUserList(user);
-			userList = userRepositorySupport.findDynamicQueryAdvance(user);
+
+			userList = userRepositorySupport.getUserListPagination(user, pageable);
+
 			Criteria criteria = new Criteria();
 
 			int currentPageNo = cri.getCurrentPageNo(); //현재 페이지
-			int totalRecordCount = userMapper.getCountByParam(user);    // 전체 데이터 개수
+			int totalRecordCount = userCount;    // 전체 데이터 개수
 			int recordsPerPage = criteria.getRecordsPerPage();  //한페이지에 들어가는 데이터 개수
 			int totalPageCount = (totalRecordCount) / recordsPerPage + 1;   // 전체 페이지 개수
 
-			for (int i = 0; i < userList.size(); i++) {
+			for (int i = 0; i < userCount; i++) {
 
 				// 해당 페이지에서 가장 큰 번호 구하기
 				int start = totalRecordCount - (currentPageNo - 1) * recordsPerPage;
 				// 하나씩 빼서 게시글을 뿌린다.
 				int num = start - i;
 
-				userList.get(i).setPagingId(num);
+				userList.getContent().get(i).setPagingId(num);
 			}
 		}
 

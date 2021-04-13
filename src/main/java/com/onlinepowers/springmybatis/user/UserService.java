@@ -1,6 +1,8 @@
 package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import java.util.List;
@@ -34,23 +36,6 @@ public interface UserService {
     User getUserByLoginId(String loginId);
 
 
-
-
-    /**
-     * 검색된 회원수
-     * @param user
-     * @return
-     */
-    int getCountByParam(User user);
-
-    /**
-     * 회원 목록
-     * @param user
-     * @param cri
-     * @return
-     */
-    List<User> getUserList(User user,  @ModelAttribute("cri") Criteria cri) ;
-
     /**
      * 페이지 넘버링 (최대 PK값 + 1)
      * @return
@@ -72,6 +57,23 @@ public interface UserService {
      */
     User getUserById(long id);
 
+
+
+
+    /**
+     * 검색된 회원수
+     * @param user
+     * @return
+     */
+    int getCountByParam(User user);
+
+    /**
+     * 회원 목록
+     * @param user
+     * @param cri
+     * @return
+     */
+    Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("cri") Criteria cri) ;
 
 
 

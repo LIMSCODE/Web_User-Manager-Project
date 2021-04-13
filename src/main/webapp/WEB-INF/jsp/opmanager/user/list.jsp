@@ -116,55 +116,11 @@
     </div>
 </div>
 
-<!--페이징영역-->
-<c:if test="${user != null and user.paginationInfo.totalRecordCount > 0}">
 
-    <div fragment="pagination" aria-label="Page navigation" class="text-center">
 
-        <ul class="pagination">
-            <c:if test="${user.paginationInfo.hasPreviousPage == true}">
-                <li onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(1)}'">
-                    <a href="javascript:void(0)" class="btn_arr first" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
-                </li>
-            </c:if>
-            <c:if test="${user.paginationInfo.hasPreviousPage == true}">
-                <c:set var="firstPage" value="${user.paginationInfo.firstPage}" scope="session"/>
-                <li onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(firstPage - 1)}'">
-                    <a href="javascript:void(0)" class="btn_arr prev" aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a>
-                </li>
-            </c:if>
 
-            <c:forEach begin="${user.paginationInfo.firstPage}" end="${user.paginationInfo.lastPage}" var="idx">
-                <c:if test="${idx == user.currentPageNo}">
-                    <li class="active">
-                        <a href="javascript:void(0)" class="on"
-                           onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(idx)}'">${idx}</a>
-                    </li>
-                </c:if>
-                <c:if test="${idx != user.currentPageNo}">
-                    <li class="">
-                        <a href="javascript:void(0)" class="on"
-                           onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(idx)}'">${idx}</a>
-                    </li>
-                </c:if>
-            </c:forEach>
 
-            <c:if test="${user.paginationInfo.hasNextPage == true}">
-                <c:set var="nextPage" value="${user.paginationInfo.lastPage}" scope="session"/>
-                <li onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(nextPage + 1)}'">
-                    <a href="javascript:void(0)" class="btn_arr next"
-                       aria-label="Next"><span aria-hidden="true">&rsaquo;</span></a>
-                </li>
-            </c:if>
-            <c:if test="${user.paginationInfo.hasNextPage == true}">
-                <c:set var="lastPage" value="${user.paginationInfo.totalPageCount}" scope="session"/>
-                <li onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(lastPage)}'">
-                    <a href="javascript:void(0)" class="btn_arr last" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
-                </li>
-            </c:if>
-        </ul>
-    </div>
-</c:if>
+
 
 <!--등록 성공-->
 <form action="/opmanager/user/create">

@@ -5,6 +5,8 @@ import com.onlinepowers.springmybatis.util.SHA256Util;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -90,14 +92,15 @@ public class UserManagerController {
 	 */
 	@GetMapping("/list")
 	public String getUserList(@ModelAttribute("cri") Criteria cri,
-	                          User user,
+	                          User user, Pageable pageable,
 	                          HttpSession session, Model model) {
 
 		User loginUser = UserUtils.getLoginUser(session);
 		model.addAttribute("loginUser", loginUser);
 
-		List<User> userList = userService.getUserList(user, cri);
-		model.addAttribute("userList", userList);
+		Page<User> userPage = userService.getUserList(user, pageable, cri); //페이지 객체 담아서 뷰로 보낸다.
+		model.addAttribute("userPage", userPage);
+
 
 		return "/opmanager/user/list";
 	}
