@@ -106,43 +106,25 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("cri") Criteria cri) {
 
-		Page<User> posts = userRepositorySupport.getUserListPagination(user, pageable);
-		List<User> results = posts.getContent().stream()
-				.collect(Collectors.toList());
-		long totalCount = posts.getTotalElements();
-
-		log.debug(String.valueOf(posts));
-		log.debug(String.valueOf(results));
-		log.debug(String.valueOf(totalCount));  //9개 뜸
-
-
 		Page<User> userList = userRepositorySupport.getUserListPagination(user, pageable);
-		int userCount = userList.getSize() + 1;   //List안의 갯수
+		List<User> results = userList.getContent().stream()
+				.collect(Collectors.toList());
 
-		PaginationInfo paginationInfo = new PaginationInfo(user);
-		paginationInfo.setTotalRecordCount(userCount);
-		user.setPaginationInfo(paginationInfo);
+		long totalCount = userList.getTotalElements();
+		long totalPageCount = totalCount / userList.getSize() + 1;
 
-		if (userCount > 0) {
+		log.debug(String.valueOf(totalCount));  //3개 뜸
+		log.debug(String.valueOf(userList.getPageable().getPageNumber()));	//첫번째페이지:0
 
-			userList = userRepositorySupport.getUserListPagination(user, pageable);
 
-			Criteria criteria = new Criteria();
+		for (int i = 0 ; i < results.size() ; i++) {	//results.size() : 검색시 페이지별 limit적용한 값
 
-			int currentPageNo = cri.getCurrentPageNo(); //현재 페이지
-			int totalRecordCount = userCount;    // 전체 데이터 개수
-			int recordsPerPage = criteria.getRecordsPerPage();  //한페이지에 들어가는 데이터 개수
-			int totalPageCount = (totalRecordCount) / recordsPerPage + 1;   // 전체 페이지 개수
+			// 해당 페이지에서 가장 큰 번호 구하기
+			int start = (int) (totalCount - (userList.getPageable().getPageNumber()) * userList.getSize());
+			// 하나씩 빼서 게시글을 뿌린다.
+			int num = start - i;
 
-			for (int i = 0; i < userCount; i++) {
-
-				// 해당 페이지에서 가장 큰 번호 구하기
-				int start = totalRecordCount - (currentPageNo - 1) * recordsPerPage;
-				// 하나씩 빼서 게시글을 뿌린다.
-				int num = start - i;
-
-				userList.getContent().get(i).setPagingId(num);
-			}
+			userList.getContent().get(i).setPagingId(num);
 		}
 
 		return userList;

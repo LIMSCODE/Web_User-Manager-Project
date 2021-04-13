@@ -83,7 +83,7 @@
             </thead>
 
             <tbody>
-            <c:forEach items="${userList}" var="userList">
+            <c:forEach items="${userPage.content}" var="userList">
             <tr>
                 <td>${userList.pagingId}</td>
                 <td>${userList.name}</td>
@@ -116,11 +116,37 @@
     </div>
 </div>
 
+<ul class="pagination">
+    <c:if test="${!userPage.first}">
+        <li class="previous">
+            <a href="javascript:void(0)" class="on"
+               onclick="location.href='/opmanager/user/list' + '?page=' + ${userPage.number - 1}">&larr;</a>
+        </li>
+    </c:if>
 
+    <c:forEach begin="${firstPage}" end="${lastPage}" var="idx">
+        <c:if test="${idx == userPage.pageable.pageNumber + 1}">
+            <li class="active">
+                <a href="javascript:void(0)" class="on"
+                   onclick="location.href='/opmanager/user/list' + '?page=' + ${idx-1}">${idx}</a>
+            </li>
+        </c:if>
+        <c:if test="${idx != userPage.number + 1}">
+            <li class="">
+                <a href="javascript:void(0)" class="on"
+                   onclick="location.href='/opmanager/user/list' + '?page=' + ${idx-1}">${idx}</a>
+            </li>
+        </c:if>
+    </c:forEach>
 
-
-
-
+    <c:if test="${!userPage.last}">
+        <li class="previous">
+            <a href="javascript:void(0)" class="on"
+               onclick="location.href='/opmanager/user/list' + '?page=' + ${userPage.number + 1}">&rarr;</a>
+        </li>
+    </c:if>
+    </p>
+</ul>
 
 <!--등록 성공-->
 <form action="/opmanager/user/create">

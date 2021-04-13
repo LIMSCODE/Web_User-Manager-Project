@@ -32,12 +32,17 @@ contentbar {
 /*
     opmanager/user/form
  */
-input[type=text],input[type=password] {
+input[type=text]{
     wid :45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
     padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
     box-sizing: border-box; }
 
-input[type=submit] {
+    input[type=password] {
+        wid :45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
+        padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
+        box-sizing: border-box; }
+
+    input[type=submit] {
     wid: 50%; background-color: darkslategrey; color: white;
     padding: 14px 20px; margin: 8px 0; border: none;
     border-radius: 4px; cursor: pointer; text-decoration: none;
@@ -137,7 +142,7 @@ button[type=submit] {
     bottom: 50px;
 }
 
-input[type=text],input[type=password] {
+input[type=text]{
     wid: 15%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
     padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
     box-sizing: border-box;
@@ -158,18 +163,22 @@ select,option {
 
 .pagination .btn_arr{text-decoration:none;}
 
-.pagination .btn_arr, .pagination .on{margin:0 3px;padding-top:0;border:1px solid #ddd; border-radius:30px;
+.pagination .btn_arr, .on{margin:0 3px;padding-top:0;border:1px solid #ddd; border-radius:30px;
 
     /* background:url(/front/img/com/btn_pagination.png) no-repeat; */}
 
-.pagination .on{padding-top:1px;height:22px;color:#fff;font-weight:bold;background:#000;}
+.on{padding-top:1px;height:22px;color:#fff;font-weight:bold;background:#000;}
 
-.pagination .on:hover{text-decoration:none;}
+.on:hover{text-decoration:none;}
 
 /*
     opmanager/user/login
  */
-    p>span>input[type=text],input[type=password] {
+    p>span>input[type=text]{
+        width: 45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
+        padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
+        box-sizing: border-box; }
+    p>span>input[type=password]{
         width: 45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
         padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
         box-sizing: border-box; }

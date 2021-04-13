@@ -6,7 +6,10 @@ import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -92,7 +95,7 @@ public class UserManagerController {
 	 */
 	@GetMapping("/list")
 	public String getUserList(@ModelAttribute("cri") Criteria cri,
-	                          User user, Pageable pageable,
+	                          User user, @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC, size = 2) Pageable pageable,
 	                          HttpSession session, Model model) {
 
 		User loginUser = UserUtils.getLoginUser(session);
@@ -101,6 +104,12 @@ public class UserManagerController {
 		Page<User> userPage = userService.getUserList(user, pageable, cri); //페이지 객체 담아서 뷰로 보낸다.
 		model.addAttribute("userPage", userPage);
 
+		//페이징 뷰에서 사용되는 데이터
+		int firstPage = ((userPage.getPageable().getPageNumber())/userPage.getPageable().getPageSize())*userPage.getPageable().getPageSize() + 1;
+		int lastPage = firstPage + userPage.getPageable().getPageSize() - 1;
+
+		model.addAttribute("firstPage", firstPage);
+		model.addAttribute("lastPage", lastPage);
 
 		return "/opmanager/user/list";
 	}

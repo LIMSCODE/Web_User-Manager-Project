@@ -5,10 +5,8 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -17,10 +15,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-public class UserRepositorySupport extends QuerydslRepositorySupport{
+public class UserRepositorySupport extends QuerydslRepositorySupport {
 
     private final JPAQueryFactory queryFactory;
     private final UserRepository userRepository;
@@ -42,19 +41,17 @@ public class UserRepositorySupport extends QuerydslRepositorySupport{
 
     
     /*
-    BooleanBuilder - 쿼리의 조건 설정인 where뒤의 조건을 생성 /복잡하니 BuileanExpression사용한다.
+    BooleanBuilder - 쿼리의 조건 설정인 where뒤의 조건을 생성 /주로 BuileanExpression사용한다.
     phoneNumber 1개만 오면 where phoneNumber = phoneNumber
     2개 이상이 오면 모두 포함 where name = name and address = address and phoneNumber = phoneNumber
     */
 
+
     /*
     검색조건 예시
-    member.username.eq("member1") // username = 'member1'
-    member.username.eq("member1").not() // username != 'member1'
-    member.username.contains("member") // like '%member%' 검색
-    member.username.isNotNull() // username is not null
+    member.username.eq , contains("member1").not(), isNotNull() // username = 'member1'
     */
-    public List<User> getUserList(User user, Pageable pageable) {
+    public List<User> getUserList(User user) {
 
         QUser qUser = new QUser("a");
         QUserDetail qUserDetail = new QUserDetail("b");
@@ -75,9 +72,6 @@ public class UserRepositorySupport extends QuerydslRepositorySupport{
                         eqPhoneNumber(user)
                 )
                 .fetch();
-
-        //.where(qUser.name.contains(user.getSearchKeyword())
-        // .list(qUser);
     }
 
     public Page<User> getUserListPagination(User user, Pageable pageable) {
@@ -102,14 +96,12 @@ public class UserRepositorySupport extends QuerydslRepositorySupport{
                         eqPhoneNumber(user)
                 )
                 .orderBy(qUser.id.desc())
+                .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchResults();
-
-
-        // .offset((cri.currentPageNo) * cri.recordsPerPage)
-        //                .limit(cri.recordsPerPage)
 
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());    //result에 9개의 List담김 확인
     }
+
 
     //전체, 이름, 아이디, 이메일, 우편번호, 주소, 상세주소, 전화번호
     private BooleanExpression eqAll_null(User user) {   //searchType이 null일떄 1
@@ -195,31 +187,33 @@ public class UserRepositorySupport extends QuerydslRepositorySupport{
     }
 
     
-    //변형하기 전 원래 BooleanExpression 인터넷에 있는것
-//    private BooleanExpression eqAddress(String name) {
-//        if (StringUtils.isEmpty(name)) {
-//            return null;
-//        }
-//        return user.name.eq(name);
-//    }
+    
+/*
+    변형하기 전 원래 BooleanExpression 인터넷에 있는것
+    private BooleanExpression eqAddress(String name) {
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
+        return user.name.eq(name);
+    }
+*/
 
+/*
+    CaseBuilder로 구현하기
+     <when test="'name'.equals(searchType)">
+    NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+     </when>
 
+    public List<User> searchCase(User user) {
 
-    //CaseBuilder로 구현하기
-//     <when test="'name'.equals(searchType)">
-//    NAME LIKE CONCAT('%', #{searchKeyword}, '%')
-//     </when>
+        QUser qUser = new QUser("m");
+        return queryFactory
+                .from(qUser)
+                .select(new CaseBuilder()
+                                .when(user.searchType.eq("name")).then(user.getName().contains(user.searchKeyword))
+                                .when(eq("2")).then()
+                                .otherwise()
 
-//    public List<User> searchCase(User user) {
-//
-//        QUser qUser = new QUser("m");
-//        return queryFactory
-//                .from(qUser)
-//                .select(new CaseBuilder()
-//                                .when(user.searchType.eq("name")).then(user.getName().contains(user.searchKeyword))
-//                                .when(eq("2")).then()
-//                                .otherwise()
-//
-//    }
-
+    }
+*/
 }
