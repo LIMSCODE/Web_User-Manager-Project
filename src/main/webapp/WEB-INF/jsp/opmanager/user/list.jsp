@@ -25,7 +25,7 @@
                         <div class="form-group">
                             <label>검색 유형</label>
                             <select name="searchType" class="form-control">
-                                <option value="">전체</option>
+                                <option value="all">전체</option>
                                 <option value="name">이름
                                 </option>
                                 <option value="loginId">아이디

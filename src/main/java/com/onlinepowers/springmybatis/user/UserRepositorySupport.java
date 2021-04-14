@@ -110,8 +110,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         if (StringUtils.isEmpty(user.getSearchType())) {
             return null;
         }
-
-        if (user.getSearchType().equals(null) || user.getSearchType().equals("")) {
+        if ("all".equals(user.getSearchType())) {
             return qUser.name.contains(user.getSearchKeyword())
                     .or(qUser.loginId.contains(user.getSearchKeyword()))
                     .or(qUser.email.contains(user.getSearchKeyword()))
