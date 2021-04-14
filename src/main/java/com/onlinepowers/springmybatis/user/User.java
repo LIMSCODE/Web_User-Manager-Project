@@ -1,11 +1,16 @@
 package com.onlinepowers.springmybatis.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.onlinepowers.springmybatis.paging.Criteria;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -14,6 +19,7 @@ import javax.validation.constraints.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "OP_USER")
 public class User extends Criteria {
@@ -35,7 +41,7 @@ public class User extends Criteria {
 	@Column(name="LOGIN_ID")
 	private String loginId;
 
-	@NotEmpty(message = "패스워드 입력해주세요")
+
 	@Column(name="PASSWORD")
 	private String password;
 
@@ -45,7 +51,9 @@ public class User extends Criteria {
 	@Column(name="EMAIL")
 	private String email;
 
-	@Column(name="CREATED_DATE")
+	@CreatedDate
+	@JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
+	@Column(name="CREATED_DATE", nullable = false, updatable = false)
 	private String createdDate;
 
 	@Valid
@@ -59,6 +67,4 @@ public class User extends Criteria {
 	public UserRole userRole;
 
 
-	public User(User user) {
-	}
 }

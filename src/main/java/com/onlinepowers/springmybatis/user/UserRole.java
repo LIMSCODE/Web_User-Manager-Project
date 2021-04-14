@@ -5,6 +5,7 @@ import com.onlinepowers.springmybatis.paging.Criteria;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -34,10 +35,5 @@ public class UserRole extends Criteria {
             return "ROLE_OPMANAGER".equals(this.authority) ? "관리자" : "회원" ;
         }
     }
-//
-//    @PrePersist
-//    public void prePersist() {
-//        this.authority = this.authority == null ? "ROLE_USER" : this.authority;
-//    }
 
 }

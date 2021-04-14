@@ -35,11 +35,6 @@
         <include refid="search" />
     </select>
 
-    <select id="getPasswordById" resultType="String"
-            parameterType="com.onlinepowers.springmybatis.user.User">
-        SELECT PASSWORD FROM op_user WHERE ID = #{id}
-    </select>
-
     <select id="getUserList" resultMap="userMap"
             parameterType="com.onlinepowers.springmybatis.user.User">
         SELECT

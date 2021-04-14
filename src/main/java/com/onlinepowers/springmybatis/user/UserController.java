@@ -213,8 +213,6 @@ public class UserController {
 			return "/user/form";
 		}
 
-		//user.getUserDetail().setUserId(user.getId());
-
 		userService.updateUser(user);
 
 		User updatedUser = userService.getUserByLoginId(user.getLoginId());     //비밀번호 수정후 바뀐 DTO를 session에 set해줘야함.

@@ -18,7 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -264,7 +266,7 @@ public class UserManagerController {
 	 */
 	@ResponseBody
 	@PostMapping(value = "/check-id")
-	public int checkId(User user) {
+	public Map<String, Object> checkId(User user) {
 
 		String loginId = user.getLoginId();
 		log.debug(loginId);
@@ -272,7 +274,16 @@ public class UserManagerController {
 		int userCount = userService.getUserCountByLoginId(loginId); //오류
 		log.debug(String.valueOf(userCount));
 
-		return userCount > 0 ? 1 : 0 ;
+		Map<String, Object> map=new HashMap<String, Object>();
+
+		if (userCount > 0) {
+			map.put("isDuplicated", false);
+
+		} else {
+			map.put("isDuplicated", true);
+
+		}
+		return map;
 	}
 
 }

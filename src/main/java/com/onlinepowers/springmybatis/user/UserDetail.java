@@ -5,6 +5,7 @@ import com.onlinepowers.springmybatis.paging.Criteria;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -26,7 +27,6 @@ public class UserDetail extends Criteria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     public Long userId;
-
 
     @NotEmpty(message="우편번호 입력해주세요")// null, 빈 문자열(스페이스 포함X) 불가
     @Size (max= 30, message="30글자 이하로 입력하세요")

@@ -7,6 +7,7 @@
 <html lang="ko">
 <head>
     <link rel="stylesheet"  type="text/css" href="${pageContext.request.contextPath}/webapp/content/common.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
 
 <body id="page-top">

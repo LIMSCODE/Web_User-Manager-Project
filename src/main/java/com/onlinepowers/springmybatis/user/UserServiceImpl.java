@@ -34,15 +34,15 @@ public class UserServiceImpl implements UserService {
 	public void insertUser(User user) {
 
 		String password = user.getPassword();
-		password = SHA256Util.getEncrypt(password, getMaxPk());
+		password = SHA256Util.getEncrypt(password, getMaxPK());
 		user.setPassword(password);
 		log.debug(password);
 
-		/*
-		이렇게 안하고 DB에서 PK+1구해서 FK에 넣음
+
+		//이렇게하면 안되서 DB에서 PK+1구해서 FK에 넣음
 		user.getUserDetail().setUserId(user.getId());
 		user.getUserRole().setUserId(user.getId());
-		*/
+
 
 		userRepository.save(user);  //Jpa에서는 user만 save하면 하위테이블도 모두 저장된다.
 		userRepository.setUserFK(userRepository.getMaxPK());
@@ -62,13 +62,15 @@ public class UserServiceImpl implements UserService {
 
 		user.getUserDetail().setUserId(user.getId());	//하위테이블 수정안되는 현상 해결
 		user.getUserRole().setUserId(user.getId());
-		userRepository.save(user);
+
+		//userRepository.save(user);
+		userRepositorySupport.updateUser(user);
 
 	}
 
 	@Override
 	public User getUserByLoginId(String loginId) {
-		//return userMapper.getUserByLoginId(loginId);
+
 		return userRepository.findByLoginId(loginId);
 	}
 
@@ -80,20 +82,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int getUserCountByLoginId(String loginId) {
-		//int userCount = userMapper.getUserCountByLoginId(loginId);
+
 		int userCount = userRepository.countByLoginId(loginId);
 		return userCount;
 	}
 
 
 	@Override
-	public long getMaxPk() {
+	public long getMaxPK() {
 		long maxPk = userRepository.getMaxPK();
 		return maxPk + 1;
 	}
 
-
-//여기부터 쿼리DSL로
 
 	@Override
 	public int getCountByParam(User user) {

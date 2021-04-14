@@ -56,14 +56,14 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchResults();
 
-        return new PageImpl<>(result.getResults(), pageable, result.getTotal());    //result에 9개의 List담김 확인
+        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
     }
+
 
     /**
      * BuileanExpression
      * 쿼리의 where절 생성 (BooleanBuilder 대신 사용)
-     * searchType이 전체(all)일때
-     * 전체, 이름, 아이디, 이메일, 우편번호, 주소, 상세주소, 전화번호 각각 적용
+     * searchType : 전체, 이름, 아이디, 이메일, 우편번호, 주소, 상세주소, 전화번호 각각 적용
      * @param user
      * @return
      */
@@ -72,8 +72,8 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         if (StringUtils.isEmpty(user.getSearchType())) {    //empty일시 검색안되도록
             return null;
         }
-        if ("all".equals(user.getSearchType())) {
-            return qUser.name.contains(user.getSearchKeyword()) //eq, contains().not(), isNotNull()
+        if ("all".equals(user.getSearchType())) {   //searchType이 전체(all)일때
+            return qUser.name.contains(user.getSearchKeyword())     //eq, contains().not(), isNotNull()
                     .or(qUser.loginId.contains(user.getSearchKeyword()))
                     .or(qUser.email.contains(user.getSearchKeyword()))
                     .or(qUser.userDetail.zipcode.contains(user.getSearchKeyword()))
@@ -152,4 +152,24 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
                 .where(qUser.name.eq(name))
                 .fetch();
     }
+
+    /**
+     * 비밀번호 ""일시 비밀번호 제외 update
+     * 비밀번호 ""아닐시 비밀번호도 같이 update
+     * @param user
+     */
+    public void updateUser(User user) {
+
+        String password = user.getPassword();
+
+        if ("".equals(password)) {
+            userRepository.saveWithOldPw(user);
+        }
+
+        if (!"".equals(password)) {
+            userRepository.saveWithNewPw(user);
+        }
+    }
+
+
 }

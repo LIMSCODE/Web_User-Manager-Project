@@ -276,10 +276,7 @@
 		}
 
 		let query = { "loginId" : $loginId.val() };
-		//alert(JSON.stringify(data));
-        //data['isDuplicated']
-//JSON.stringify(data)['isDuplicated']
-        //data.isDuplicated : 안됨
+
 		$.ajax({
 			url : "/user/check-id",
 			type : "post",
