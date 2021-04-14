@@ -1,22 +1,17 @@
 package com.onlinepowers.springmybatis.user;
 
-import com.onlinepowers.springmybatis.paging.Criteria;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.repository.JpaRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositorySupport extends QuerydslRepositorySupport {
@@ -30,63 +25,25 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         this.userRepository = userRepository;
     }
 
-    public List<User> findByName(String name) {     //Junit 테스트 성공
-        QUser qUser = new QUser("m");
+    //From 으로 쿼리Dsl과 연동할 테이블 가져옴
+    QUser qUser = new QUser("a");
+    QUserDetail qUserDetail = new QUserDetail("b");
+    QUserRole qUserRole = new QUserRole("c");
 
-        return queryFactory
-                .selectFrom(qUser)	//빨간줄
-                .where(qUser.name.eq(name))
-                .fetch();
-    }
-
-    
-    /*
-    BooleanBuilder - 쿼리의 조건 설정인 where뒤의 조건을 생성 /주로 BuileanExpression사용한다.
-    phoneNumber 1개만 오면 where phoneNumber = phoneNumber
-    2개 이상이 오면 모두 포함 where name = name and address = address and phoneNumber = phoneNumber
-    */
-
-
-    /*
-    검색조건 예시
-    member.username.eq , contains("member1").not(), isNotNull() // username = 'member1'
-    */
-    public List<User> getUserList(User user) {
-
-        QUser qUser = new QUser("a");
-        QUserDetail qUserDetail = new QUserDetail("b");
-        QUserRole qUserRole = new QUserRole("c");
-
-        return queryFactory
-                .selectFrom(qUser)
-                .leftJoin(qUserDetail).on(qUser.id.eq(qUserDetail.userId))
-                .leftJoin(qUserRole).on(qUser.id.eq(qUserRole.userId))
-                .where(
-                        eqAll_null(user),   //검색조건 user.searchKeyword가 null일때
-                        eqName(user),
-                        eqLoginId(user),
-                        eqEmail(user),
-                        eqZipcode(user),
-                        eqAddress(user),
-                        eqAddressDetail(user),
-                        eqPhoneNumber(user)
-                )
-                .fetch();
-    }
-
+    /**
+     * 페이징 적용한 검색쿼리
+     * @param user
+     * @param pageable
+     * @return
+     */
     public Page<User> getUserListPagination(User user, Pageable pageable) {
-
-        QUser qUser = new QUser("a");
-        QUserDetail qUserDetail = new QUserDetail("b");
-        QUserRole qUserRole = new QUserRole("c");
-
 
         QueryResults<User> result = queryFactory
                 .selectFrom(qUser)
                 .leftJoin(qUserDetail).on(qUser.id.eq(qUserDetail.userId))
                 .leftJoin(qUserRole).on(qUser.id.eq(qUserRole.userId))
                 .where(
-                        eqAll_null(user),   //검색조건 user.searchKeyword가 null일때
+                        eqAll(user),   //검색조건 user.searchKeyword가 null일때
                         eqName(user),
                         eqLoginId(user),
                         eqEmail(user),
@@ -102,16 +59,21 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());    //result에 9개의 List담김 확인
     }
 
+    /**
+     * BuileanExpression
+     * 쿼리의 where절 생성 (BooleanBuilder 대신 사용)
+     * searchType이 전체(all)일때
+     * 전체, 이름, 아이디, 이메일, 우편번호, 주소, 상세주소, 전화번호 각각 적용
+     * @param user
+     * @return
+     */
+    private BooleanExpression eqAll(User user) {
 
-    //전체, 이름, 아이디, 이메일, 우편번호, 주소, 상세주소, 전화번호
-    private BooleanExpression eqAll_null(User user) {   //searchType이 null일떄 1
-        QUser qUser = new QUser("a");
-
-        if (StringUtils.isEmpty(user.getSearchType())) {
+        if (StringUtils.isEmpty(user.getSearchType())) {    //empty일시 검색안되도록
             return null;
         }
         if ("all".equals(user.getSearchType())) {
-            return qUser.name.contains(user.getSearchKeyword())
+            return qUser.name.contains(user.getSearchKeyword()) //eq, contains().not(), isNotNull()
                     .or(qUser.loginId.contains(user.getSearchKeyword()))
                     .or(qUser.email.contains(user.getSearchKeyword()))
                     .or(qUser.userDetail.zipcode.contains(user.getSearchKeyword()))
@@ -122,8 +84,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqName(User user) {   //searchType이 name일떄 2
-        QUser qUser = new QUser("a");
+    private BooleanExpression eqName(User user) {
 
         if ("name".equals(user.getSearchType())) {
             return qUser.name.contains(user.getSearchKeyword());
@@ -131,8 +92,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqLoginId(User user) {    //searchType이 loginId일떄 3
-        QUser qUser = new QUser("a");
+    private BooleanExpression eqLoginId(User user) {
 
         if ("loginId".equals(user.getSearchType())) {
             return qUser.loginId.contains(user.getSearchKeyword());
@@ -140,8 +100,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqEmail(User user) {  //searchType이 email일떄 4
-        QUser qUser = new QUser("a");
+    private BooleanExpression eqEmail(User user) {
 
         if ("email".equals(user.getSearchType())) {
             return qUser.email.contains(user.getSearchKeyword());
@@ -149,8 +108,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqZipcode(User user) {  //searchType이 zipcode일떄 5
-        QUser qUser = new QUser("a");
+    private BooleanExpression eqZipcode(User user) {
 
         if ("zipcode".equals(user.getSearchType())) {
             return qUser.userDetail.zipcode.contains(user.getSearchKeyword());
@@ -158,8 +116,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqAddress(User user) {  //searchType이 address일떄 6
-        QUser qUser = new QUser("a");
+    private BooleanExpression eqAddress(User user) {
 
         if ("address".equals(user.getSearchType())) {
             return qUser.userDetail.address.contains(user.getSearchKeyword());
@@ -167,8 +124,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqAddressDetail(User user) {  //searchType이 addressDetail일떄 7
-        QUser qUser = new QUser("a");
+    private BooleanExpression eqAddressDetail(User user) {
 
         if ("addressDetail".equals(user.getSearchType())) {
             return qUser.userDetail.addressDetail.contains(user.getSearchKeyword());
@@ -176,8 +132,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqPhoneNumber(User user) {  //searchType이 phoneNumber일떄 8
-        QUser qUser = new QUser("a");
+    private BooleanExpression eqPhoneNumber(User user) {
 
         if ("phoneNumber".equals(user.getSearchType())) {
             return qUser.userDetail.phoneNumber.contains(user.getSearchKeyword());
@@ -185,34 +140,16 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    
-    
-/*
-    변형하기 전 원래 BooleanExpression 인터넷에 있는것
-    private BooleanExpression eqAddress(String name) {
-        if (StringUtils.isEmpty(name)) {
-            return null;
-        }
-        return user.name.eq(name);
-    }
-*/
+    /**
+     * 특정 이름으로 검색 (Junit 테스트 예시)
+     * @param name
+     * @return
+     */
+    public List<User> findByName(String name) {
 
-/*
-    CaseBuilder로 구현하기
-     <when test="'name'.equals(searchType)">
-    NAME LIKE CONCAT('%', #{searchKeyword}, '%')
-     </when>
-
-    public List<User> searchCase(User user) {
-
-        QUser qUser = new QUser("m");
         return queryFactory
-                .from(qUser)
-                .select(new CaseBuilder()
-                                .when(user.searchType.eq("name")).then(user.getName().contains(user.searchKeyword))
-                                .when(eq("2")).then()
-                                .otherwise()
-
+                .selectFrom(qUser)	//빨간줄
+                .where(qUser.name.eq(name))
+                .fetch();
     }
-*/
 }
