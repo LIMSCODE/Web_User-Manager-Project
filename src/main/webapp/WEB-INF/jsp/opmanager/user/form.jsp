@@ -132,7 +132,6 @@
     <c:if test="${id != null}">
     <span>
         <input type="submit" class="submit" value="수정"  formaction="/opmanager/user/edit/${id}" ><br><br>
-        <!--https://www.baeldung.com/spring-thymeleaf-path-variables url파싱 $%7Bid%7D로 안넘어가는 방법 찾음.-->
         <td><a class="btn" href="/opmanager/user/list">목록</a> </td>
     </span>
     </c:if>

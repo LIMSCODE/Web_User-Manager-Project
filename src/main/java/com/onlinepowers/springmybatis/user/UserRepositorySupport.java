@@ -37,7 +37,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
      * @param pageable
      * @return
      */
-    public Page<User> getUserListPagination(User user, Pageable pageable) {
+    Page<User> getUserListPagination(User user, Pageable pageable) {
 
         QueryResults<User> result = queryFactory
                 .selectFrom(qUser)
@@ -54,7 +54,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
                         eqPhoneNumber(user)
                 )
                 .orderBy(qUser.id.desc())
-                .offset(pageable.getOffset()).limit(pageable.getPageSize())
+                .limit(pageable.getPageSize())
                 .fetchResults();
 
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
@@ -68,7 +68,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
      * @param user
      * @return
      */
-    private BooleanExpression eqAll(User user) {
+    BooleanExpression eqAll(User user) {
 
         if (StringUtils.isEmpty(user.getSearchType())) {    //empty일시 검색안되도록
             return null;
@@ -85,7 +85,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqName(User user) {
+    BooleanExpression eqName(User user) {
 
         if ("name".equals(user.getSearchType())) {
             return qUser.name.contains(user.getSearchKeyword());
@@ -93,7 +93,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqLoginId(User user) {
+    BooleanExpression eqLoginId(User user) {
 
         if ("loginId".equals(user.getSearchType())) {
             return qUser.loginId.contains(user.getSearchKeyword());
@@ -101,7 +101,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqEmail(User user) {
+    BooleanExpression eqEmail(User user) {
 
         if ("email".equals(user.getSearchType())) {
             return qUser.email.contains(user.getSearchKeyword());
@@ -109,7 +109,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqZipcode(User user) {
+    BooleanExpression eqZipcode(User user) {
 
         if ("zipcode".equals(user.getSearchType())) {
             return qUser.userDetail.zipcode.contains(user.getSearchKeyword());
@@ -117,7 +117,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqAddress(User user) {
+    BooleanExpression eqAddress(User user) {
 
         if ("address".equals(user.getSearchType())) {
             return qUser.userDetail.address.contains(user.getSearchKeyword());
@@ -125,7 +125,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqAddressDetail(User user) {
+    BooleanExpression eqAddressDetail(User user) {
 
         if ("addressDetail".equals(user.getSearchType())) {
             return qUser.userDetail.addressDetail.contains(user.getSearchKeyword());
@@ -133,7 +133,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    private BooleanExpression eqPhoneNumber(User user) {
+    BooleanExpression eqPhoneNumber(User user) {
 
         if ("phoneNumber".equals(user.getSearchType())) {
             return qUser.userDetail.phoneNumber.contains(user.getSearchKeyword());
@@ -141,25 +141,13 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return null;
     }
 
-    /**
-     * 특정 이름으로 검색 (Junit 테스트 예시)
-     * @param name
-     * @return
-     */
-    public List<User> findByName(String name) {
-
-        return queryFactory
-                .selectFrom(qUser)	//빨간줄
-                .where(qUser.name.eq(name))
-                .fetch();
-    }
 
     /**
      * 비밀번호 ""일시 비밀번호 제외 update
      * 비밀번호 ""아닐시 비밀번호도 같이 update
      * @param user
      */
-    public void updateUser(User user) {
+    void updateUser(User user) {
 
         String password = user.getPassword();
 
@@ -172,5 +160,18 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         }
     }
 
+
+    /**
+     * 특정 이름으로 검색 (Junit 테스트 예시)
+     * @param name
+     * @return
+     */
+    List<User> findByName(String name) {
+
+        return queryFactory
+                .selectFrom(qUser)	//빨간줄
+                .where(qUser.name.eq(name))
+                .fetch();
+    }
 
 }

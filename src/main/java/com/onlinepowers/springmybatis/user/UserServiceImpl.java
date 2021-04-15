@@ -20,7 +20,6 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final UserRepositorySupport userRepositorySupport;
-	private final UserMapper userMapper;
 
 	@Override
 	public void deleteUserById(long id) {
@@ -37,11 +36,9 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(password);
 		log.debug(password);
 
-
 		//이렇게하면 안되서 DB에서 PK+1구해서 FK에 넣음
 		user.getUserDetail().setUserId(user.getId());
 		user.getUserRole().setUserId(user.getId());
-
 
 		userRepository.save(user);  //Jpa에서는 user만 save하면 하위테이블도 모두 저장된다.
 		userRepository.setUserFK(userRepository.getMaxPK());
@@ -73,7 +70,6 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findByLoginId(loginId);
 	}
 
-
 	@Override
 	public User getUserById(long id) {
 		return userRepository.findById(id);
@@ -86,37 +82,34 @@ public class UserServiceImpl implements UserService {
 		return userCount;
 	}
 
-
 	@Override
 	public long getMaxPK() {
 		long maxPk = userRepository.getMaxPK();
 		return maxPk + 1;
 	}
 
-
 	@Override
 	public Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("jpaPaging")JpaPaging jpaPaging) {
 
-		Page<User> userList = userRepositorySupport.getUserListPagination(user, pageable);
-		List<User> results = userList.getContent().stream()
-				.collect(Collectors.toList());
+		Page<User> userPage = userRepositorySupport.getUserListPagination(user, pageable);
+		List<User> results = userPage.getContent().stream().collect(Collectors.toList());
 
-		long totalCount = userList.getTotalElements();
+		long totalCount = userPage.getTotalElements();
 
 		log.debug(String.valueOf(totalCount));  //3개 뜸
-		log.debug(String.valueOf(userList.getPageable().getPageNumber()));	//첫번째페이지:0
+		log.debug(String.valueOf(userPage.getPageable().getPageNumber()));	//첫번째페이지:0
 
 		for (int i = 0 ; i < results.size() ; i++) {	//results.size() : 검색시 페이지별 limit적용한 값
 
 			// 해당 페이지에서 가장 큰 번호 구하기
-			int start = (int) (totalCount - (userList.getPageable().getPageNumber()) * userList.getSize());
+			int start = (int) (totalCount - (userPage.getPageable().getPageNumber()) * userPage.getSize());
 			// 하나씩 빼서 게시글을 뿌린다.
 			int num = start - i;
 
-			userList.getContent().get(i).setPagingId(num);
+			userPage.getContent().get(i).setPagingId(num);
 		}
 
-		return userList;
+		return userPage;
 	}
 
 }

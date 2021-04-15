@@ -217,7 +217,6 @@ public class UserManagerController {
 		userService.updateUser(user);
 
 		rttr.addAttribute("page", jpaPaging.getPage());
-
 		rttr.addAttribute("searchType", jpaPaging.getSearchType());
 		rttr.addAttribute("searchKeyword", jpaPaging.getSearchKeyword());
 
@@ -240,7 +239,6 @@ public class UserManagerController {
 		userService.deleteUserById(id);
 
 		rttr.addAttribute("page", jpaPaging.getPage());
-
 		rttr.addAttribute("searchType", jpaPaging.getSearchType());
 		rttr.addAttribute("searchKeyword", jpaPaging.getSearchKeyword());
 

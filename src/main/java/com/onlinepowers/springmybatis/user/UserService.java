@@ -15,17 +15,20 @@ public interface UserService {
      */
     void deleteUserById(long id);
 
+
     /**
      * 회원 등록
      * @param user
      */
     void insertUser(User user);
 
+
     /**
      * 회원정보 수정
      * @param user
      */
     void updateUser(User user);
+
 
     /**
      * 로그인시 회원정보 가져오기 (세션저장 등)
@@ -40,6 +43,7 @@ public interface UserService {
      * @return
      */
     long getMaxPK();
+
 
     /**
      * 아이디 중복 확인시 해당 아이디 몇개인지
