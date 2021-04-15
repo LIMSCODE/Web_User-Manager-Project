@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(storedUser.get().getPassword());       //공백으로 수정시, 저장된 비번과 같은것으로 인식
 		}
 
-		userRepository.save(user);      //기존의 값과 같다고 인식되므로, Dynamicupdate적용되서 password제외하고 update 돌아간다.
+		userRepository.save(user);      //공백일 경우, 기존의 값과 같다고 인식되므로, Dynamicupdate적용되서 password제외하고 update 돌아간다.
 	}
 
 	@Override

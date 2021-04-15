@@ -65,13 +65,4 @@ public class User extends JpaPaging {
 	@JoinColumn(name="USER_ID", insertable = false, updatable = false)
 	public UserRole userRole;
 
-
-	/**
-	 * insert 되기전 (persist 되기전) 실행된다.
-	 * */
-	@PrePersist
-	public void prePersist() {      //비밀번호 입력안하면 null로 update한다.
-		this.password = this.password == "" ? null : this.password;
-	}
-
 }
