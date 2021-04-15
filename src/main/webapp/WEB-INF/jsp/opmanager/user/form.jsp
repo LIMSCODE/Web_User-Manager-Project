@@ -12,11 +12,9 @@
 <form:form modelAttribute="user" method="post" id="target" >
     <c:if test="${id != null}">
         <input type="hidden" name="id" value="${id}"/>
-        <input type="hidden" name="currentPageNo" value="${cri.currentPageNo}" />
-        <input type="hidden" name="recordsPerPage" value="${cri.recordsPerPage}" />
-        <input type="hidden" name="pageSize" value="${cri.pageSize}" />
-        <input type="hidden" name="searchType" value="${cri.searchType}" />
-        <input type="hidden" name="searchKeyword" value="${cri.searchKeyword}" />
+        <input type="hidden" name="page" value="${jpaPaging.page}" />
+        <input type="hidden" name="searchType" value="${jpaPaging.searchType}" />
+        <input type="hidden" name="searchKeyword" value="${jpaPaging.searchKeyword}" />
     </c:if>
 
     <c:if test="${id != null}">

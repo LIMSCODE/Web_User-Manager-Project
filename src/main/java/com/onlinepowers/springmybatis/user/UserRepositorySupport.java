@@ -30,6 +30,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
     QUserDetail qUserDetail = new QUserDetail("b");
     QUserRole qUserRole = new QUserRole("c");
 
+
     /**
      * 페이징 적용한 검색쿼리
      * @param user

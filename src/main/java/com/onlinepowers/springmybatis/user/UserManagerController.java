@@ -1,12 +1,12 @@
 package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
+import com.onlinepowers.springmybatis.paging.JpaPaging;
 import com.onlinepowers.springmybatis.util.SHA256Util;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -19,7 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -89,21 +88,21 @@ public class UserManagerController {
 
 	/**
 	 * 회원 목록
-	 * @param cri
+	 * @param jpaPaging
 	 * @param user
 	 * @param session
 	 * @param model
 	 * @return
 	 */
 	@GetMapping("/list")
-	public String getUserList(@ModelAttribute("cri") Criteria cri,
+	public String getUserList(@ModelAttribute("jpaPaging") JpaPaging jpaPaging,
 	                          User user, @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC, size = 2) Pageable pageable,
 	                          HttpSession session, Model model) {
 
 		User loginUser = UserUtils.getLoginUser(session);
 		model.addAttribute("loginUser", loginUser);
 
-		Page<User> userPage = userService.getUserList(user, pageable, cri); //페이지 객체 담아서 뷰로 보낸다.
+		Page<User> userPage = userService.getUserList(user, pageable, jpaPaging); //페이지 객체 담아서 뷰로 보낸다.
 		model.addAttribute("userPage", userPage);
 
 		int firstPage = 1;
@@ -111,6 +110,12 @@ public class UserManagerController {
 
 		model.addAttribute("firstPage", firstPage);
 		model.addAttribute("lastPage", lastPage);
+
+		int pageSize = userPage.getPageable().getPageSize();
+		int pageNumber = userPage.getPageable().getPageNumber();
+
+		model.addAttribute("page", pageNumber); //현재 페이지 번호
+
 
 		return "/opmanager/user/list";
 	}
@@ -179,7 +184,7 @@ public class UserManagerController {
 	 * @return
 	 */
 	@GetMapping("/edit/{id}")
-	public String updateForm(@PathVariable("id") long id, @ModelAttribute("cri") Criteria cri,
+	public String updateForm(@PathVariable("id") long id, @ModelAttribute("jpaPaging")JpaPaging jpaPaging,
 	                         Optional<User> user, HttpSession session, Model model) {
 
 		user = Optional.ofNullable(userService.getUserById(id));
@@ -197,7 +202,7 @@ public class UserManagerController {
 	/**
 	 * 회원정보 수정
 	 * @param id
-	 * @param cri
+	 * @param jpaPaging
 	 * @param user
 	 * @param userResult
 	 * @param session
@@ -206,7 +211,7 @@ public class UserManagerController {
 	 * @return
 	 */
 	@PostMapping("/edit/{id}")
-	public String updateUser(@PathVariable("id") long id, @ModelAttribute("cri") Criteria cri,
+	public String updateUser(@PathVariable("id") long id, @ModelAttribute("jpaPaging") JpaPaging jpaPaging,
 							 @Valid User user,  BindingResult userResult,
 							 HttpSession session, Model model, RedirectAttributes rttr) {
 
@@ -224,11 +229,10 @@ public class UserManagerController {
 
 		userService.updateUser(user);
 
-		rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
-		rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
-		rttr.addAttribute("pageSize", cri.getPageSize());
-		rttr.addAttribute("searchType", cri.getSearchType());
-		rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
+		rttr.addAttribute("page", jpaPaging.getPage());
+
+		rttr.addAttribute("searchType", jpaPaging.getSearchType());
+		rttr.addAttribute("searchKeyword", jpaPaging.getSearchKeyword());
 
 		return "redirect:/opmanager/user/list";
 
@@ -238,21 +242,20 @@ public class UserManagerController {
 	/**
 	 * 회원 삭제
 	 * @param id
-	 * @param cri
+	 * @param jpaPaging
 	 * @param rttr
 	 * @return
 	 */
 	@PostMapping("/delete/{id}")
-	public String deleteUser(@PathVariable("id") long id, @ModelAttribute("cri") Criteria cri,
+	public String deleteUser(@PathVariable("id") long id, @ModelAttribute("jpaPaging") JpaPaging jpaPaging,
 	                         RedirectAttributes rttr) {
 
 		userService.deleteUserById(id);
 
-		rttr.addAttribute("currentPageNo", cri.getCurrentPageNo());
-		rttr.addAttribute("recordsPerPage", cri.getRecordsPerPage());
-		rttr.addAttribute("pageSize", cri.getPageSize());
-		rttr.addAttribute("searchType", cri.getSearchType());
-		rttr.addAttribute("searchKeyword", cri.getSearchKeyword());
+		rttr.addAttribute("page", jpaPaging.getPage());
+
+		rttr.addAttribute("searchType", jpaPaging.getSearchType());
+		rttr.addAttribute("searchKeyword", jpaPaging.getSearchKeyword());
 
 		return "redirect:/opmanager/user/list";
 	}

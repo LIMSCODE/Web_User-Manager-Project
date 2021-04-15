@@ -19,8 +19,8 @@
                                class="form-horizontal" role="form">
                         <!-- /* 현재 페이지 번호, 페이지당 출력할 데이터 개수, 페이지 하단에 출력할 페이지 개수 Hidden 파라미터 */ -->
                         <input type="hidden" name="currentPageNo" value="1"/>
-                        <input type="hidden" name="recordsPerPage" value="${user.recordsPerPage}"/>
-                        <input type="hidden" name="pageSize" value="${user.pageSize}"/>
+                        <input type="hidden" name="size" value="${user.size}"/>
+                        <input type="hidden" name="page" value="${user.page}"/>
 
                         <div class="form-group">
                             <label>검색 유형</label>
@@ -100,11 +100,11 @@
 
                 <!--수정  아이디 넘어감 성공-->
                 <td>
-                    <c:set var="currentPageNo" value="${user.currentPageNo}" scope="session"/>
-                    <a id="edit" href="/opmanager/user/edit/${userList.id}${user.makeQueryString(currentPageNo)}">수정</a>
+                    <c:set var="page" value="${page}" scope="session"/>
+                    <a id="edit" href="/opmanager/user/edit/${userList.id}${user.makeQueryString(page)}">수정</a>
                 </td>
                 <td>
-                    <form action="/opmanager/user/delete/${userList.id}${user.makeQueryString(currentPageNo)}" method="post">
+                    <form action="/opmanager/user/delete/${userList.id}${user.makeQueryString(page)}" method="post">
                         <!--href는 get으로 처리된다. form도 안될땐 method="post"써줘야한다.-->
                         <button class="delete" type="submit" >삭제</button>
                     </form>
@@ -118,9 +118,10 @@
 
 <ul class="pagination">
     <c:if test="${!userPage.first}">
+        <c:set var="page" value="${page}" scope="session"/>
         <li class="previous">
             <a href="javascript:void(0)" class="on"
-               onclick="location.href='/opmanager/user/list' + '?page=' + ${userPage.number - 1}">&larr;</a>
+               onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(page - 1)}'">&larr;</a>
         </li>
     </c:if>
 
@@ -128,21 +129,22 @@
         <c:if test="${idx == userPage.pageable.pageNumber + 1}">
             <li class="active">
                 <a href="javascript:void(0)" class="on"
-                   onclick="location.href='/opmanager/user/list' + '?page=' + ${idx - 1}">${idx}</a>
+                   onclick="location.href='/opmanager/user/list'  + '${user.makeQueryString(idx - 1)}'">${idx}</a>
             </li>
         </c:if>
         <c:if test="${idx != userPage.number + 1}">
             <li class="">
                 <a href="javascript:void(0)" class="on"
-                   onclick="location.href='/opmanager/user/list' + '?page=' + ${idx - 1}">${idx}</a>
+                   onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(idx - 1)}'">${idx}</a>
             </li>
         </c:if>
     </c:forEach>
 
     <c:if test="${!userPage.last}">
+        <c:set var="page" value="${page}" scope="session"/>
         <li class="previous">
             <a href="javascript:void(0)" class="on"
-               onclick="location.href='/opmanager/user/list' + '?page=' + ${userPage.number + 1}">&rarr;</a>
+               onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(page + 1)}'">&rarr;</a>
         </li>
     </c:if>
     </p>

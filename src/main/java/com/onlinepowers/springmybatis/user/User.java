@@ -2,6 +2,7 @@ package com.onlinepowers.springmybatis.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.onlinepowers.springmybatis.paging.Criteria;
+import com.onlinepowers.springmybatis.paging.JpaPaging;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,7 @@ import javax.validation.constraints.*;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "OP_USER")
-public class User extends Criteria {
+public class User extends JpaPaging {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,6 +1,7 @@
 package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
+import com.onlinepowers.springmybatis.paging.JpaPaging;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -58,22 +59,13 @@ public interface UserService {
     User getUserById(long id);
 
 
-
-
-    /**
-     * 검색된 회원수
-     * @param user
-     * @return
-     */
-    int getCountByParam(User user);
-
     /**
      * 회원 목록
      * @param user
      * @param cri
      * @return
      */
-    Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("cri") Criteria cri) ;
+    Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("jpaPaging") JpaPaging jpaPaging) ;
 
 
 

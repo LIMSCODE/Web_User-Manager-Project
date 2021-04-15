@@ -1,6 +1,8 @@
 package com.onlinepowers.springmybatis.paging;
 
+import com.onlinepowers.springmybatis.user.UserRepositorySupport;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 

@@ -1,6 +1,7 @@
 package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.Criteria;
+import com.onlinepowers.springmybatis.paging.JpaPaging;
 import com.onlinepowers.springmybatis.paging.PaginationInfo;
 import com.onlinepowers.springmybatis.util.SHA256Util;
 import lombok.RequiredArgsConstructor;
@@ -96,26 +97,16 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public int getCountByParam(User user) {
-
-		int userCount = userMapper.getCountByParam(user);
-
-		return userCount;
-	}
-
-	@Override
-	public Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("cri") Criteria cri) {
+	public Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("jpaPaging")JpaPaging jpaPaging) {
 
 		Page<User> userList = userRepositorySupport.getUserListPagination(user, pageable);
 		List<User> results = userList.getContent().stream()
 				.collect(Collectors.toList());
 
 		long totalCount = userList.getTotalElements();
-		long totalPageCount = totalCount / userList.getSize() + 1;
 
 		log.debug(String.valueOf(totalCount));  //3개 뜸
 		log.debug(String.valueOf(userList.getPageable().getPageNumber()));	//첫번째페이지:0
-
 
 		for (int i = 0 ; i < results.size() ; i++) {	//results.size() : 검색시 페이지별 limit적용한 값
 
