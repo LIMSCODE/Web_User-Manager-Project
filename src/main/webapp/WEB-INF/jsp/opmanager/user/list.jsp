@@ -118,14 +118,14 @@
 
 <ul class="pagination">
     <c:if test="${!userPage.first}">
-        <c:set var="page" value="${page}" scope="session"/>
+        <c:set var="page" value="${userPage.pageable.pageNumber}" scope="session"/>
         <li class="previous">
             <a href="javascript:void(0)" class="on"
                onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(page - 1)}'">&larr;</a>
         </li>
     </c:if>
 
-    <c:forEach begin="${firstPage}" end="${lastPage}" var="idx">
+    <c:forEach begin="${1}" end="${userPage.totalPages}" var="idx">
         <c:if test="${idx == userPage.pageable.pageNumber + 1}">
             <li class="active">
                 <a href="javascript:void(0)" class="on"
@@ -141,7 +141,7 @@
     </c:forEach>
 
     <c:if test="${!userPage.last}">
-        <c:set var="page" value="${page}" scope="session"/>
+        <c:set var="page" value="${userPage.pageable.pageNumber}" scope="session"/>
         <li class="previous">
             <a href="javascript:void(0)" class="on"
                onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(page + 1)}'">&rarr;</a>

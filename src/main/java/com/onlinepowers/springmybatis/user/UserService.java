@@ -60,7 +60,7 @@ public interface UserService {
     /**
      * 회원 목록
      * @param user
-     * @param cri
+     * @param jpaPaging
      * @return
      */
     Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("jpaPaging") JpaPaging jpaPaging) ;

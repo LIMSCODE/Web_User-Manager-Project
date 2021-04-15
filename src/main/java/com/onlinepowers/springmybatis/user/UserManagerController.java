@@ -104,18 +104,6 @@ public class UserManagerController {
 		Page<User> userPage = userService.getUserList(user, pageable, jpaPaging); //페이지 객체 담아서 뷰로 보낸다.
 		model.addAttribute("userPage", userPage);
 
-		int firstPage = 1;
-		int lastPage = userPage.getTotalPages();
-
-		model.addAttribute("firstPage", firstPage);
-		model.addAttribute("lastPage", lastPage);
-
-		int pageSize = userPage.getPageable().getPageSize();
-		int pageNumber = userPage.getPageable().getPageNumber();
-
-		model.addAttribute("page", pageNumber); //현재 페이지 번호
-
-
 		return "/opmanager/user/list";
 	}
 
