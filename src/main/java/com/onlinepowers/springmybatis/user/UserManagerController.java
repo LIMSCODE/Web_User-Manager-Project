@@ -106,9 +106,8 @@ public class UserManagerController {
 		Page<User> userPage = userService.getUserList(user, pageable, cri); //페이지 객체 담아서 뷰로 보낸다.
 		model.addAttribute("userPage", userPage);
 
-		//페이징 뷰에서 사용되는 데이터
-		int firstPage = ((userPage.getPageable().getPageNumber())/userPage.getPageable().getPageSize())*userPage.getPageable().getPageSize() + 1;
-		int lastPage = firstPage + userPage.getPageable().getPageSize() - 1;
+		int firstPage = 1;
+		int lastPage = userPage.getTotalPages();
 
 		model.addAttribute("firstPage", firstPage);
 		model.addAttribute("lastPage", lastPage);

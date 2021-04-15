@@ -128,13 +128,13 @@
         <c:if test="${idx == userPage.pageable.pageNumber + 1}">
             <li class="active">
                 <a href="javascript:void(0)" class="on"
-                   onclick="location.href='/opmanager/user/list' + '?page=' + ${idx-1}">${idx}</a>
+                   onclick="location.href='/opmanager/user/list' + '?page=' + ${idx - 1}">${idx}</a>
             </li>
         </c:if>
         <c:if test="${idx != userPage.number + 1}">
             <li class="">
                 <a href="javascript:void(0)" class="on"
-                   onclick="location.href='/opmanager/user/list' + '?page=' + ${idx-1}">${idx}</a>
+                   onclick="location.href='/opmanager/user/list' + '?page=' + ${idx - 1}">${idx}</a>
             </li>
         </c:if>
     </c:forEach>
