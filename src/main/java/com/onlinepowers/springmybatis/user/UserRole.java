@@ -1,11 +1,10 @@
 
 package com.onlinepowers.springmybatis.user;
 
-import com.onlinepowers.springmybatis.paging.Criteria;
+import com.onlinepowers.springmybatis.paging.JpaPaging;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -17,7 +16,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "OP_USER_ROLE")
 @OnDelete(action = OnDeleteAction.CASCADE)
-public class UserRole extends Criteria {
+public class UserRole extends JpaPaging {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

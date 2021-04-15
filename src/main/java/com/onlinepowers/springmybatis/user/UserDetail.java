@@ -1,16 +1,14 @@
 
 package com.onlinepowers.springmybatis.user;
 
-import com.onlinepowers.springmybatis.paging.Criteria;
+import com.onlinepowers.springmybatis.paging.JpaPaging;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -21,7 +19,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "OP_USER_DETAIL")
 @OnDelete(action = OnDeleteAction.CASCADE)
-public class UserDetail extends Criteria {
+public class UserDetail extends JpaPaging {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,8 +1,6 @@
 package com.onlinepowers.springmybatis.user;
 
-import com.onlinepowers.springmybatis.paging.Criteria;
 import com.onlinepowers.springmybatis.paging.JpaPaging;
-import com.onlinepowers.springmybatis.paging.PaginationInfo;
 import com.onlinepowers.springmybatis.util.SHA256Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,12 +1,10 @@
 package com.onlinepowers.springmybatis.user;
 
-import com.onlinepowers.springmybatis.paging.Criteria;
 import com.onlinepowers.springmybatis.paging.JpaPaging;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import java.util.List;
 
 @Service
 public interface UserService {
