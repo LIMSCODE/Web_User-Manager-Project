@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -59,9 +60,13 @@ public class UserServiceImpl implements UserService {
 		user.getUserDetail().setUserId(user.getId());	//하위테이블 수정안되는 현상 해결
 		user.getUserRole().setUserId(user.getId());
 
-		//userRepository.save(user);
-		userRepositorySupport.updateUser(user);
+		if(user.getPassword() == "") {
 
+			Optional<User> storedUser = userRepository.findById(user.getId());
+			user.setPassword(storedUser.get().getPassword());       //공백으로 수정시, 저장된 비번과 같은것으로 인식
+		}
+
+		userRepository.save(user);      //기존의 값과 같다고 인식되므로, Dynamicupdate적용되서 password제외하고 update 돌아간다.
 	}
 
 	@Override

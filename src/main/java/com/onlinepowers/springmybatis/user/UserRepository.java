@@ -49,40 +49,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			"WHERE id = :id", nativeQuery = true)
 	void setUserFK(Long id);
 
-	/**
-	 * UPDATE JOIN쿼리
-	 * jpql, queryDsl은 update시 join 제공안해서 nativeQuery사용
-	 * @param user
-	 */
-	@Modifying
-	@Query(value = " UPDATE op_user u " +
-			"inner join op_user_detail ud on u.id = ud.user_id " +
-			"inner join op_user_role ur on u.id = ur.user_id " +
-			"set " +
-			"u.email = :#{#paramUser.email}, " +
-			"ud.zipcode = :#{#paramUser.userDetail.zipcode}, " +
-			"ud.address = :#{#paramUser.userDetail.address}, " +
-			"ud.address_detail = :#{#paramUser.userDetail.addressDetail}, " +
-			"ud.phone_number = :#{#paramUser.userDetail.phoneNumber}, " +
-			"ud.receive_sms = :#{#paramUser.userDetail.receiveSms} " +
-			"where u.id = :#{#paramUser.id} ", nativeQuery = true)
-	void saveWithOldPw(@Param("paramUser") User user);
-
-	@Modifying
-	@Query(value = " UPDATE op_user u " +
-			"inner join op_user_detail ud on u.id = ud.user_id " +
-			"inner join op_user_role ur on u.id = ur.user_id " +
-			"set " +
-			"u.password = :#{#paramUser.password}, " +
-			"u.email = :#{#paramUser.email}, " +
-			"ud.zipcode = :#{#paramUser.userDetail.zipcode}, " +
-			"ud.address = :#{#paramUser.userDetail.address}, " +
-			"ud.address_detail = :#{#paramUser.userDetail.addressDetail}, " +
-			"ud.phone_number = :#{#paramUser.userDetail.phoneNumber}, " +
-			"ud.receive_sms = :#{#paramUser.userDetail.receiveSms} " +
-			"where u.id = :#{#paramUser.id} ", nativeQuery = true)
-	void saveWithNewPw(@Param("paramUser") User user);
-
 	//JPQL예시 : @Query("SELECT x FROM User x left join fetch x.userDetail left join fetch x.userRole where x.loginId=?1")
 
 }

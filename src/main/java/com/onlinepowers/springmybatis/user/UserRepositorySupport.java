@@ -143,25 +143,6 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
 
 
     /**
-     * 비밀번호 ""일시 비밀번호 제외 update
-     * 비밀번호 ""아닐시 비밀번호도 같이 update
-     * @param user
-     */
-    void updateUser(User user) {
-
-        String password = user.getPassword();
-
-        if ("".equals(password)) {
-            userRepository.saveWithOldPw(user);
-        }
-
-        if (!"".equals(password)) {
-            userRepository.saveWithNewPw(user);
-        }
-    }
-
-
-    /**
      * 특정 이름으로 검색 (Junit 테스트 예시)
      * @param name
      * @return

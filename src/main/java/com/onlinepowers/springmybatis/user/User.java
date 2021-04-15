@@ -5,6 +5,8 @@ import com.onlinepowers.springmybatis.paging.JpaPaging;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,6 +20,7 @@ import javax.validation.constraints.*;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "OP_USER")
+@DynamicUpdate
 public class User extends JpaPaging {
 
 	@Id
@@ -62,5 +65,13 @@ public class User extends JpaPaging {
 	@JoinColumn(name="USER_ID", insertable = false, updatable = false)
 	public UserRole userRole;
 
+
+	/**
+	 * insert 되기전 (persist 되기전) 실행된다.
+	 * */
+	@PrePersist
+	public void prePersist() {      //비밀번호 입력안하면 null로 update한다.
+		this.password = this.password == "" ? null : this.password;
+	}
 
 }
