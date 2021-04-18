@@ -120,6 +120,7 @@ public class UserController {
 		}
 
 		userService.insertUser(user);
+
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
 
 		session.setAttribute("loginUser", loginUser);

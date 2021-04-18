@@ -12,7 +12,6 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -22,10 +21,13 @@ public class UserRole extends JpaPaging {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
     public Long userId;
 
-    @Column(name = "AUTHORITY")
+    @OneToOne
+    @JoinColumn(name="ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private User user;
+
     public String authority;
 
     public String getAuthorityTitle() {

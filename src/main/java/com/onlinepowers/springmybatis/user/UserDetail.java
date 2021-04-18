@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -25,31 +24,30 @@ public class UserDetail extends JpaPaging {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
     public Long userId;
+
+    @OneToOne
+    @JoinColumn(name="ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private User user;
 
     @NotEmpty(message="우편번호 입력해주세요")// null, 빈 문자열(스페이스 포함X) 불가
     @Size (max= 30, message="30글자 이하로 입력하세요")
-    @Column(name = "ZIPCODE")
     public String zipcode;
 
     @NotEmpty(message="주소 입력해주세요")
     @Size (max= 30, message="30글자 이하로 입력하세요")
-    @Column(name = "ADDRESS")
     public String address;
 
     @NotEmpty(message="상세주소 입력해주세요")
     @Size (max= 30, message="30글자 이하로 입력하세요")
-    @Column(name = "ADDRESS_DETAIL")
     public String addressDetail;
 
     @NotEmpty(message="전화번호 입력해주세요")
     @Size (max= 30, message="30글자 이하로 입력하세요")
-    @Column(name = "PHONE_NUMBER")
     public String phoneNumber;
 
     @NotNull(message="수신여부 체크해주세요")
-    @Column(name = "RECEIVE_SMS")
     public String receiveSms;
 
     public String getReceiveSmsTitle() {

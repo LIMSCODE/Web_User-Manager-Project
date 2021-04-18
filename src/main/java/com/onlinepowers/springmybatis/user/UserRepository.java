@@ -30,24 +30,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
 	/**
-	 * 현재 DB에서 최대 PK (회원정보 insert시 DB암호화, User테이블의 FK설정시 이용)
+	 * 현재 DB에서 최대 PK (회원정보 insert시 DB암호화)
 	 * @return
 	 */
 	@Query(value = "SELECT coalesce(MAX(u.id), 0) FROM User u")
 	long getMaxPK();
 
-
-	/**
-	 * User테이블의 FK UPDATE (INSERT 후 DB의 최대 PK값으로)
-	 * User 엔티티에 user_id 필드가 없어서 DB에있는 컬럼으로 사용하기 위해 nativeQuery사용
-	 * @param id
-	 */
-	@Modifying
-	@Query(value = "UPDATE op_user " +
-			"set " +
-			"user_id = (SELECT * FROM (SELECT id FROM op_user WHERE id = :id) as A) " +
-			"WHERE id = :id", nativeQuery = true)
-	void setUserFK(Long id);
 
 	//JPQL예시 : @Query("SELECT x FROM User x left join fetch x.userDetail left join fetch x.userRole where x.loginId=?1")
 

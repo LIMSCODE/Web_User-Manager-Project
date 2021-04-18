@@ -38,11 +38,11 @@ public class UserServiceImpl implements UserService {
 		log.debug(password);
 
 		//이렇게하면 안되서 DB에서 PK+1구해서 FK에 넣음
-		user.getUserDetail().setUserId(user.getId());
-		user.getUserRole().setUserId(user.getId());
+		//user.getUserDetail().setUserId(user.getId());
+		//user.getUserRole().setUserId(user.getId());
 
 		userRepository.save(user);  //Jpa에서는 user만 save하면 하위테이블도 모두 저장된다.
-		userRepository.setUserFK(userRepository.getMaxPK());
+		//userRepository.setUserFK(userRepository.getMaxPK());
 
 	}
 
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 		user.getUserDetail().setUserId(user.getId());	//하위테이블 수정안되는 현상 해결
 		user.getUserRole().setUserId(user.getId());
 
-		if(user.getPassword() == "") {
+		if ("".equals(user.getPassword())) {
 
 			Optional<User> storedUser = userRepository.findById(user.getId());
 			user.setPassword(storedUser.get().getPassword());       //공백으로 수정시, 저장된 비번과 같은것으로 인식

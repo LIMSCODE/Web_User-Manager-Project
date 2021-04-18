@@ -16,7 +16,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -27,44 +26,47 @@ public class User extends JpaPaging {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID")
 	private Long id;
 	private long pagingId;
 
+	@Valid
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	private UserDetail userDetail;
+
+	@NotNull(message = "직위 체크 해주세요")
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	private UserRole userRole;
+
 	@NotEmpty(message = "이름 입력해주세요")
 	@Size(max = 12, message = "12글자 이하로 입력하세요")
-	@Column(name="NAME", nullable=false)
+	@Column(nullable=false)
 	private String name;
 
 	@NotEmpty(message = "아이디 입력해주세요")
 	@Size(max = 12, message = "12글자 이하로 입력하세요")
 	@Pattern(regexp = "^[a-z]+[a-z0-9]{5,19}", message = "아이디는 영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.")
-	@Column(name="LOGIN_ID")
 	private String loginId;
 
-
-	@Column(name="PASSWORD")
 	private String password;
 
 	@NotEmpty(message = "이메일 입력해주세요")
 	@Size(max = 30, message = "30글자 이하로 입력하세요")
 	@Email
-	@Column(name="EMAIL")
 	private String email;
 
 	@CreatedDate
 	@JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	@Column(name="CREATED_DATE", nullable = false, updatable = false)
+	@Column(nullable = false, updatable = false)
 	private String createdDate;
 
-	@Valid
-	@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinColumn(name="USER_ID", insertable = false, updatable = false)
-	public UserDetail userDetail;
+	public void setUserDetail(UserDetail userDetail) {
+		this.userDetail = userDetail;
+		this.userDetail.setUser(this);
+	}
 
-	@NotNull(message = "직위 체크 해주세요")
-	@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinColumn(name="USER_ID", insertable = false, updatable = false)
-	public UserRole userRole;
+	public void setUserRole(UserRole userRole) {
+		this.userRole = userRole;
+		this.userRole.setUser(this);
+	}
 
 }
