@@ -3,7 +3,6 @@ package com.onlinepowers.springmybatis.user;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.ibatis.annotations.Many;
 
 import javax.persistence.*;
 import java.util.ArrayList;

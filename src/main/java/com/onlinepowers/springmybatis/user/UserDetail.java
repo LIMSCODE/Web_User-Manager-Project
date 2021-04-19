@@ -4,7 +4,6 @@ package com.onlinepowers.springmybatis.user;
 import com.onlinepowers.springmybatis.paging.JpaPaging;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
