@@ -57,10 +57,7 @@ dependencies {
 }
 
 
-//querydsl 적용
-//apply plugin: "com.ewerk.gradle.plugins.querydsl" //plugin 적용
-//def querydslSrcDir = 'src/main/generated' //Qclass 생성 위치
-//cannot find symbol은 해결됏으나 duplicate 발생
+//querydsl 적용 -annotationProcessor
 configure("querydsl-sample") {
     apply plugin: "io.spring.dependency-management"
 
