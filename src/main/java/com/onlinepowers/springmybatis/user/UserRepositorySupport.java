@@ -2,17 +2,13 @@ package com.onlinepowers.springmybatis.user;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
-
-import java.util.List;
 
 @Repository
 public class UserRepositorySupport extends QuerydslRepositorySupport {
@@ -89,5 +85,19 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
                 .fetchResults();
 
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+    }
+
+
+    /**
+     * * 현재 DB에서 최대 PK (회원정보 insert시 DB암호화)
+     * @return
+     */
+    long getMaxPK() {
+
+        QUser qUser = QUser.user;
+        long maxPK = queryFactory.select(qUser.id.max().coalesce(0L)).from(qUser).fetchCount();
+        long maxPkPlus = maxPK + 1;
+
+        return maxPkPlus;
     }
 }

@@ -75,7 +75,7 @@ public class UserManagerController {
 		//관리자가 아닐때
 		if (!"ROLE_OPMANAGER".equals(loginUser.getUserRole().getAuthority())) {
 			log.debug("권한이 사용자가 아닙니다.");
-			return "redirect:/user/login";
+			return "redirect:/opmanager/user/login";
 		}
 
 		session.setAttribute("loginUser", loginUser);

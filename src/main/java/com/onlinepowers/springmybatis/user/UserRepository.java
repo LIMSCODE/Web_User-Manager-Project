@@ -29,14 +29,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	User findById(long id);
 
 
-	/**
-	 * 현재 DB에서 최대 PK (회원정보 insert시 DB암호화)
-	 * @return
-	 */
-	@Query(value = "SELECT coalesce(MAX(u.id), 0) FROM User u")
-	long getMaxPK();
-
-
 	//JPQL예시 : @Query("SELECT x FROM User x left join fetch x.userDetail left join fetch x.userRole where x.loginId=?1")
 
 }

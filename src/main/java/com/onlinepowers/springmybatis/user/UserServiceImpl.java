@@ -89,8 +89,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public long getMaxPK() {
-		long maxPk = userRepository.getMaxPK();
-		return maxPk + 1;
+
+		long maxPK = userRepositorySupport.getMaxPK();
+
+		return maxPK;
 	}
 
 	@Override
