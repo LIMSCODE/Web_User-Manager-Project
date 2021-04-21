@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
-	private final UserRepositorySupport userRepositorySupport;
 
 	@Override
 	public void deleteUserById(long id) {
@@ -32,17 +31,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void insertUser(User user) {
 
-		String password = user.getPassword();
-		password = SHA256Util.getEncrypt(password, getMaxPK());
-		user.setPassword(password);
-		log.debug(password);
-
-		//이렇게하면 안되서 DB에서 PK+1구해서 FK에 넣음
-		//user.getUserDetail().setUserId(user.getId());
-		//user.getUserRole().setUserId(user.getId());
-
 		userRepository.save(user);  //Jpa에서는 user만 save하면 하위테이블도 모두 저장된다.
-		//userRepository.setUserFK(userRepository.getMaxPK());
+		User storedUser = userRepository.findByLoginId(user.getLoginId());
+
+		String password = storedUser.getPassword();
+		password = SHA256Util.getEncrypt(password, storedUser.getId());
+		storedUser.setPassword(password);
+		log.debug(password);
 
 	}
 
@@ -71,7 +66,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getUserByLoginId(String loginId) {
-
 		return userRepository.findByLoginId(loginId);
 	}
 
@@ -82,23 +76,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int getUserCountByLoginId(String loginId) {
-
 		int userCount = userRepository.countByLoginId(loginId);
 		return userCount;
 	}
 
 	@Override
-	public long getMaxPK() {
-
-		long maxPK = userRepositorySupport.getMaxPK();
-
-		return maxPK;
-	}
-
-	@Override
 	public Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("jpaPaging")JpaPaging jpaPaging) {
 
-		Page<User> userPage = userRepositorySupport.getUserListPagination(user, pageable);
+		Page<User> userPage = userRepository.getUserListPagination(user, pageable);
 		List<User> results = userPage.getContent().stream().collect(Collectors.toList());
 
 		long totalCount = userPage.getTotalElements();

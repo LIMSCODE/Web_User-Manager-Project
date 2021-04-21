@@ -39,13 +39,6 @@ public interface UserService {
 
 
     /**
-     * 회원 insert시 비밀번호 암호화에 사용되는 PK (최대 PK값 + 1)
-     * @return
-     */
-    long getMaxPK();
-
-
-    /**
      * 아이디 중복 확인시 해당 아이디 몇개인지
      * @param loginId
      * @return

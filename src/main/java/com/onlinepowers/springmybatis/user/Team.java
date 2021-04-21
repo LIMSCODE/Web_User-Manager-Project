@@ -15,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "OP_TEAM")
-@DynamicUpdate
 public class Team {
 
 	@Id

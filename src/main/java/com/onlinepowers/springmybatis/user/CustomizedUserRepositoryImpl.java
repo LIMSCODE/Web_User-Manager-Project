@@ -6,21 +6,16 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserRepositorySupport extends QuerydslRepositorySupport {
+public class CustomizedUserRepositoryImpl implements CustomizedUserRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final UserRepository userRepository;
 
-    public UserRepositorySupport(JPAQueryFactory queryFactory, UserRepository userRepository) {
-        super(User.class);
+    public CustomizedUserRepositoryImpl(JPAQueryFactory queryFactory) {
         this.queryFactory = queryFactory;
-        this.userRepository = userRepository;
     }
-
 
     /**
      * 페이징 적용한 검색쿼리
@@ -28,7 +23,8 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
      * @param pageable
      * @return
      */
-    Page<User> getUserListPagination(User user, Pageable pageable) {
+    @Override
+    public Page<User> getUserListPagination(User user, Pageable pageable) {
 
         QUser qUser = QUser.user;
         QUserDetail qUserDetail = QUserDetail.userDetail;
@@ -81,6 +77,7 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
                 .where(builder)
                 .orderBy(qUser.id.desc())
                 .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
                 .fetchResults();
 
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
