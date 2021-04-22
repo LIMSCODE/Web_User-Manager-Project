@@ -287,7 +287,7 @@
         //alert(JSON.stringify(query));
 
         $.ajax({
-            url : "/opmanager/user/check-id",
+            url : "/api/opmanager/user/check-id",
             type : "post",
             data : query,
             datatype: "json",

@@ -223,11 +223,7 @@ public class UserController {
 	}
 
 
-	/**
-	 * 아이디 중복 확인
-	 * @param user
-	 * @return
-	 */
+/*
 	@ResponseBody
 	@PostMapping(value = "/check-id")
 	public Map<String, Object> checkId(User user) {
@@ -247,8 +243,8 @@ public class UserController {
 
 		}
 		return map;
-
 	}
+*/
 
 }
 

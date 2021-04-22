@@ -103,12 +103,12 @@
                     <c:set var="page" value="${page}" scope="session"/>
                     <a id="edit" href="/opmanager/user/edit/${userList.id}${user.makeQueryString(page)}">수정</a>
                 </td>
+
                 <td>
-                    <form action="/opmanager/user/delete/${userList.id}${user.makeQueryString(page)}" method="post">
                         <!--href는 get으로 처리된다. form도 안될땐 method="post"써줘야한다.-->
-                        <button class="delete" type="submit" >삭제</button>
-                    </form>
+                        <button class="delete" type="submit"  onclick="deleteUser(${userList.id});">삭제</button>
                 </td>
+
             </tr>
             </c:forEach>
             </tbody>
@@ -159,14 +159,36 @@
 
 
 <script type="text/javascript">
-	$(".delete").click (
-		function() {
-			if (confirm("정말 삭제하시겠습니까 ?") == true) {
 
-			} else {
-				return false;
-			}
-        });
+	function deleteUser(long) {
+
+		if (confirm("정말 삭제하시겠습니까 ?") == true) {
+
+			$.ajax({
+				url : "/api/opmanager/user/delete/" + long,
+				type : "post",
+				//contentType: "application/json",
+				//datatype: "string",
+				success : function(data) {
+					data.
+					location.reload();
+				},
+				error : function() {
+					alert(this.url);
+					alert("실패");
+				}
+			});
+
+		} else {
+			return false;
+		}
+
+	};
+
+	//$(".delete").click (function() {
+
+
+    //});
 
 </script>
 </body>
