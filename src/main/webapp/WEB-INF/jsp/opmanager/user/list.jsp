@@ -16,7 +16,7 @@
 
                     <!--/* 검색 form */-->
                     <form id="searchForm" action="/opmanager/user/list" method="get"
-                               class="form-horizontal" role="form">
+                          class="form-horizontal" role="form">
                         <!-- /* 현재 페이지 번호, 페이지당 출력할 데이터 개수, 페이지 하단에 출력할 페이지 개수 Hidden 파라미터 */ -->
                         <input type="hidden" name="currentPageNo" value="1"/>
                         <input type="hidden" name="size" value="${user.size}"/>
@@ -61,7 +61,58 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div id="display">
+        <table class="table table-hover type09" >
+            <thead>
+            <tr class="warning">
+                <th class="col-sm-1">No</th>
+                <th class="col-sm-5">이름</th>
+                <th class="col-sm-5">아이디</th>
+                <th class="col-sm-3">이메일</th>
+                <th class="col-sm-3">가입일</th>
+
+                <th class="col-sm-3">우편번호</th>
+                <th class="col-sm-3">주소</th>
+                <th class="col-sm-3">상세주소</th>
+                <th class="col-sm-3">전화번호</th>
+                <th class="col-sm-3">SMS수신여부</th>
+                <th class="col-sm-3">직위</th>
+
+                <th class="col-sm-3">수정</th>
+                <th class="col-sm-3">삭제</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <c:forEach items="${userPage.content}" var="userList">
+                <tr>
+                    <td>${userList.pagingId}</td>
+                    <td>${userList.name}</td>
+                    <td>${userList.loginId}</td>
+                    <td>${userList.email}</td>
+                    <td>${userList.createdDate}</td>
+
+                    <td>${userList.userDetail.zipcode}</td>
+                    <td>${userList.userDetail.address}</td>
+                    <td>${userList.userDetail.addressDetail}</td>
+                    <td>${userList.userDetail.phoneNumber}</td>
+                    <td>${userList.userDetail.getReceiveSmsTitle()}</td>
+                    <td>${userList.userRole.getAuthorityTitle()}</td>
+
+                    <!--수정  아이디 넘어감 성공-->
+                    <td>
+                        <c:set var="page" value="${page}" scope="session"/>
+                        <a id="edit" href="/opmanager/user/edit/${userList.id}${user.makeQueryString(page)}">수정</a>
+                    </td>
+
+                    <td>
+                        <!--href는 get으로 처리된다. form도 안될땐 method="post"써줘야한다.-->
+                        <button class="delete" type="submit"  onclick="deleteUser(${userList.id});">삭제</button>
+                    </td>
+
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -99,6 +150,7 @@
     </p>
 </ul>
 
+<!--등록 성공-->
 <form action="/opmanager/user/create">
     <input type="submit" value="등록" id="create" style="float:right">
 </form>
@@ -107,94 +159,15 @@
 
 
 <script type="text/javascript">
-
-    //화면로딩시 ajax로 json데이터 변환해서 화면에 뿌리기
-    $(document).ready(function() {
-
-	    $.ajax({
-		    dataType : "json",
-		    url : "/api/opmanager/user/list",
-		    success : function(data){
-		    	alert("데이터로딩 시작");
-		    	resultHtml(data);
-		    	},
-		    error : function(){ alert("로딩실패!"); }
-	    });
-    });
-
-    function resultHtml(data) {
-
-        var html = "";
-	    html += "<table class='table table-hover type09'>";
-	    html += "<thead>";
-	    html += "<tr class='warning'>";
-	    html += "<th class='col-sm-1'>No</th>";
-	    html += "<th class='col-sm-5'>이름</th>";
-	    html += "<th class='col-sm-5'>아이디</th>";
-	    html += "<th class='col-sm-3'>이메일</th>";
-	    html += "<th class='col-sm-3'>가입일</th>";
-	    html += "<th class='col-sm-3'>우편번호</th>";
-	    html += "<th class='col-sm-3'>주소</th>";
-	    html += "<th class='col-sm-3'>상세주소</th>";
-	    html += "<th class='col-sm-3'>전화번호</th>";
-	    html += "<th class='col-sm-3'>SMS수신여부</th>";
-	    html += "<th class='col-sm-3'>직위</th>";
-	    html += "<th class='col-sm-3'>수정</th>";
-	    html += "<th class='col-sm-3'>삭제</th>";
-	    html += "</tr>";
-	    html += "</thead>";
-	    html += "<tbody>";
-
-	    $.each(data, function(key, value){
-
-		    if (key == "content") {
-
-			    for (var i = 0; i < value.length; i++) {
-
-                    html == "<tr>";
-				    html += "<td>" + value[i].pagingId + "</td>";
-				    html += "<td>value[i].name</td>";
-				    html += "<td>value[i].loginId</td>";
-				    html += "<td>value[i].name</td>";
-				    html += "<td>value[i].email</td>";
-				    html += "<td>value[i].createdDate</td>";
-
-				    html += "<td>value[i].userDetail.zipcode</td>";
-				    html += "<td>value[i].userDetail.address</td>";
-				    html += "<td>value[i].userDetail.addressDetail</td>";
-				    html += "<td>value[i].userDetail.phoneNumber</td>";
-				    html += "<td>value[i].userDetail.getReceiveSmsTitle</td>";
-				    html += "<td>value[i].userRole.getAuthorityTitle</td>";
-
-                    html += "<td>";
-                    html += "<a id='edit' href='/opmanager/user/edit/" + value[i].id + "'>수정</a>";
-                    html += "</td>";
-                    html += "<td>";
-                    html += "<button class='delete' type='submit'  onclick='deleteUser(" + value[i].id + ");'>삭제</button>";
-				    html += "</td>";
-
-				    html += "</tr>";
-			    }
-		    }
-	    });
-
-	    html += "</tbody>";
-	    html += "</table>";
-
-	    $("#display").empty();
-	    $("#display").append(html);
-    }
-
 	function deleteUser(long) {
-
 		if (confirm("정말 삭제하시겠습니까 ?") == true) {
-
 			$.ajax({
 				url : "/api/opmanager/user/delete/" + long,
 				type : "post",
 				//contentType: "application/json",
 				//datatype: "string",
 				success : function(data) {
+					data.
 					location.reload();
 				},
 				error : function() {
@@ -202,11 +175,11 @@
 					alert("실패");
 				}
 			});
-
 		} else {
 			return false;
 		}
 	};
-
+	//$(".delete").click (function() {
+	//});
 </script>
 </body>

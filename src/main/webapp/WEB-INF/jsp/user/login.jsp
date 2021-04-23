@@ -18,7 +18,7 @@
     <span>
          아이디 <form:input path="loginId" maxlength="12" /> <br>
          비밀번호 <form:password path="password" maxlength="8"/> <br>
-    <input type="submit" class="submit" value="로그인"  formaction="/user/login">
+    <input type="submit" class="submit" value="로그인"  formaction="/api/user/login1">
     </span>
     </p>
 </form:form>
@@ -37,12 +37,40 @@
 			$loginId.focus();
 			return false;
 		}
+
 		if ($password.val() == "") {
 			alert("비밀번호 입력해주세요");
 			$password.focus();
 			return false;
 		}
+
+		var loginForm = $("#target");
+		var formData = new FormData(loginForm[0]);
+		e.preventDefault();
+
+		$.ajax({
+
+			url : "/api/user/login1",
+			type : "post",
+			data : formData,
+			datatype: 'json',
+			processData: false,
+			contentType: false,
+			//contentType: "application/json",
+			//datatype: "string",
+			success : function(data) {
+				alert("로그인");
+                window.location.href = "/"
+			},
+			error : function() {
+				alert(this.url);
+				alert("실패");
+			}
+		});
+
 	});
+
+
 </script>
 
 </body>

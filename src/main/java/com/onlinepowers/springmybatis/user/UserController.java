@@ -25,25 +25,25 @@ public class UserController {
 	private final UserService userService;
 
 
-	/**
+	/*
 	 * 유저 로그인
 	 * @param user
 	 * @return
-	 */
+
 	@GetMapping("/login")
 	public String login(User user) {
 
 		return "/user/login";
 	}
+ */
 
-
-	/**
+	/*
 	 * 유저 로그인
 	 * @param user
 	 * @param session
 	 * @param model
 	 * @return
-	 */
+
 	@PostMapping("/login")
 	public String login(User user, HttpSession session, Model model) {
 
@@ -81,7 +81,7 @@ public class UserController {
 
 		return "redirect:/";
 	}
-
+*/
 
 	/**
 	 * 회원가입
