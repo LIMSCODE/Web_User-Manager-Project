@@ -148,10 +148,9 @@
     //최종 제출시 이벤트
     $("#target").on("submit", function(e) {
 
-    	e.preventDefault();
-
-        let $name= $("#name");
-        let $loginId= $("#loginId");
+    	let $id = $("#id");
+        let $name = $("#name");
+        let $loginId = $("#loginId");
         let $password = $("#password");
         let $passwordConfirm = $("#passwordConfirm");
         let $createPassword = $("#createPassword");
@@ -257,30 +256,58 @@
 		    alert("sms 수신여부 선택해주세요");
 		    return false;
 	    }
-        //var user로 값들 일일히 넣는 방법
 
-	    var createForm = $("#target");
-        var formData = new FormData(createForm[0]);
-        alert(formData);
+	    if ($id.val() == "") {
 
-	    $.ajax({
-		    url : "/api/opmanager/user/create" ,
-		    type : "post",
-            data : formData,
-            datatype: 'json',
-		    processData: false,
-		    contentType: false,
-		    //contentType: "application/json",
-		    //datatype: "string",
-		    success : function(data) {
-		    	alert("insert성공");
-			    window.location.href="/opmanager/user/list";  //list로 이동
-		    },
-		    error : function() {
-			    alert(this.url);
-			    alert("실패");
-		    }
-	    });
+		    var createForm = $("#target");
+		    var formData = new FormData(createForm[0]);
+		    e.preventDefault();
+
+		    $.ajax({
+			    url : "/api/opmanager/user/create",
+			    type : "post",
+			    data : formData,
+			    datatype: 'json',
+			    processData: false,
+			    contentType: false,
+			    //contentType: "application/json",
+			    //datatype: "string",
+			    success : function(data) {
+				    alert("insert성공");
+				    window.location.href="/opmanager/user/list";  //list로 이동
+			    },
+			    error : function() {
+				    alert(this.url);
+				    alert("실패");
+			    }
+		    });
+	    }
+
+	    if ($id.val() != "") {
+
+		    var editForm = $("#target");
+		    var formData = new FormData(editForm[0]);
+		    e.preventDefault();
+
+		    $.ajax({
+			    url : "/api/opmanager/user/edit/" + $id,
+			    type : "post",
+			    data : formData,
+			    datatype: 'json',
+			    processData: false,
+			    contentType: false,
+			    //contentType: "application/json",
+			    //datatype: "string",
+			    success : function(data) {
+				    alert("update성공");
+				    window.location.href="/opmanager/user/list";  //list로 이동
+			    },
+			    error : function() {
+				    alert(this.url);
+				    alert("실패");
+			    }
+		    });
+	    }
 
     });
 

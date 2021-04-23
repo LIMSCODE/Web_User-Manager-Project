@@ -1,14 +1,10 @@
 package com.onlinepowers.springmybatis.api;
 
 
-import javafx.util.Builder;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
-import java.util.List;
 import java.util.Map;
 
 public class ApiResponseEntity extends ResponseEntity<Map<String, Object>> {
@@ -34,9 +30,7 @@ public class ApiResponseEntity extends ResponseEntity<Map<String, Object>> {
 	}
 
 
-
-
-
+/*
 
 	public static Builder data() {
 		return new Builder();
@@ -128,5 +122,6 @@ public class ApiResponseEntity extends ResponseEntity<Map<String, Object>> {
 			}
 			return ResponseEntity.status(status).body(map);
 		}
+*/
 
 }

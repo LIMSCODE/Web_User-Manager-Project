@@ -1,6 +1,7 @@
 
 package com.onlinepowers.springmybatis.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.onlinepowers.springmybatis.paging.JpaPaging;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class UserRole extends JpaPaging {
     @OneToOne
     @JoinColumn(name="ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonBackReference
     private User user;
 
     public String authority;

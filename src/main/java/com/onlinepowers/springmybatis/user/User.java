@@ -1,6 +1,7 @@
 package com.onlinepowers.springmybatis.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.onlinepowers.springmybatis.paging.JpaPaging;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,10 +30,12 @@ public class User extends JpaPaging {
 
 	@Valid
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	@JsonManagedReference
 	private UserDetail userDetail;
 
 	@NotNull(message = "직위 체크 해주세요")
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	@JsonManagedReference
 	private UserRole userRole;
 
 	@NotEmpty(message = "이름 입력해주세요")

@@ -113,7 +113,7 @@
 
 	    $.ajax({
 		    dataType : "json",
-		    url : "/api/opmanager/user/list",
+		    url : "/api/opmanager/user/list1",
 		    success : function(data){
 		    	alert("데이터로딩 시작");
 		    	resultHtml(data);
@@ -153,19 +153,17 @@
 
                     html == "<tr>";
 				    html += "<td>" + value[i].pagingId + "</td>";
-				    html += "<td>value[i].name</td>";
-				    html += "<td>value[i].loginId</td>";
-				    html += "<td>value[i].name</td>";
-				    html += "<td>value[i].email</td>";
-				    html += "<td>value[i].createdDate</td>";
+				    html += "<td>" +value[i].name + "</td>";
+				    html += "<td>" +value[i].loginId + "</td>";
+				    html += "<td>" +value[i].email + "</td>";
+				    html += "<td>" +value[i].createdDate + "</td>";
 
-				    html += "<td>value[i].userDetail.zipcode</td>";
-				    html += "<td>value[i].userDetail.address</td>";
-				    html += "<td>value[i].userDetail.addressDetail</td>";
-				    html += "<td>value[i].userDetail.phoneNumber</td>";
-				    html += "<td>value[i].userDetail.getReceiveSmsTitle</td>";
-				    html += "<td>value[i].userRole.getAuthorityTitle</td>";
-
+				    html += "<td>" +value[i].userDetail.zipcode + "</td>";
+				    html += "<td>" +value[i].userDetail.address + "</td>";
+				    html += "<td>" +value[i].userDetail.addressDetail + "</td>";
+				    html += "<td>" +value[i].userDetail.phoneNumber + "</td>";
+				    html += "<td>" +value[i].userDetail.getReceiveSmsTitle + "</td>";
+				    html += "<td>" +value[i].userRole.getAuthorityTitle + "</td>";
                     html += "<td>";
                     html += "<a id='edit' href='/opmanager/user/edit/" + value[i].id + "'>수정</a>";
                     html += "</td>";

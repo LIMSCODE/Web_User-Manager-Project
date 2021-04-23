@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -34,7 +35,23 @@ public class UserManagerApiController {
 
 	private final UserService userService;
 
+	@GetMapping("/list")
+	public ModelAndView getUserList1(@ModelAttribute("jpaPaging") JpaPaging jpaPaging,
+	                                 User user, @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC, size = 2) Pageable pageable,
+	                                 HttpSession session, Model model) {
 
+		User loginUser = UserUtils.getLoginUser(session);
+		model.addAttribute("loginUser", loginUser);
+
+		Page<User> userPage = userService.getUserList(user, pageable, jpaPaging); //페이지 객체 담아서 뷰로 보낸다.
+		//model.addAttribute("userPage", userPage);
+
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/opmanager/user/list");
+		mv.addObject("userPage", userPage);
+
+		return mv;
+	}
 	/**
 	 * 회원 목록
 	 * @param jpaPaging
@@ -43,8 +60,8 @@ public class UserManagerApiController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("/list")
-	public ResponseEntity getUserList(@ModelAttribute("jpaPaging") JpaPaging jpaPaging,
+	@GetMapping("/list1")
+	public ResponseEntity<Page<User>> getUserList(@ModelAttribute("jpaPaging") JpaPaging jpaPaging,
 	                          User user, @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC, size = 2) Pageable pageable,
 	                          HttpSession session, Model model) {
 
@@ -54,7 +71,7 @@ public class UserManagerApiController {
 		Page<User> userPage = userService.getUserList(user, pageable, jpaPaging); //페이지 객체 담아서 뷰로 보낸다.
 		model.addAttribute("userPage", userPage);
 
-		return new ResponseEntity(userPage,HttpStatus.OK);
+		return new ResponseEntity<>(userPage, HttpStatus.OK);
 	}
 
 

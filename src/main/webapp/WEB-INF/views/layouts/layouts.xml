@@ -15,7 +15,7 @@
     </definition>
 
     <definition name="/opmanager/user/list" extends="defaultLayout">
-        <put-attribute name="content" value="/WEB-INF/jsp/opmanager/user/list.jsp" />
+        <put-attribute name="content" value="/WEB-INF/jsp/api/opmanager/user/list.jsp" />
     </definition>
 
     <definition name="/opmanager/user/form" extends="defaultLayout">
