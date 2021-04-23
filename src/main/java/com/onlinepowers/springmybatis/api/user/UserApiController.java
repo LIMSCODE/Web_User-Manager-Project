@@ -56,14 +56,14 @@ public class UserApiController {
 
 		if (loginUser == null) {
 
-			mv.setViewName("/main/user");
+			mv.setViewName("/api/main/user");
 			return mv;
 		}
 
 		if (UserUtils.isManagerLogin(session)) {    //로그인 안되있을시 null 뜸
 			session.invalidate();
 
-			mv.setViewName("/main/user");
+			mv.setViewName("/api/main/user");
 			return mv;
 		}
 
@@ -71,11 +71,11 @@ public class UserApiController {
 								   //null이 아니면 정보수정 뜨고, null이면 회원가입 뜬다.
 
 			mv.addObject("loginUser", loginUser);
-			mv.setViewName("/main/user");
+			mv.setViewName("/api/main/user");
 			return mv;
 		}
 
-		mv.setViewName("/main/user");
+		mv.setViewName("/api/main/user");
 		return mv;
 	}
 
@@ -85,7 +85,7 @@ public class UserApiController {
 
 		ModelAndView mv = new ModelAndView();
 
-		mv.setViewName("/api/main/user");
+		mv.setViewName("/api/main/login");
 		return mv;
 	}
 
