@@ -11,7 +11,7 @@
 <%--@elvariable id="user" type="User"--%>
 <form:form modelAttribute="user" method="post" id="target" >
     <c:if test="${id != null}">
-        <input type="hidden" name="id" value="${id}"/>
+        <input type="hidden" name="id" id="id" value="${id}"/>
         <input type="hidden" name="page" value="${jpaPaging.page}" />
         <input type="hidden" name="searchType" value="${jpaPaging.searchType}" />
         <input type="hidden" name="searchKeyword" value="${jpaPaging.searchKeyword}" />
@@ -137,7 +137,7 @@
     </c:if>
     <c:if test="${id == null}">
     <span>
-        <input type="submit" class="submit" value="등록" formaction="/api/opmanager/user/create"><br><br>
+        <input type="submit" class="submit" value="등록" formaction="/opmanager/user/create"><br><br>
         <td><a class="btn" href="/opmanager">메인화면</a> </td>
     </span>
     </c:if>
@@ -148,10 +148,11 @@
     //최종 제출시 이벤트
     $("#target").on("submit", function(e) {
 
-    	e.preventDefault();
+        e.preventDefault();
 
-        let $name= $("#name");
-        let $loginId= $("#loginId");
+    	let $id = $("#id");
+        let $name = $("#name");
+        let $loginId = $("#loginId");
         let $password = $("#password");
         let $passwordConfirm = $("#passwordConfirm");
         let $createPassword = $("#createPassword");
@@ -252,35 +253,61 @@
             return false;
         }
 
-
-	    if($("input:radio[name='userDetail.receiveSms']").is(":checked") == false) {
+	    if ($("input:radio[name='userDetail.receiveSms']").is(":checked") == false) {
 		    alert("sms 수신여부 선택해주세요");
 		    return false;
 	    }
-        //var user로 값들 일일히 넣는 방법
 
-	    var createForm = $("#target");
-        var formData = new FormData(createForm[0]);
-        alert(formData);
+	    if ($id.val() == null) {
 
-	    $.ajax({
-		    url : "/api/opmanager/user/create" ,
-		    type : "post",
-            data : formData,
-            datatype: 'json',
-		    processData: false,
-		    contentType: false,
-		    //contentType: "application/json",
-		    //datatype: "string",
-		    success : function(data) {
-		    	alert("insert성공");
-			    window.location.href="/opmanager/user/list";  //list로 이동
-		    },
-		    error : function() {
-			    alert(this.url);
-			    alert("실패");
-		    }
-	    });
+            let createForm = $("#target");
+            let createFormData = new FormData(createForm[0]);
+
+            $.ajax({
+                url : "/opmanager/user/create",
+                type : "post",
+                data : createFormData,
+                datatype: 'json',
+                processData: false,
+                contentType: false,
+                //contentType: "application/json",
+                //datatype: "string",
+                success : function(data) {
+                    alert("insert성공");
+                    window.location.href="/opmanager/user/list";  //list로 이동
+                },
+                error : function() {
+                    alert(this.url);
+                    alert("실패");
+                }
+            });
+
+	    }
+
+	    if ($id.val() != null) {
+
+		    var editForm = $("#target");
+		    var editFormData = new FormData(editForm[0]);
+
+		    $.ajax({
+			    url : "/opmanager/user/edit/" + $id.val(),
+			    type : "post",
+			    data : editFormData,
+			    datatype: 'json',
+			    processData: false,
+			    contentType: false,
+			    //contentType: "application/json",
+			    //datatype: "string",
+			    success : function(data) {
+				    alert("update성공");
+				    window.location.href="/opmanager/user/list";  //list로 이동
+			    },
+			    error : function() {
+				    alert(this.url);
+				    alert("실패");
+			    }
+		    });
+	    }
 
     });
 
@@ -315,7 +342,7 @@
         //alert(JSON.stringify(query));
 
         $.ajax({
-            url : "/api/opmanager/user/check-id",
+            url : "/opmanager/user/check-id",
             type : "post",
             data : query,
             datatype: "json",

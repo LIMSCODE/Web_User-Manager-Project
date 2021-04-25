@@ -1,4 +1,4 @@
-package com.onlinepowers.springmybatis.manager;
+package com.onlinepowers.springmybatis.api.manager;
 
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.util.UserUtils;
@@ -7,13 +7,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 
 @Slf4j
-@Controller
-@RequestMapping("/before-api")
-public class OpmanagerController {
+@RestController
+public class OpmanagerApiController {
 
 	/**
 	 * 관리자 메인 페이지
@@ -23,19 +24,21 @@ public class OpmanagerController {
 	 * @return
 	 */
 	@GetMapping("/opmanager")
-	public String managerMain(User user, HttpSession session, Model model) {
+	public ModelAndView managerMain(User user, HttpSession session, Model model) {
 
 		User loginUser = UserUtils.getLoginUser(session);
 
+		ModelAndView mv = new ModelAndView();
 		//로그인안됬거나, 유저일때
 		if (loginUser == null || UserUtils.isUserLogin(session)) {
-			return "/opmanager/user/login";
+			mv.setViewName("/opmanager/user/login");
+			return mv;
 		}
 
 		//관리자일때
-		model.addAttribute("loginUser", loginUser);
-
-		return "/opmanager/index";
+		mv.addObject("loginUser", loginUser);
+		mv.setViewName("/opmanager/index");
+		return mv;
 	}
 
 }

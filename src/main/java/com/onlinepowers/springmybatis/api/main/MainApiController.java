@@ -1,4 +1,4 @@
-package com.onlinepowers.springmybatis.main;
+package com.onlinepowers.springmybatis.api.main;
 
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.user.UserService;
@@ -9,14 +9,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 
 @Slf4j
-@Controller
-@RequestMapping("/before-api")
+@RestController
 @RequiredArgsConstructor
-public class MainController {
+public class MainApiController {
 
 	private final UserService userService;
 
@@ -27,34 +28,39 @@ public class MainController {
 
 
 	/**
-	 * 유저 메인페이지
+	 * 유저 메인페이지 - 메인 API컨트롤러로 옮김
 	 * @param session
 	 * @param model
 	 * @return
 	 */
 	@GetMapping("/")
-	public String userMain(HttpSession session, Model model) {
+	public ModelAndView userMain(HttpSession session, Model model) {
 
 		User loginUser = UserUtils.getLoginUser(session);
 		log.debug("메인");
 
+		ModelAndView mv = new ModelAndView();
+
 		if (loginUser == null) {
-			return "/main/user";
+			mv.setViewName("/main/user");
+			return mv;
 		}
 
 		if (UserUtils.isManagerLogin(session)) {    //로그인 안되있을시 null 뜸
 			session.invalidate();
-			return "/main/user";
+			mv.setViewName("/main/user");
+			return mv;
 		}
 
 		if (UserUtils.isUserLogin(session)) {
-			model.addAttribute("loginUser", loginUser);
-			return "/main/user";    //null이 아니면 정보수정 뜨고, null이면 회원가입 뜬다.
+			mv.addObject("loginUser", loginUser);
+			mv.setViewName("/main/user");
+			return mv;
 		}
 
-		return "/main/user";
+		mv.setViewName("/main/user");
+		return mv;
 	}
-
 
 	/**
 	 * 유저 로그아웃
@@ -62,9 +68,11 @@ public class MainController {
 	 * @return
 	 */
 	@GetMapping("/user/logout")
-	public String userLogout(HttpSession session) {
+	public ModelAndView userLogout(HttpSession session) {
 		session.invalidate();
-		return "redirect:/";
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("redirect:/");
+		return mv;
 	}
 
 
@@ -74,9 +82,11 @@ public class MainController {
 	 * @return
 	 */
 	@GetMapping("/opmanager/logout")
-	public String managerLogout(HttpSession session) {
+	public ModelAndView managerLogout(HttpSession session) {
 		session.invalidate();
-		return "redirect:/";
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("redirect:/");
+		return mv;
 	}
 
 }

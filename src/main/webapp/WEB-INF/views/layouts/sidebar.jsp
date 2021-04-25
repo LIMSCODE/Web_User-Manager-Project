@@ -5,5 +5,5 @@
 
 <div class="">
     <br><br><br><br>
-    <a class="btn" href="/api/opmanager/user/list" >회원관리</a>
+    <a class="btn" href="/opmanager/user/list" >회원관리</a>
 </div>

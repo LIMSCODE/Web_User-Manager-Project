@@ -24,7 +24,7 @@
 
     <c:if test="${loginUser == null}">
     <span>
-         <a class="btn" href="/api/user/login" >로그인하기</a>
+         <a class="btn" href="/user/login" >로그인하기</a>
          <a class="btn" href="/user/create" >회원가입</a>
     </span>
     </c:if>

@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserApiController {
 
@@ -40,67 +40,26 @@ public class UserApiController {
 	}
 
 
-	/**
-	 * 유저 메인페이지 - 메인 API컨트롤러로 옮김
-	 * @param session
-	 * @param model
-	 * @return
-	 */
-	@GetMapping("/")
-	public ModelAndView userMain(HttpSession session, Model model) {
-
-		User loginUser = UserUtils.getLoginUser(session);
-		log.debug("메인");
-
-		ModelAndView mv = new ModelAndView();
-
-		if (loginUser == null) {
-
-			mv.setViewName("/api/main/user");
-			return mv;
-		}
-
-		if (UserUtils.isManagerLogin(session)) {    //로그인 안되있을시 null 뜸
-			session.invalidate();
-
-			mv.setViewName("/api/main/user");
-			return mv;
-		}
-
-		if (UserUtils.isUserLogin(session)) {
-								   //null이 아니면 정보수정 뜨고, null이면 회원가입 뜬다.
-
-			mv.addObject("loginUser", loginUser);
-			mv.setViewName("/api/main/user");
-			return mv;
-		}
-
-		mv.setViewName("/api/main/user");
-		return mv;
-	}
-
-
 	@GetMapping("/login")
 	public ModelAndView login(User user) {
-
 		ModelAndView mv = new ModelAndView();
-
-		mv.setViewName("/api/main/login");
+		mv.setViewName("/user/login");
 		return mv;
 	}
 
-	@PostMapping("/login1")
+
+	@PostMapping("/login")
 	public ResponseEntity<String> login(User user, HttpSession session, Model model) {
 
+		ResponseEntity<String> responseEntity = null;
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
 
 		//아이디가 널일때
 		if (loginUser == null) {
 			log.debug("아이디 안넘어옴");
-
-			return new ResponseEntity<String>("로그인실패", HttpStatus.OK);
-			//return "redirect:/user/login";
+			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
+			return responseEntity;
 		}
 
 		//입력한 비밀번호를 해시함수로
@@ -110,28 +69,38 @@ public class UserApiController {
 
 		//비밀번호 일치하지않으면
 		if (!loginUser.getPassword().equals(hashPassword)) {
-			log.debug("비밀번호 일치하지 않음");
-
-			return new ResponseEntity<String>("로그인실패", HttpStatus.OK);
-			//return "redirect:/user/login";
+			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
+			return responseEntity;
 		}
 
 		//사용자가 아닐때
 		if (!"ROLE_USER".equals(loginUser.getUserRole().getAuthority())) {
 			log.debug("권한이 사용자가 아닙니다.");
-
-			return new ResponseEntity<String>("로그인실패", HttpStatus.OK);
-			//return "redirect:/user/login";
+			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
+			return responseEntity;
 		}
 
 		session.setAttribute("loginUser", loginUser);
 		session.setMaxInactiveInterval(1000 * 1000);
 
-		model.addAttribute("loginUser", loginUser);
-
-		return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
-		//return "redirect:/";
+		responseEntity = new ResponseEntity("Login_fail",HttpStatus.OK);
+		return responseEntity;
 	}
+
+
+	/**
+	 * 회원가입
+	 * @param user
+	 * @return
+	 */
+	@GetMapping("/create")
+	public ModelAndView register(User user) {
+
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/user/form");
+		return mv;
+	}
+
 
 	/**
 	 * 회원가입
@@ -148,8 +117,8 @@ public class UserApiController {
 		ResponseEntity<String> responseEntity = null;
 
 		if (userResult.hasErrors()) {
-			model.addAttribute("user", user);
-
+			//model.addAttribute("user", user);
+			responseEntity = new ResponseEntity("resiter_fail", HttpStatus.BAD_REQUEST);
 			return responseEntity;
 			// return "/user/form";
 		}
@@ -158,20 +127,85 @@ public class UserApiController {
 		User storedUser = userService.getUserByLoginId(user.getLoginId());
 		if (storedUser != null) {
 			log.debug("해당아이디 존재");
-
+			responseEntity = new ResponseEntity("resiter_fail", HttpStatus.BAD_REQUEST);
 			return responseEntity;
 			//return "redirect:/user/create";
 		}
 
 		userService.insertUser(user);
-
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
 
 		session.setAttribute("loginUser", loginUser);
-		model.addAttribute("loginUser", loginUser);
-
+		responseEntity = new ResponseEntity("resiter_success", HttpStatus.OK);
 		return responseEntity;
-		//return "redirect:/";
+	}
+
+
+	/**
+	 * 수정 전 비밀번호 확인
+	 * @param user
+	 * @return
+	 */
+	@GetMapping("/password-check")
+	public ModelAndView checkPassword(User user) {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/user/password-check");
+		return mv;
+	}
+
+
+	/**
+	 * 수정 전 비밀번호 확인
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/password-check")
+	public ResponseEntity<Map<String, Object>> checkPassword(User user, HttpSession session, Model model) {
+
+		ResponseEntity<Map<String, Object>> responseEntity = null;
+		Map<String, Object> map = new HashMap<String, Object>();
+		User loginUser = UserUtils.getLoginUser(session);
+
+		//입력받은 비밀번호
+		log.debug(user.getPassword());
+		//입력한 비밀번호를 PK이용하여 해시함수로 만들고
+		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
+		log.debug(hashPassword);
+		log.debug(loginUser.getPassword());
+
+		//로그인 세션의 비밀번호 값과 일치하는지 확인
+		if (!hashPassword.equals(loginUser.getPassword())) {
+			log.debug("비밀번호 일치하지 않음 컨트롤러");
+			return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+		}
+
+		log.debug("비밀번호 일치, 수정폼으로 이동 ");
+		map.put("id", loginUser.getId());
+		return new ResponseEntity<>(map, HttpStatus.OK);
+	}
+
+
+	/**
+	 * 개인정보 수정
+	 * @param id
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/edit/{id}")
+	public ModelAndView updateForm(@PathVariable("id") long id,
+							 Optional<User> user, HttpSession session, Model model) {
+
+		ModelAndView mv = new ModelAndView();
+		user = Optional.ofNullable(userService.getUserById(id));
+
+		mv.addObject("user", user);
+		mv.addObject("id", user.get().getId());
+		mv.setViewName("/user/form");
+		return mv;
 	}
 
 
@@ -192,11 +226,8 @@ public class UserApiController {
 		ResponseEntity<String> responseEntity = null;
 
 		if (userResult.hasErrors()) {
-			model.addAttribute("id", user.getId());
-			model.addAttribute("user", user);
-
+			responseEntity = new ResponseEntity("다시입력해주세요", HttpStatus.BAD_REQUEST);
 			return responseEntity;
-			//return "/user/form";
 		}
 
 		userService.updateUser(user);
@@ -204,8 +235,8 @@ public class UserApiController {
 		User updatedUser = userService.getUserByLoginId(user.getLoginId());     //비밀번호 수정후 바뀐 DTO를 session에 set해줘야함.
 		session.setAttribute("loginUser", updatedUser);
 
+		responseEntity = new ResponseEntity("MOD_SUCCEEDED",HttpStatus.OK);
 		return responseEntity;
-		//return "redirect:/";
 	}
 
 
@@ -234,7 +265,6 @@ public class UserApiController {
 		}
 		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
-
 
 }
 

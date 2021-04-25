@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
-@RequestMapping("/opmanager/user")
+@RequestMapping("/before-api/opmanager/user")
 @Controller
 @RequiredArgsConstructor
 public class UserManagerController {
@@ -84,7 +84,6 @@ public class UserManagerController {
 		return "redirect:/opmanager";
 	}
 
-/*
 	/**
 	 * 회원 목록
 	 * @param jpaPaging
@@ -92,7 +91,7 @@ public class UserManagerController {
 	 * @param session
 	 * @param model
 	 * @return
-
+	 */
 	@GetMapping("/list")
 	public String getUserList(@ModelAttribute("jpaPaging") JpaPaging jpaPaging,
 	                          User user, @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC, size = 2) Pageable pageable,
@@ -106,7 +105,6 @@ public class UserManagerController {
 
 		return "/opmanager/user/list";
 	}
- */
 
 	/**
 	 * 회원 등록
@@ -124,7 +122,7 @@ public class UserManagerController {
 		return "/opmanager/user/form";
 	}
 
-/*
+
 	/**
 	 * 회원 등록
 	 * @param user
@@ -132,7 +130,7 @@ public class UserManagerController {
 	 * @param session
 	 * @param model
 	 * @return
-
+     */
 	@PostMapping("/create")
 	public String createUser(@Valid User user, BindingResult userResult,
 							 HttpSession session, Model model) {
@@ -161,7 +159,7 @@ public class UserManagerController {
 		return "redirect:/opmanager/user/list";
 	}
 
-*/
+
 	/**
 	 * 회원정보 수정
 	 * @param id
@@ -245,7 +243,7 @@ public class UserManagerController {
 		return "redirect:/opmanager/user/list";
 	}
 
-	/*
+
 	@ResponseBody
 	@PostMapping(value = "/check-id")
 	public Map<String, Object> checkId(User user) {
@@ -267,5 +265,5 @@ public class UserManagerController {
 		}
 		return map;
 	}
-	*/
+
 }

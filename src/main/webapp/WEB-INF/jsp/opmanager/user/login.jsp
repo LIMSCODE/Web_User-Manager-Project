@@ -26,7 +26,9 @@
 <script type="text/javascript">
 
 	//최종 제출시 이벤트
-	$("#target").on("submit", function() {
+	$("#target").on("submit", function(e) {
+
+        e.preventDefault();
 
 		let $loginId = $("#loginId");
 		let $password = $("#password");
@@ -41,6 +43,30 @@
 			$password.focus();
 			return false;
 		}
+
+        var loginForm = $("#target");
+        var loginFormData = new FormData(loginForm[0]);
+
+        $.ajax({
+
+            url : "/opmanager/user/login",
+            type : "post",
+            data : loginFormData,
+            datatype: 'json',
+            processData: false,
+            contentType: false,
+            //contentType: "application/json",
+            //datatype: "string",
+            success : function(data) {
+                alert("로그인");
+                window.location.href = "/opmanager"
+            },
+            error : function() {
+                alert(this.url);
+                alert("실패");
+            }
+        });
+
 	});
 </script>
 </body>

@@ -15,7 +15,6 @@
 <%--@elvariable id="user" type="com.onlinepowers.springmybatis.user.User"--%>
 <form:form modelAttribute="user" method="post" id="target">
     <span>
-        <form:hidden path="id" value="${id}"/>
         비밀번호<form:password path="password" maxlength="8"/> <br>
     </span>
     <span>
@@ -31,38 +30,14 @@
 <script type="text/javascript">
 
 	//최종 제출시 이벤트
-	$("#target").on("submit", function(e) {
-
-        e.preventDefault();
-
-        let $password = $("#password");
+	$("#target").on("submit", function() {
+		let $password = $("#password");
 
 		if ($password.val() == "") {
 			alert("비밀번호 입력해주세요");
 			$password.focus();
 			return false;
 		}
-
-        var passwordFormData = new FormData($("#target")[0]);
-
-        $.ajax({
-            url : "/user/password-check",
-            type : "post",
-            data : passwordFormData,
-            datatype: 'json',
-            processData: false,
-            contentType: false,
-            //contentType: "application/json",
-            //datatype: "string",
-            success : function(data) {
-                alert("비밀번호 일치 확인");
-                window.location.href = "/user/edit/" + data.id     //json으로 넘긴 값
-            },
-            error : function() {
-                alert(this.url);
-                alert("실패");
-            }
-        });
 	});
 
 </script>

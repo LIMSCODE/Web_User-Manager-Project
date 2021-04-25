@@ -10,9 +10,11 @@
     <title>회원등록</title>
     <link rel="stylesheet"  type="text/css" href="${pageContext.request.contextPath}/webapp/content/common.css">
     <style>
+
         span>p {
             color: #bd2130;
         }
+
     </style>
 </head>
 <body>
@@ -140,11 +142,8 @@
 <script type="text/javascript">
 
 	//최종 제출시 이벤트
-	$("#target").on("submit", function(e) {
+	$("#target").on("submit", function() {
 
-        e.preventDefault();
-
-        let $id = $("#id");
 		let $name= $("#name");
 		let $loginId= $("#loginId");
 		let $password = $("#password");
@@ -154,6 +153,7 @@
 		let $email = $("#email");
 
 		let $zipcode = $("#userDetail.zipcode");
+
 		let $address = $("#userDetail.address");
 		let $addressDetail = $("#userDetail.addressDetail");
 		let $phoneNumber = $("#userDetail.phoneNumber");
@@ -165,7 +165,6 @@
 			$name.focus();
 			return false;
 		}
-
 		if ($loginId.val() == "") {
 			alert("아이디 입력해주세요");
 			$loginId.focus();
@@ -173,7 +172,6 @@
 		}
 
 		var idReg = /^[a-z]+[a-z0-9]{5,19}/g;
-
 		if(idReg.test($loginId.val()) == false) {
 			alert("아이디는 영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.");
 			$loginId.focus();
@@ -248,60 +246,13 @@
 			return false;
 		}
 
-		if($("input:radio[name='userDetail.receiveSms']").is(":checked") == false) {
+		if(!$("input:radio[name=userDetail.receiveSms]:checked").val()) {
 			alert("sms 수신여부 선택해주세요");
+
+			console.log($zipcode.val());
 			return false;
 		}
 
-        if ($id.val() == null) {
-
-            let createForm = $("#target");
-            let createFormData = new FormData(createForm[0]);
-
-            $.ajax({
-                url : "/user/create",
-                type : "post",
-                data : createFormData,
-                datatype: 'json',
-                processData: false,
-                contentType: false,
-                //contentType: "application/json",
-                //datatype: "string",
-                success : function(data) {
-                    alert("insert성공");
-                    window.location.href="/";  //list로 이동
-                },
-                error : function() {
-                    alert(this.url);
-                    alert("실패");
-                }
-            });
-        }
-
-        if ($id.val() != null) {
-
-            var editForm = $("#target");
-            var editFormData = new FormData(editForm[0]);
-
-            $.ajax({
-                url : "/user/edit/" + $id.val(),
-                type : "post",
-                data : editFormData,
-                datatype: 'json',
-                processData: false,
-                contentType: false,
-                //contentType: "application/json",
-                //datatype: "string",
-                success : function(data) {
-                    alert("update성공");
-                    window.location.href="/";  //list로 이동
-                },
-                error : function() {
-                    alert(this.url);
-                    alert("실패");
-                }
-            });
-        }
 	});
 
 	//아이디 중복 체크시 이벤트

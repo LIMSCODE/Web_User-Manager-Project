@@ -3,6 +3,7 @@ package com.onlinepowers.springmybatis.api.user;
 import com.onlinepowers.springmybatis.paging.JpaPaging;
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.user.UserService;
+import com.onlinepowers.springmybatis.util.SHA256Util;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,14 +27,81 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/opmanager/user")
+@RequestMapping("/opmanager/user")
 @RequiredArgsConstructor
 public class UserManagerApiController {
 
 	private final UserService userService;
+
+
+	/**
+	 * 관리자 로그인
+	 * @param user
+	 * @return
+	 */
+	@GetMapping("/login")
+	public ModelAndView login(User user) {
+
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/opmanager/user/login");
+		return mv;
+	}
+
+
+	/**
+	 * 관리자 로그인
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/login")
+	public ResponseEntity<String> login(User user, HttpSession session, Model model) {
+
+		ResponseEntity<String> responseEntity = null;
+
+		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
+		User loginUser = userService.getUserByLoginId(user.getLoginId());
+
+		//아이디가 널일때
+		if (loginUser == null) {
+			log.debug("아이디 안넘어옴");
+			//return responseEntity;
+			responseEntity = new ResponseEntity("Login_fail",HttpStatus.OK);
+			return responseEntity;
+		}
+
+		//입력한 비밀번호를 해시함수로
+		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
+		log.debug(hashPassword);
+		log.debug(loginUser.getPassword());
+
+		//비밀번호 일치하지않으면
+		if (!loginUser.getPassword().equals(hashPassword)) {
+			log.debug("비밀번호 일치하지 않음");
+			responseEntity = new ResponseEntity("Login_fail",HttpStatus.OK);
+			return responseEntity;
+		}
+
+		//관리자가 아닐때
+		if (!"ROLE_OPMANAGER".equals(loginUser.getUserRole().getAuthority())) {
+			log.debug("권한이 사용자가 아닙니다.");
+			responseEntity = new ResponseEntity("Login_fail",HttpStatus.OK);
+			return responseEntity;
+		}
+
+		session.setAttribute("loginUser", loginUser);
+		session.setMaxInactiveInterval(1000 * 1000);
+
+		responseEntity = new ResponseEntity("Login_SUCCEEDED",HttpStatus.OK);
+		return responseEntity;
+	}
+
+
 
 	@GetMapping("/list")
 	public ModelAndView getUserList1(@ModelAttribute("jpaPaging") JpaPaging jpaPaging,
@@ -52,6 +120,8 @@ public class UserManagerApiController {
 
 		return mv;
 	}
+
+
 	/**
 	 * 회원 목록
 	 * @param jpaPaging
@@ -78,6 +148,25 @@ public class UserManagerApiController {
 	/**
 	 * 회원 등록
 	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/create")
+	public ModelAndView registerForm(User user, HttpSession session, Model model) {
+
+		ModelAndView mv = new ModelAndView();
+		User loginUser = UserUtils.getLoginUser(session);
+
+		mv.addObject("loginUser", loginUser);
+		mv.setViewName("/opmanager/user/form");
+		return mv;
+	}
+
+
+	/**
+	 * 회원 등록
+	 * @param user
 	 * @param userResult
 	 * @param session
 	 * @param model
@@ -95,10 +184,8 @@ public class UserManagerApiController {
 			model.addAttribute("loginUser", loginUser);
 			model.addAttribute("user", user);
 
-			responseEntity = new ResponseEntity("다시입력해주세요",HttpStatus.BAD_REQUEST);
-
+			responseEntity = new ResponseEntity("다시입력해주세요", HttpStatus.BAD_REQUEST);
 			return responseEntity;
-			//return "/opmanager/user/form";
 		}
 
 		//입력받은 아이디에 해당하는 DTO값이 db에 있으면 insert안되도록
@@ -106,7 +193,7 @@ public class UserManagerApiController {
 		if (storedUser != null) {
 			log.debug("해당아이디 존재");
 
-			responseEntity = new ResponseEntity("해당아이디 존재",HttpStatus.BAD_REQUEST);
+			responseEntity = new ResponseEntity("해당아이디 존재", HttpStatus.BAD_REQUEST);
 
 			return responseEntity;
 			//return "redirect:/opmanager/user/create";
@@ -117,11 +204,36 @@ public class UserManagerApiController {
 		User loginUser = UserUtils.getLoginUser(session);
 		model.addAttribute("loginUser", loginUser);
 
-		responseEntity = new ResponseEntity("ADD_SUCCEEDED",HttpStatus.OK);
-		//관리자페이지에서 등록하는 경우
-		//return "redirect:/opmanager/user/list";
+		responseEntity = new ResponseEntity("ADD_SUCCEEDED", HttpStatus.OK);
 		return responseEntity;
 
+	}
+
+
+	/**
+	 * 회원정보 수정
+	 * @param id
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/edit/{id}")
+	public ModelAndView updateForm(@PathVariable("id") long id, @ModelAttribute("jpaPaging")JpaPaging jpaPaging,
+							 Optional<User> user, HttpSession session, Model model) {
+
+		ModelAndView mv = new ModelAndView();
+
+		user = Optional.ofNullable(userService.getUserById(id));
+		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
+		model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
+
+		//세션 저장 정보
+		User loginUser = UserUtils.getLoginUser(session);
+
+		mv.addObject("loginUser", loginUser);
+		mv.setViewName("/opmanager/user/form");
+		return mv;
 	}
 
 
@@ -165,8 +277,6 @@ public class UserManagerApiController {
 		responseEntity = new ResponseEntity("MOD_SUCCEEDED",HttpStatus.OK);
 
 		return responseEntity;
-		//return "redirect:/opmanager/user/list";
-
 	}
 
 
@@ -191,13 +301,6 @@ public class UserManagerApiController {
 		rttr.addAttribute("searchKeyword", jpaPaging.getSearchKeyword());
 		*/
 
-		/*
-		URI list = new URI("http://localhost:8080/opmanager/user/list");
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.setLocation(list);
-
-		responseEntity = new ResponseEntity(httpHeaders, HttpStatus.OK);
-		*/
 		responseEntity = new ResponseEntity("Delete Sucess", HttpStatus.OK);
 		return responseEntity;
 
