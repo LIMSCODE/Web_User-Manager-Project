@@ -9,7 +9,9 @@
 <div class="">
     <br><br><br><br>
     <c:if test="${loginUser != null}">
+    <div sec:authorize="isAuthenticated()">
         <main id="right">메인페이지</main>
+    </div>
     </c:if>
 </div>
 </body>

@@ -27,12 +27,15 @@ repositories {
 }
 
 dependencies {
+
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.4'
     implementation 'org.jetbrains:annotations:20.1.0'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'junit:junit:4.12'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     //implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
     compile('org.springframework.boot:spring-boot-starter-web')
     compileOnly('org.apache.tomcat.embed:tomcat-embed-jasper')
@@ -54,6 +57,10 @@ dependencies {
     //jsonobject
     implementation 'org.json:json:20171018'
     compile("com.fasterxml.jackson.core:jackson-databind")
+
+    //spring security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 }
 
 

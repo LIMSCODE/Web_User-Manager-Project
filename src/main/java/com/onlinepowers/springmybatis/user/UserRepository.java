@@ -27,6 +27,14 @@ public interface UserRepository extends JpaRepository<User, Long>, CustomizedUse
 	 */
 	User findById(long id);
 
+
+	/**
+	 * 이름으로 User객체 찾기 (스프링 시큐리티)
+	 * @param username
+	 * @return
+	 */
+	User findByName(String username);
+
 	//JPQL예시 : @Query("SELECT x FROM User x left join fetch x.userDetail left join fetch x.userRole where x.loginId=?1")
 
 }

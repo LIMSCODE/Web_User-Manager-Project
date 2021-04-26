@@ -8,11 +8,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +25,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "OP_USER_DETAIL")
 @OnDelete(action = OnDeleteAction.CASCADE)
-public class UserDetail extends JpaPaging {
+public class UserDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,5 +64,6 @@ public class UserDetail extends JpaPaging {
             return "1".equals(this.receiveSms) ? "수신" : "수신안함" ;
         }
     }
+
 
 }

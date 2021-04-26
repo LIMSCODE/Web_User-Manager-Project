@@ -8,6 +8,7 @@
 <body>
 <br /> <br /> <br />
 <!--검색영역-->
+<div sec:authorize="isAuthenticated()">
 <div id="adv-search" class="input-group" >
     <div class="input-group-btn">
         <div class="btn-group" role="group">
@@ -104,7 +105,7 @@
 </form>
 
 </div>
-
+</div>
 
 <script type="text/javascript">
 

@@ -9,10 +9,15 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +26,7 @@ import javax.validation.constraints.*;
 @Entity
 @Table(name = "OP_USER")
 @DynamicUpdate
-public class User extends JpaPaging {
+public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,5 +74,80 @@ public class User extends JpaPaging {
 		this.userRole = userRole;
 		this.userRole.setUser(this);
 	}
+
+
+	/**
+	 * 스프링 시큐리티 관련
+	 * 계정이 갖고있는 권한 목록
+	 * @return
+	 */
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		ArrayList<GrantedAuthority> auth = new ArrayList<>();
+		auth.add(new SimpleGrantedAuthority(this.userRole.authority));
+		return auth;
+	}
+
+
+	/**
+	 * 계정의 비밀번호
+	 * @return
+	 */
+	@Override
+	public String getPassword() {
+		return this.password;
+	}
+
+
+	/**
+	 * 계정의 이름
+	 * @return
+	 */
+	@Override
+	public String getUsername() {
+		return this.name;
+	}
+
+
+	/**
+	 * 계정이 만료되지 않았는 지 (true: 만료안됨)
+	 * @return
+	 */
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+
+	/**
+	 * 계정이 잠겨있지 않았는 지
+	 * @return
+	 */
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+
+	/**
+	 * 비밀번호가 만료되지 않았는 지
+	 * @return
+	 */
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+
+	/**
+	 * 계정이 활성화(사용가능)인 지
+	 * @return
+	 */
+	@Override
+	public boolean isEnabled() {
+		//return ENABLED;
+		return true;
+	}
+
 
 }
