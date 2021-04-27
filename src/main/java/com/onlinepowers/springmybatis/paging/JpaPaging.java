@@ -10,7 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class JpaPaging {
 
     //현재 페이지 번호
-    public int page;
+    int page;
 
     //페이지당 출력 개수
     public int size;

@@ -15,6 +15,7 @@
 <%--@elvariable id="user" type="com.onlinepowers.springmybatis.user.User"--%>
 <form:form modelAttribute="user" method="post" id="target">
     <p>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     <span>
          아이디 <form:input path="loginId" maxlength="12" /> <br>
          비밀번호 <form:password path="password" maxlength="8"/> <br>

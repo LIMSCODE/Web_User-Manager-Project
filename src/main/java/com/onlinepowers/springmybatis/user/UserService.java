@@ -3,11 +3,13 @@ package com.onlinepowers.springmybatis.user;
 import com.onlinepowers.springmybatis.paging.JpaPaging;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Service
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     /**
      * 회원 삭제
@@ -60,7 +62,8 @@ public interface UserService {
      * @param jpaPaging
      * @return
      */
-    Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("jpaPaging") JpaPaging jpaPaging) ;
+    Page<User> getUserList(User user, Pageable pageable, @ModelAttribute("jpaPaging") JpaPaging jpaPaging);
+
 
 
 

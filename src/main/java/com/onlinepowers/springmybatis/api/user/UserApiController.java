@@ -1,6 +1,7 @@
 package com.onlinepowers.springmybatis.api.user;
 
 import com.onlinepowers.springmybatis.api.ApiResponseEntity;
+import com.onlinepowers.springmybatis.user.LoginUserDetails;
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.user.UserService;
 import com.onlinepowers.springmybatis.util.SHA256Util;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,9 +36,10 @@ public class UserApiController {
 	private final UserService userService;
 
 	@GetMapping
-	public ResponseEntity<Map<String, Object>> list(HttpServletRequest request){
+	public ResponseEntity<Map<String, Object>> list(){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("test", "123");     //json값으로 출력
+
 		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 
@@ -63,13 +66,19 @@ public class UserApiController {
 			return responseEntity;
 		}
 
-		//입력한 비밀번호를 해시함수로
+		/*입력한 비밀번호를 해시함수로
 		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
 		log.debug(hashPassword);
 		log.debug(loginUser.getPassword());
+		 */
+
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+		log.debug(loginUser.getPassword());
+		log.debug(passwordEncoder.encode(user.getPassword()));
 
 		//비밀번호 일치하지않으면
-		if (!loginUser.getPassword().equals(hashPassword)) {
+		if (!loginUser.getPassword().equals(passwordEncoder.encode(user.getPassword()))) {
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
 			return responseEntity;
 		}
@@ -84,7 +93,7 @@ public class UserApiController {
 		session.setAttribute("loginUser", loginUser);
 		session.setMaxInactiveInterval(1000 * 1000);
 
-		responseEntity = new ResponseEntity("Login_fail",HttpStatus.OK);
+		responseEntity = new ResponseEntity("Login_success",HttpStatus.OK);
 		return responseEntity;
 	}
 
@@ -133,6 +142,9 @@ public class UserApiController {
 			//return "redirect:/user/create";
 		}
 
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+
 		userService.insertUser(user);
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
 
@@ -171,13 +183,20 @@ public class UserApiController {
 
 		//입력받은 비밀번호
 		log.debug(user.getPassword());
-		//입력한 비밀번호를 PK이용하여 해시함수로 만들고
+		/*입력한 비밀번호를 PK이용하여 해시함수로 만들고
 		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
 		log.debug(hashPassword);
 		log.debug(loginUser.getPassword());
+		 */
+
+
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+		log.debug(loginUser.getPassword());
+		log.debug(passwordEncoder.encode(user.getPassword()));
 
 		//로그인 세션의 비밀번호 값과 일치하는지 확인
-		if (!hashPassword.equals(loginUser.getPassword())) {
+		if (!loginUser.getPassword().equals(passwordEncoder.encode(user.getPassword()))) {
 			log.debug("비밀번호 일치하지 않음 컨트롤러");
 			return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
 		}

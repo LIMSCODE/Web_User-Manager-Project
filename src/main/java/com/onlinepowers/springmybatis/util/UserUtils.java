@@ -46,7 +46,7 @@ public class UserUtils {
 	 */
 	public static boolean isManagerLogin(HttpSession session) {
 
-		User loginUser = getLoginUser (session);  //위의 로그인세션 가져옴
+		User loginUser = getLoginUser(session);  //위의 로그인세션 가져옴
 
 		if (loginUser.getId() == null || loginUser.getUserRole().getAuthority() == null) {
 			return false;
