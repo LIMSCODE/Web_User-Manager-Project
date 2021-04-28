@@ -48,9 +48,9 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 				.failureUrl("/guest/login?error")
 				.defaultSuccessUrl("/", true)
 				.usernameParameter("loginId")
+				.passwordParameter("password")
 				.and().csrf().disable()
 		;
-
 	}
 
 
