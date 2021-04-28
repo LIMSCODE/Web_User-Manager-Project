@@ -8,10 +8,12 @@ import com.onlinepowers.springmybatis.util.SHA256Util;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,10 +32,12 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/user")
-@RequiredArgsConstructor
 public class UserApiController {
 
-	private final UserService userService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> list(){
@@ -52,13 +56,15 @@ public class UserApiController {
 	}
 
 
-	@PostMapping("/login")
+	@PostMapping("/login1")
 	public ResponseEntity<String> login(User user, HttpSession session, Model model) {
 
 		ResponseEntity<String> responseEntity = null;
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
 
+		log.debug("-----------로그인 컨트롤러");
+		
 		//아이디가 널일때
 		if (loginUser == null) {
 			log.debug("아이디 안넘어옴");
@@ -66,24 +72,15 @@ public class UserApiController {
 			return responseEntity;
 		}
 
-		/*입력한 비밀번호를 해시함수로
-		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
-		log.debug(hashPassword);
-		log.debug(loginUser.getPassword());
-		 */
+		String storedPassword = loginUser.getPassword();    //항상 일정
+		log.debug(storedPassword);
 
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-		log.debug(loginUser.getPassword());
-		log.debug(passwordEncoder.encode(user.getPassword()));
-
-		//비밀번호 일치하지않으면
-		if (!loginUser.getPassword().equals(passwordEncoder.encode(user.getPassword()))) {
+		if (!passwordEncoder.matches(user.getPassword(), storedPassword)) {
+			log.debug("비밀번호 일치하지않음");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
 			return responseEntity;
 		}
 
-		//사용자가 아닐때
 		if (!"ROLE_USER".equals(loginUser.getUserRole().getAuthority())) {
 			log.debug("권한이 사용자가 아닙니다.");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
@@ -93,7 +90,8 @@ public class UserApiController {
 		session.setAttribute("loginUser", loginUser);
 		session.setMaxInactiveInterval(1000 * 1000);
 
-		responseEntity = new ResponseEntity("Login_success",HttpStatus.OK);
+		log.debug("로그인 ajax로 전달");
+		responseEntity = new ResponseEntity("Login_success", HttpStatus.OK);
 		return responseEntity;
 	}
 
@@ -128,7 +126,7 @@ public class UserApiController {
 
 		if (userResult.hasErrors()) {
 			//model.addAttribute("user", user);
-			responseEntity = new ResponseEntity("resiter_fail", HttpStatus.BAD_REQUEST);
+			responseEntity = new ResponseEntity("register_fail", HttpStatus.BAD_REQUEST);
 			return responseEntity;
 			// return "/user/form";
 		}
@@ -137,20 +135,19 @@ public class UserApiController {
 		User storedUser = userService.getUserByLoginId(user.getLoginId());
 		if (storedUser != null) {
 			log.debug("해당아이디 존재");
-			responseEntity = new ResponseEntity("resiter_fail", HttpStatus.BAD_REQUEST);
+			responseEntity = new ResponseEntity("register_fail", HttpStatus.BAD_REQUEST);
 			return responseEntity;
 			//return "redirect:/user/create";
 		}
 
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-
 		userService.insertUser(user);
-		User loginUser = userService.getUserByLoginId(user.getLoginId());
 
+		User loginUser = userService.getUserByLoginId(user.getLoginId());
 		session.setAttribute("loginUser", loginUser);
-		responseEntity = new ResponseEntity("resiter_success", HttpStatus.OK);
+
+		responseEntity = new ResponseEntity("register_success", HttpStatus.OK);
 		return responseEntity;
+
 	}
 
 
@@ -189,8 +186,6 @@ public class UserApiController {
 		log.debug(loginUser.getPassword());
 		 */
 
-
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 		log.debug(loginUser.getPassword());
 		log.debug(passwordEncoder.encode(user.getPassword()));

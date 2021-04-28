@@ -15,11 +15,10 @@
 <%--@elvariable id="user" type="com.onlinepowers.springmybatis.user.User"--%>
 <form:form modelAttribute="user" method="post" id="target">
     <p>
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     <span>
          아이디 <form:input path="loginId" maxlength="12" /> <br>
          비밀번호 <form:password path="password" maxlength="8"/> <br>
-    <input type="submit" class="submit" value="로그인"  formaction="/user/login">
+    <input type="submit" class="submit" value="로그인"  formaction="/user/login1">
     </span>
     </p>
 </form:form>
@@ -51,7 +50,7 @@
 		var loginFormData = new FormData(loginForm[0]);
 
 		$.ajax({
-			url : "/user/login",
+			url : "/user/login1",
 			type : "post",
 			data : loginFormData,
 			datatype: 'json',

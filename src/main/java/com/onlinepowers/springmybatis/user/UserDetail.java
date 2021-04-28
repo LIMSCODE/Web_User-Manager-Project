@@ -3,9 +3,7 @@ package com.onlinepowers.springmybatis.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.onlinepowers.springmybatis.paging.JpaPaging;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,12 +17,14 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "OP_USER_DETAIL")
 @OnDelete(action = OnDeleteAction.CASCADE)
+@EqualsAndHashCode(exclude="user")
 public class UserDetail {
 
     @Id

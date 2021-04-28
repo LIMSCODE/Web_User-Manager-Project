@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Service
-public interface UserService extends UserDetailsService {
+public interface UserService {
 
     /**
      * 회원 삭제

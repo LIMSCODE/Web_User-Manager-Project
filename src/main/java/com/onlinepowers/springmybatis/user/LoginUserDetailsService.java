@@ -24,11 +24,10 @@ public class LoginUserDetailsService implements UserDetailsService {
 
 	private final UserRepository userRepository;
 
-
 	@Override
 	public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
 
-		User user = userRepository.findByName(loginId);
+		User user = userRepository.findByLoginId(loginId);
 
 		if (user == null) {
 			throw new UsernameNotFoundException(loginId);

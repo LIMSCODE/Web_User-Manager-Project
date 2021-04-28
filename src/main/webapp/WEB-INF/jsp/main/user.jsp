@@ -16,13 +16,12 @@
     <br><br><br><br>
 
     <c:if test="${loginUser != null}">
-    <div sec:authorize="isAuthenticated()">     <!--인증이 되었으면 나타남-->
+    <!--인증이 되었으면 나타남-->
     <span>
          <span sec:authentication="name">${loginUser.name} 님 안녕하세요</span>   <br><br><br>        <!--Authentication 객체의 property를 반환-->
          <a class="btn" href="/user/password-check"  >정보수정</a>      <br><br><br>
          <a class="btn" href="/user/logout" >로그아웃</a>
     </span>
-    </div>
     </c:if>
 
     <c:if test="${loginUser == null}">

@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -36,14 +37,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void insertUser(User user) {
 
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+
 		userRepository.save(user);  //Jpa에서는 user만 save하면 하위테이블도 모두 저장된다.
-		User storedUser = userRepository.findByLoginId(user.getLoginId());
-
-		String password = storedUser.getPassword();
-		password = SHA256Util.getEncrypt(password, storedUser.getId());
-		storedUser.setPassword(password);
-		log.debug(password);
-
 	}
 
 	@Transactional
@@ -109,17 +106,5 @@ public class UserServiceImpl implements UserService {
 		return userPage;
 	}
 
-
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-		User user = userRepository.findByName(username);
-
-		if (user == null) {
-			throw new UsernameNotFoundException(username);
-		}
-
-		return new LoginUserDetails(user);
-	}
 
 }

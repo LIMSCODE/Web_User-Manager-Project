@@ -69,7 +69,6 @@ public class MainApiController {
 			System.out.println("================= " + user);
 			System.out.println("================= " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 				//anonymousUser
-
 			return mv;
 		}
 
@@ -77,6 +76,7 @@ public class MainApiController {
 		System.out.println("=================막 " + user);
 		return mv;
 	}
+
 
 	/**
 	 * 유저 로그아웃
