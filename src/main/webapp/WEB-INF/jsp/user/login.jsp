@@ -18,7 +18,7 @@
     <span>
          아이디 <form:input path="loginId" maxlength="12" /> <br>
          비밀번호 <form:password path="password" maxlength="8"/> <br>
-    <input type="submit" class="submit" value="로그인"  formaction="/user/login1">
+    <input type="submit" class="submit" value="로그인"  formaction="/user/login">
     </span>
     </p>
 </form:form>
@@ -27,9 +27,9 @@
 <script type="text/javascript">
 
 	//최종 제출시 이벤트
-	$("#target").on("submit", function(e) {
+	$("#target").on("submit", function() {
 
-        e.preventDefault();
+        //e.preventDefault();
 
         let $loginId = $("#loginId");
 		let $password = $("#password");
@@ -46,6 +46,7 @@
 			return false;
 		}
 
+		/*
 		var loginForm = $("#target");
 		var loginFormData = new FormData(loginForm[0]);
 
@@ -67,6 +68,7 @@
 				alert("실패");
 			}
 		});
+		 */
 	});
 </script>
 

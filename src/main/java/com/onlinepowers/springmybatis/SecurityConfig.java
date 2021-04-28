@@ -4,6 +4,7 @@ import com.onlinepowers.springmybatis.user.LoginUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.Model;
 
 @RequiredArgsConstructor
 @EnableWebSecurity      // Spring Security를 활성화
@@ -40,17 +42,20 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 		http
 				.authorizeRequests() 		// 접근에 대한 인증 설정
 					.antMatchers( "/", "/user/login", "/user/create").permitAll() 	// 누구나 접근 허용
-					.anyRequest().permitAll()
+					.anyRequest().authenticated();
 
-				.and().formLogin()
+		http
+				.formLogin()
+				.loginProcessingUrl("/user/login")
 				.loginPage("/user/login") 	// 로그인 페이지 링크
-				.loginProcessingUrl("/user/login1")      //이걸 일치시키면 컨트롤러 진입안됨, 객체는 가져와짐
+											//이걸 일치시키면 컨트롤러 진입안됨, 객체는 가져와짐
 				.failureUrl("/guest/login?error")
-				.defaultSuccessUrl("/", true)
+				//.defaultSuccessUrl("/", true)
 				.usernameParameter("loginId")
 				.passwordParameter("password")
-				.and().csrf().disable()
-		;
+				.permitAll();
+
+		http.csrf().disable();
 	}
 
 
@@ -71,7 +76,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 	 */
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(loginUserDetailsService)            // UserDetailsService를 implements해서 loadUserByUsername() 구현
+		auth.userDetailsService(loginUserDetailsService)        // UserDetailsService를 implements해서 loadUserByUsername() 구현
 				.passwordEncoder(passwordEncoder()); 	//패스워드 인코더는 위에서 빈으로 등록해놓은 passwordEncoder()를 사용
 
 		System.out.println("시큐리티config");       //antMatcher설정하고 로그인했더니 여기까지 뜸

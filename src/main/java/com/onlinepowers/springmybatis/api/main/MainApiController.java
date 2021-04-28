@@ -44,6 +44,7 @@ public class MainApiController {
 	public ModelAndView userMain(HttpSession session, Model model, @AuthenticationPrincipal LoginUserDetails user) {
 
 		User loginUser = UserUtils.getLoginUser(session);
+
 		log.debug("메인");
 
 		ModelAndView mv = new ModelAndView();
@@ -63,7 +64,7 @@ public class MainApiController {
 
 		if (UserUtils.isUserLogin(session)) {       //시큐리티 적용후 유저 로그인, 여기까지 넘어옴
 			
-			mv.addObject("loginUser", loginUser);
+			mv.addObject("loginUser", user);
 			mv.setViewName("/main/user");
 
 			System.out.println("================= " + user);

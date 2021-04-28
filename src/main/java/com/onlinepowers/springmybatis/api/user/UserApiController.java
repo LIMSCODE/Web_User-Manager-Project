@@ -56,8 +56,8 @@ public class UserApiController {
 	}
 
 
-	@PostMapping("/login1")
-	public ResponseEntity<String> login(User user, HttpSession session, Model model) {
+	@PostMapping("/login")
+	public String login(User user, HttpSession session, Model model) {
 
 		ResponseEntity<String> responseEntity = null;
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
@@ -69,7 +69,7 @@ public class UserApiController {
 		if (loginUser == null) {
 			log.debug("아이디 안넘어옴");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
-			return responseEntity;
+			return "redirect:/";
 		}
 
 		String storedPassword = loginUser.getPassword();    //항상 일정
@@ -78,21 +78,21 @@ public class UserApiController {
 		if (!passwordEncoder.matches(user.getPassword(), storedPassword)) {
 			log.debug("비밀번호 일치하지않음");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
-			return responseEntity;
+			return "redirect:/";
 		}
 
 		if (!"ROLE_USER".equals(loginUser.getUserRole().getAuthority())) {
 			log.debug("권한이 사용자가 아닙니다.");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
-			return responseEntity;
+			return "redirect:/";
 		}
 
 		session.setAttribute("loginUser", loginUser);
 		session.setMaxInactiveInterval(1000 * 1000);
 
-		log.debug("로그인 ajax로 전달");
-		responseEntity = new ResponseEntity("Login_success", HttpStatus.OK);
-		return responseEntity;
+		model.addAttribute("loginUser", loginUser);
+
+		return "redirect:/";
 	}
 
 
@@ -179,14 +179,6 @@ public class UserApiController {
 		User loginUser = UserUtils.getLoginUser(session);
 
 		//입력받은 비밀번호
-		log.debug(user.getPassword());
-		/*입력한 비밀번호를 PK이용하여 해시함수로 만들고
-		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
-		log.debug(hashPassword);
-		log.debug(loginUser.getPassword());
-		 */
-
-
 		log.debug(loginUser.getPassword());
 		log.debug(passwordEncoder.encode(user.getPassword()));
 
