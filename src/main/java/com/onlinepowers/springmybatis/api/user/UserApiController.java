@@ -12,8 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +42,8 @@ public class UserApiController {
 	private UserService userService;
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> list(){
@@ -57,7 +63,15 @@ public class UserApiController {
 
 
 	@PostMapping("/login")
-	public String login(User user, HttpSession session, Model model) {
+	public ResponseEntity<String> login(User user, HttpSession session, Model model) {
+
+		// 아이디와 패스워드로, Security 가 알아 볼 수 있는 token 객체로 변경
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getLoginId(), user.getPassword());
+		// AuthenticationManager 에 token 을 넘기면 UserDetailsService 가 받아 처리
+		Authentication authentication = authenticationManager.authenticate(token);
+		// 실제 SecurityContext 에 authentication 정보를 등록
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
 
 		ResponseEntity<String> responseEntity = null;
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
@@ -69,7 +83,7 @@ public class UserApiController {
 		if (loginUser == null) {
 			log.debug("아이디 안넘어옴");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
-			return "redirect:/";
+			return responseEntity;
 		}
 
 		String storedPassword = loginUser.getPassword();    //항상 일정
@@ -78,21 +92,21 @@ public class UserApiController {
 		if (!passwordEncoder.matches(user.getPassword(), storedPassword)) {
 			log.debug("비밀번호 일치하지않음");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
-			return "redirect:/";
+			return responseEntity;
 		}
 
 		if (!"ROLE_USER".equals(loginUser.getUserRole().getAuthority())) {
 			log.debug("권한이 사용자가 아닙니다.");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
-			return "redirect:/";
+			return responseEntity;
 		}
 
 		session.setAttribute("loginUser", loginUser);
 		session.setMaxInactiveInterval(1000 * 1000);
-
 		model.addAttribute("loginUser", loginUser);
 
-		return "redirect:/";
+
+		return responseEntity;
 	}
 
 

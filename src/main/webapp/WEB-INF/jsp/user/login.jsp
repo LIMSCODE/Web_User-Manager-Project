@@ -46,12 +46,12 @@
 			return false;
 		}
 
-		/*
+
 		var loginForm = $("#target");
 		var loginFormData = new FormData(loginForm[0]);
 
 		$.ajax({
-			url : "/user/login1",
+			url : "/user/login",
 			type : "post",
 			data : loginFormData,
 			datatype: 'json',
@@ -68,7 +68,7 @@
 				alert("실패");
 			}
 		});
-		 */
+
 	});
 </script>
 
