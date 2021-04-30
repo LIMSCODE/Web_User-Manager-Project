@@ -1,8 +1,11 @@
 package com.onlinepowers.springmybatis.api.manager;
 
+import com.onlinepowers.springmybatis.user.LoginUserDetails;
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +27,7 @@ public class OpmanagerApiController {
 	 * @return
 	 */
 	@GetMapping("/opmanager")
-	public ModelAndView managerMain(User user, HttpSession session, Model model) {
+	public ModelAndView managerMain(User user, HttpSession session, Model model, @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
 		User loginUser = UserUtils.getLoginUser(session);
 
@@ -32,12 +35,17 @@ public class OpmanagerApiController {
 		//로그인안됬거나, 유저일때
 		if (loginUser == null || UserUtils.isUserLogin(session)) {
 			mv.setViewName("/opmanager/user/login");
+			System.out.println("=================매니저 " + loginUserDetails);
 			return mv;
 		}
 
 		//관리자일때
 		mv.addObject("loginUser", loginUser);
 		mv.setViewName("/opmanager/index");
+
+		System.out.println("================= " + loginUserDetails);
+		System.out.println("================= " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
 		return mv;
 	}
 

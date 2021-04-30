@@ -1,5 +1,6 @@
 package com.onlinepowers.springmybatis.api.user;
 
+import com.onlinepowers.springmybatis.jwt.JwtTokenProvider;
 import com.onlinepowers.springmybatis.paging.JpaPaging;
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.user.UserService;
@@ -7,6 +8,7 @@ import com.onlinepowers.springmybatis.util.SHA256Util;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,6 +16,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -32,11 +39,16 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/opmanager/user")
-@RequiredArgsConstructor
 public class UserManagerApiController {
 
-	private final UserService userService;
-
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
 
 	/**
 	 * 관리자 로그인
@@ -61,11 +73,22 @@ public class UserManagerApiController {
 	 */
 	@PostMapping("/login")
 	public ResponseEntity<String> login(User user, HttpSession session, Model model) {
+	
+		//이거 세줄 써야 @Authen 메인컨트롤러에서 받와와짐, 안쓰면 null임
+		// 아이디와 패스워드로, Security 가 알아 볼 수 있는 token 객체로 변경
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getLoginId(), user.getPassword());
+		// AuthenticationManager 에 token 을 넘기면 UserDetailsService 가 받아 처리
+		Authentication authentication = authenticationManager.authenticate(token);
+		// 실제 SecurityContext 에 authentication 정보를 등록
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
 
 		ResponseEntity<String> responseEntity = null;
 
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
+
+		log.debug("-----------로그인 컨트롤러");
 
 		//아이디가 널일때
 		if (loginUser == null) {
@@ -75,13 +98,11 @@ public class UserManagerApiController {
 			return responseEntity;
 		}
 
-		//입력한 비밀번호를 해시함수로
-		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
-		log.debug(hashPassword);
-		log.debug(loginUser.getPassword());
+		String storedPassword = loginUser.getPassword();    //항상 일정
+		log.debug(storedPassword);
 
 		//비밀번호 일치하지않으면
-		if (!loginUser.getPassword().equals(hashPassword)) {
+		if (!passwordEncoder.matches(user.getPassword(), storedPassword)) {
 			log.debug("비밀번호 일치하지 않음");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.OK);
 			return responseEntity;
@@ -100,7 +121,6 @@ public class UserManagerApiController {
 		responseEntity = new ResponseEntity("Login_SUCCEEDED",HttpStatus.OK);
 		return responseEntity;
 	}
-
 
 
 	@GetMapping("/list")

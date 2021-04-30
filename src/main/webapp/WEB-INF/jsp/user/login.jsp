@@ -27,9 +27,9 @@
 <script type="text/javascript">
 
 	//최종 제출시 이벤트
-	$("#target").on("submit", function() {
+	$("#target").on("submit", function(e) {
 
-        //e.preventDefault();
+        e.preventDefault();
 
         let $loginId = $("#loginId");
 		let $password = $("#password");
@@ -46,7 +46,6 @@
 			return false;
 		}
 
-
 		var loginForm = $("#target");
 		var loginFormData = new FormData(loginForm[0]);
 
@@ -54,12 +53,16 @@
 			url : "/user/login",
 			type : "post",
 			data : loginFormData,
-			datatype: 'json',
+			datatype: 'text',       //생성된 토큰을 받는다.
 			processData: false,
 			contentType: false,
 			//contentType: "application/json",
 			//datatype: "string",
-			success : function(data) {
+			success : function(token) {
+				alert(token);
+				console.log(token);
+				var expireDay = 24 * 60 * 60 * 1000; //1일
+				document.cookie = "X-AUTH-TOKEN=" + token + expireDay +"; path=/";  //쿠키에 저장될 값
 				alert("로그인");
                 window.location.href = "/"
 			},
@@ -68,8 +71,8 @@
 				alert("실패");
 			}
 		});
-
 	});
+
 </script>
 
 </body>

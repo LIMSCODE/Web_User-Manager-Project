@@ -1,12 +1,11 @@
 package com.onlinepowers.springmybatis.jwt;
 
 import com.onlinepowers.springmybatis.user.LoginUserDetailsService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import org.mybatis.logging.Logger;
-import org.mybatis.logging.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.security.SignatureException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +37,7 @@ public class JwtTokenProvider {     // JWT토큰 생성 및 유효성을 검증�
 	}
 
 	// JWT 토큰 생성
-	public String createToken(String userPk, List<String> roles) {
+	public String createToken(String userPk, String roles) {
 		Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위
 		claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
 		Date now = new Date();

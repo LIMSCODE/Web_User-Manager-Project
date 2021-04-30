@@ -1,7 +1,6 @@
 package com.onlinepowers.springmybatis.jwt;
 
 import com.onlinepowers.springmybatis.user.LoginUserDetailsService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		try {
 			String token = getToken(request);
 
+			// 유효한 토큰인지 확인합니다.
 			if (token != null && jwtTokenProvider.validateToken(token)) {
 				String username = jwtTokenProvider.getUserPk(token);
 				
@@ -47,6 +47,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 						= new UsernamePasswordAuthenticationToken( userDetails, null, userDetails.getAuthorities());
 
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+				// SecurityContext 에 Authentication 객체를 저장합니다.
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
 
@@ -59,9 +61,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 
-
 	private String getToken(HttpServletRequest request) {
-		String headerAuth = request.getHeader("Authorization");
+
+		String headerAuth = request.getHeader("Authorization");     //헤더에서 JWT
 
 		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
 			return headerAuth.substring(7, headerAuth.length());

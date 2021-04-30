@@ -1,7 +1,9 @@
 package com.onlinepowers.springmybatis.api.user;
 
 import com.onlinepowers.springmybatis.api.ApiResponseEntity;
+import com.onlinepowers.springmybatis.jwt.JwtTokenProvider;
 import com.onlinepowers.springmybatis.user.LoginUserDetails;
+import com.onlinepowers.springmybatis.user.LoginUserDetailsService;
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.user.UserService;
 import com.onlinepowers.springmybatis.util.SHA256Util;
@@ -44,6 +46,9 @@ public class UserApiController {
 	private BCryptPasswordEncoder passwordEncoder;
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
+
 
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> list(){
@@ -51,6 +56,15 @@ public class UserApiController {
 		map.put("test", "123");     //json값으로 출력
 
 		return new ResponseEntity<>(map, HttpStatus.OK);
+	}
+
+
+	@GetMapping("/checkJWT")
+	public String jwt(){
+		//권한체크
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		LoginUserDetails user2 = (LoginUserDetails) user.getPrincipal();
+		return user.getAuthorities().toString()+" / "+user2.getPassword();
 	}
 
 
@@ -63,7 +77,7 @@ public class UserApiController {
 
 
 	@PostMapping("/login")
-	public ResponseEntity<String> login(User user, HttpSession session, Model model) {
+	public String login(User user, HttpSession session, Model model) {
 
 		// 아이디와 패스워드로, Security 가 알아 볼 수 있는 token 객체로 변경
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getLoginId(), user.getPassword());
@@ -71,7 +85,6 @@ public class UserApiController {
 		Authentication authentication = authenticationManager.authenticate(token);
 		// 실제 SecurityContext 에 authentication 정보를 등록
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-
 
 		ResponseEntity<String> responseEntity = null;
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
@@ -83,7 +96,8 @@ public class UserApiController {
 		if (loginUser == null) {
 			log.debug("아이디 안넘어옴");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
-			return responseEntity;
+			return "responseEntity";
+			//return responseEntity;
 		}
 
 		String storedPassword = loginUser.getPassword();    //항상 일정
@@ -92,21 +106,23 @@ public class UserApiController {
 		if (!passwordEncoder.matches(user.getPassword(), storedPassword)) {
 			log.debug("비밀번호 일치하지않음");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
-			return responseEntity;
+			return "responseEntity";
+			//return responseEntity;
 		}
 
 		if (!"ROLE_USER".equals(loginUser.getUserRole().getAuthority())) {
 			log.debug("권한이 사용자가 아닙니다.");
 			responseEntity = new ResponseEntity("Login_fail",HttpStatus.BAD_REQUEST);
-			return responseEntity;
+			return "responseEntity";
+			//return responseEntity;
 		}
 
 		session.setAttribute("loginUser", loginUser);
 		session.setMaxInactiveInterval(1000 * 1000);
-		model.addAttribute("loginUser", loginUser);
+		//model.addAttribute("loginUser", loginUser);
 
-
-		return responseEntity;
+		//return responseEntity;
+		return jwtTokenProvider.createToken(loginUser.getLoginId(), loginUser.getUserRole().getAuthority());
 	}
 
 
@@ -157,7 +173,7 @@ public class UserApiController {
 		userService.insertUser(user);
 
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
-		session.setAttribute("loginUser", loginUser);
+		//session.setAttribute("loginUser", loginUser);
 
 		responseEntity = new ResponseEntity("register_success", HttpStatus.OK);
 		return responseEntity;
@@ -191,13 +207,14 @@ public class UserApiController {
 		ResponseEntity<Map<String, Object>> responseEntity = null;
 		Map<String, Object> map = new HashMap<String, Object>();
 		User loginUser = UserUtils.getLoginUser(session);
+		String storedPassword = loginUser.getPassword();    //항상 일정
 
 		//입력받은 비밀번호
-		log.debug(loginUser.getPassword());
+		log.debug(storedPassword);
 		log.debug(passwordEncoder.encode(user.getPassword()));
 
 		//로그인 세션의 비밀번호 값과 일치하는지 확인
-		if (!loginUser.getPassword().equals(passwordEncoder.encode(user.getPassword()))) {
+		if (!passwordEncoder.matches(user.getPassword(), storedPassword)) {
 			log.debug("비밀번호 일치하지 않음 컨트롤러");
 			return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
 		}

@@ -49,11 +49,13 @@ public class MainApiController {
 
 		ModelAndView mv = new ModelAndView();
 
+
 		if (loginUser == null) {
 			mv.setViewName("/main/user");
 			System.out.println("=================널 " + user);
 			return mv;
 		}
+
 
 		if (UserUtils.isManagerLogin(session)) {    //로그인 안되있을시 null 뜸
 			session.invalidate();

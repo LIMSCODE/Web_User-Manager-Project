@@ -68,15 +68,19 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 
 		http
 				.authorizeRequests() 		// 접근에 대한 인증 설정
-					.antMatchers( "/", "/user/login", "/user/create").permitAll() 	// 누구나 접근 허용
-					.anyRequest().authenticated();
+					.antMatchers( "/", "/user/create", "/opmanager", "/user/checkId",
+							"/user/login", "/opmanager/user/login").permitAll() 	// 누구나 접근 허용
+				.antMatchers("/user/**").hasRole("USER")        // user일경우에만 접근가능, 위에서 설정한부분은 예외.
+				.antMatchers("/opmanager/**").hasRole("OPMANAGER")
+				;
 
+		//formLogin은 JWT토큰사용시 사용하지 않는다.
 		/*
 		http
 				.formLogin()
 				.loginProcessingUrl("/user/login")
 				.loginPage("/user/login") 	// 로그인 페이지 링크
-											//이걸 일치시키면 컨트롤러 진입안됨, 객체는 가져와짐
+											// 이걸 일치시키면 컨트롤러 진입안됨, 객체는 가져와짐
 				.failureUrl("/guest/login?error")
 				//.defaultSuccessUrl("/", true)
 				.usernameParameter("loginId")
