@@ -2,81 +2,60 @@ package com.onlinepowers.springmybatis.api.main;
 
 import com.onlinepowers.springmybatis.user.LoginUserDetails;
 import com.onlinepowers.springmybatis.user.User;
-import com.onlinepowers.springmybatis.user.UserService;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.security.Principal;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MainApiController {
 
-	@GetMapping("/hello")
-	public ModelAndView welcome(Principal user) {
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/main/user");
-
-		System.out.println("================= " + user);
-		return mv;
-	}
-
 
 	/**
-	 * 유저 메인페이지 - 메인 API컨트롤러로 옮김
+	 * 유저 메인페이지
 	 * @param session
 	 * @param model
 	 * @return
 	 */
 	@GetMapping("/")
-	public ModelAndView userMain(HttpSession session, Model model, @AuthenticationPrincipal LoginUserDetails user) {
-
-		User loginUser = UserUtils.getLoginUser(session);
-
-		log.debug("메인");
+	public ModelAndView userMain(HttpSession session, Model model,
+								 @AuthenticationPrincipal LoginUserDetails user) {
 
 		ModelAndView mv = new ModelAndView();
 
+		//세션처리 없애려면, 인터셉터, userUtils도 같이없애야한다.
+		User loginUser = UserUtils.getLoginUser(session);
 
 		if (loginUser == null) {
 			mv.setViewName("/main/user");
-			System.out.println("=================널 " + user);
+			log.debug("=================널 " + user);
 			return mv;
 		}
-
 
 		if (UserUtils.isManagerLogin(session)) {    //로그인 안되있을시 null 뜸
 			session.invalidate();
 			mv.setViewName("/main/user");
-			System.out.println("=================매니저 " + user);
+			log.debug("=================매니저 " + user);
 			return mv;
 		}
 
 		if (UserUtils.isUserLogin(session)) {       //시큐리티 적용후 유저 로그인, 여기까지 넘어옴
-			
-			mv.addObject("loginUser", user);
 			mv.setViewName("/main/user");
-
-			System.out.println("================= " + user);
-			System.out.println("================= " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-				//anonymousUser
+			log.debug("================= " + user);			//로그인 컨트롤러를 거쳐 인증된 정보 뜸.
 			return mv;
 		}
 
 		mv.setViewName("/main/user");
-		System.out.println("=================막 " + user);
 		return mv;
 	}
 
@@ -87,11 +66,12 @@ public class MainApiController {
 	 * @return
 	 */
 	@GetMapping("/user/logout")
-	public ModelAndView userLogout(HttpSession session) {
+	public ResponseEntity<String> userLogout(HttpSession session) {
+
+		ResponseEntity<String> responseEntity = null;
 		session.invalidate();
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-		return mv;
+		responseEntity = new ResponseEntity("logout", HttpStatus.OK);
+		return responseEntity;
 	}
 
 
@@ -101,11 +81,12 @@ public class MainApiController {
 	 * @return
 	 */
 	@GetMapping("/opmanager/logout")
-	public ModelAndView managerLogout(HttpSession session) {
+	public ResponseEntity<String> managerLogout(HttpSession session) {
+
+		ResponseEntity<String> responseEntity = null;
 		session.invalidate();
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
-		return mv;
+		responseEntity = new ResponseEntity("logout", HttpStatus.OK);
+		return responseEntity;
 	}
 
 }

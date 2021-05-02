@@ -44,25 +44,23 @@
 			return false;
 		}
 
-        var loginForm = $("#target");
-        var loginFormData = new FormData(loginForm[0]);
+        var loginFormData = new FormData($("#target")[0]);
 
         $.ajax({
 
             url : "/opmanager/user/login",
             type : "post",
             data : loginFormData,
-            datatype: 'json',
+            datatype: 'text',
             processData: false,
             contentType: false,
-            //contentType: "application/json",
-            //datatype: "string",
-            success : function(data) {
-                alert("로그인");
+
+            success : function(token) {
+                var expireDay = 24 * 60 * 60 * 1000; //1일
+                document.cookie = "X-AUTH-TOKEN=" + token + expireDay +"; path=/";  //쿠키에 토큰 저장
                 window.location.href = "/opmanager"
             },
             error : function() {
-                alert(this.url);
                 alert("실패");
             }
         });

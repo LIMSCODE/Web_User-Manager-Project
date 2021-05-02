@@ -68,13 +68,15 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 
 		http
 				.authorizeRequests() 		// 접근에 대한 인증 설정
-					.antMatchers( "/", "/user/create", "/opmanager", "/user/checkId",
+					.antMatchers( "/", "/user/create", "/opmanager", "/user/check-id",
 							"/user/login", "/opmanager/user/login").permitAll() 	// 누구나 접근 허용
-				.antMatchers("/user/**").hasRole("USER")        // user일경우에만 접근가능, 위에서 설정한부분은 예외.
-				.antMatchers("/opmanager/**").hasRole("OPMANAGER")
+					.antMatchers("/user/**").hasRole("USER")        // user일경우에만 접근가능, 위에서 설정한부분은 예외.
+					.antMatchers("/opmanager/**").hasRole("OPMANAGER")
 				;
 
 		//formLogin은 JWT토큰사용시 사용하지 않는다.
+		// 이유 : formLogin loginProcessingUrl 하면 로그인컨트롤러 못거치고 시큐리티가 처리하는데,
+		// 로그인컨트롤러를 사용해야하므로.
 		/*
 		http
 				.formLogin()
@@ -89,12 +91,13 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 		*/
 
 		http.cors().and().csrf().disable();
-				//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				//이거없어도 update됨
+				//.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+				//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 				//.and()
 				//.exceptionHandling().authenticationEntryPoint(jwtEntryPoint)      //빈 등록이안되서
 				//.and()
-				//.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-		
+
 		//이거 지워야 시큐리티 로그인 컨트롤러url 동작하고, 객체도 받아와진다. 왜일까???
 	}
 

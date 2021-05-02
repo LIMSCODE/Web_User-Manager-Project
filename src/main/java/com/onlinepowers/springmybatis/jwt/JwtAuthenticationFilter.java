@@ -54,10 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		} catch (Exception e) {
 			logger.error("Cannot set user authentication: {}", e);
-
 		}
-		filterChain.doFilter(request, response);
 
+		filterChain.doFilter(request, response);
 	}
 
 

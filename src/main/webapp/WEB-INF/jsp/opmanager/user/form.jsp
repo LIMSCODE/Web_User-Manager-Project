@@ -4,10 +4,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-    <title>회원등록</title>
+<title>회원등록</title>
 
 <body>
+<sec:authorize access="isAuthenticated()">
 <%--@elvariable id="user" type="User"--%>
 <form:form modelAttribute="user" method="post" id="target" >
     <c:if test="${id != null}">
@@ -142,6 +144,7 @@
     </span>
     </c:if>
 </form:form>
+</sec:authorize>
 
 <script type="text/javascript">
 
@@ -260,8 +263,7 @@
 
 	    if ($id.val() == null) {
 
-            let createForm = $("#target");
-            let createFormData = new FormData(createForm[0]);
+            let createFormData = new FormData($("#target")[0]);
 
             $.ajax({
                 url : "/opmanager/user/create",
@@ -270,24 +272,19 @@
                 datatype: 'json',
                 processData: false,
                 contentType: false,
-                //contentType: "application/json",
-                //datatype: "string",
+
                 success : function(data) {
-                    alert("insert성공");
                     window.location.href="/opmanager/user/list";  //list로 이동
                 },
                 error : function() {
-                    alert(this.url);
                     alert("실패");
                 }
             });
-
 	    }
 
 	    if ($id.val() != null) {
 
-		    var editForm = $("#target");
-		    var editFormData = new FormData(editForm[0]);
+		    var editFormData = new FormData($("#target")[0]);
 
 		    $.ajax({
 			    url : "/opmanager/user/edit/" + $id.val(),
@@ -296,14 +293,11 @@
 			    datatype: 'json',
 			    processData: false,
 			    contentType: false,
-			    //contentType: "application/json",
-			    //datatype: "string",
+
 			    success : function(data) {
-				    alert("update성공");
 				    window.location.href="/opmanager/user/list";  //list로 이동
 			    },
 			    error : function() {
-				    alert(this.url);
 				    alert("실패");
 			    }
 		    });
@@ -346,8 +340,8 @@
             type : "post",
             data : query,
             datatype: "json",
-            success : function(data) {
 
+            success : function(data) {
                 if (data.isDuplicated == false) {
                     $("#msg").text("사용 불가");
                     $("#msg").attr("style", "color:#f00");

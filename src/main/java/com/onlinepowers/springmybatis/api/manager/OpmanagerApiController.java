@@ -27,24 +27,23 @@ public class OpmanagerApiController {
 	 * @return
 	 */
 	@GetMapping("/opmanager")
-	public ModelAndView managerMain(User user, HttpSession session, Model model, @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+	public ModelAndView managerMain(User user, HttpSession session, Model model,
+									@AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
 		User loginUser = UserUtils.getLoginUser(session);
-
 		ModelAndView mv = new ModelAndView();
+
 		//로그인안됬거나, 유저일때
 		if (loginUser == null || UserUtils.isUserLogin(session)) {
 			mv.setViewName("/opmanager/user/login");
-			System.out.println("=================매니저 " + loginUserDetails);
+			log.debug("=================매니저 " + loginUserDetails);
 			return mv;
 		}
 
 		//관리자일때
 		mv.addObject("loginUser", loginUser);
 		mv.setViewName("/opmanager/index");
-
-		System.out.println("================= " + loginUserDetails);
-		System.out.println("================= " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+		log.debug("================= " + loginUserDetails);
 
 		return mv;
 	}

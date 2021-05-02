@@ -3,6 +3,7 @@
 <%response.setContentType("text/html; charset=UTF-8");%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -12,6 +13,8 @@
 </head>
 
 <body>
+
+<sec:authorize access="isAuthenticated()">
 <%--@elvariable id="user" type="com.onlinepowers.springmybatis.user.User"--%>
 <form:form modelAttribute="user" method="post" id="target">
     <span>
@@ -25,7 +28,7 @@
 
 <br><br>
 <td><a class="btn" href="/">메인화면</a> </td>
-
+</sec:authorize>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">

@@ -2,31 +2,31 @@ package com.onlinepowers.springmybatis.user;
 
 import com.onlinepowers.springmybatis.paging.JpaPaging;
 import com.onlinepowers.springmybatis.util.SHA256Util;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+	@Autowired
 	private final UserRepository userRepository;
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
+	public UserServiceImpl(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	@Override
 	public void deleteUserById(long id) {
@@ -37,9 +37,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void insertUser(User user) {
 
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-
 		userRepository.save(user);  //Jpa에서는 user만 save하면 하위테이블도 모두 저장된다.
 	}
 
@@ -50,15 +48,13 @@ public class UserServiceImpl implements UserService {
 		String password = user.getPassword();
 
 		if (!"".equals(password)) {     //비밀번호 공백이 아닐때만 해시로 만든다.
-			password = SHA256Util.getEncrypt(password, user.getId());
-			user.setPassword(password);
+			user.setPassword(passwordEncoder.encode(password));		//비밀번호 암호화
 		}
 
 		user.getUserDetail().setUserId(user.getId());	//하위테이블 수정안되는 현상 해결
 		user.getUserRole().setUserId(user.getId());
 
-		if ("".equals(user.getPassword())) {
-
+		if ("".equals(password)) {
 			Optional<User> storedUser = userRepository.findById(user.getId());
 			user.setPassword(storedUser.get().getPassword());       //공백으로 수정시, 저장된 비번과 같은것으로 인식
 		}

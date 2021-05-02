@@ -46,8 +46,7 @@
 			return false;
 		}
 
-		var loginForm = $("#target");
-		var loginFormData = new FormData(loginForm[0]);
+		var loginFormData = new FormData($("#target")[0]);
 
 		$.ajax({
 			url : "/user/login",
@@ -56,18 +55,15 @@
 			datatype: 'text',       //생성된 토큰을 받는다.
 			processData: false,
 			contentType: false,
-			//contentType: "application/json",
-			//datatype: "string",
-			success : function(token) {
-				alert(token);
+
+            success : function(token) {
 				console.log(token);
 				var expireDay = 24 * 60 * 60 * 1000; //1일
-				document.cookie = "X-AUTH-TOKEN=" + token + expireDay +"; path=/";  //쿠키에 저장될 값
-				alert("로그인");
+				document.cookie = "X-AUTH-TOKEN=" + token + expireDay +"; path=/";  //쿠키에 토큰 저장
                 window.location.href = "/"
 			},
+
 			error : function() {
-				alert(this.url);
 				alert("실패");
 			}
 		});

@@ -255,24 +255,25 @@
 
         if ($id.val() == null) {
 
-            let createForm = $("#target");
-            let createFormData = new FormData(createForm[0]);
+            let createFormData = new FormData($("#target")[0]);
 
             $.ajax({
                 url : "/user/create",
                 type : "post",
                 data : createFormData,
-                datatype: 'json',
+                datatype: 'json',   //생성된 토큰을 받는다.
                 processData: false,
                 contentType: false,
-                //contentType: "application/json",
-                //datatype: "string",
-                success : function(data) {
-                    alert("insert성공");
-                    window.location.href="/";  //list로 이동
+
+                success : function(token) {
+                    alert("회원가입 성공");
+                    console.log(token);
+                    alert(token);
+                    var expireDay = 24 * 60 * 60 * 1000; //1일
+                    document.cookie = "X-AUTH-TOKEN=" + token + expireDay +"; path=/";  //쿠키에 토큰 저장
+                    window.location.href="/";
                 },
                 error : function() {
-                    alert(this.url);
                     alert("실패");
                 }
             });
@@ -280,8 +281,7 @@
 
         if ($id.val() != null) {
 
-            var editForm = $("#target");
-            var editFormData = new FormData(editForm[0]);
+            var editFormData = new FormData($("#target")[0]);
 
             $.ajax({
                 url : "/user/edit/" + $id.val(),
@@ -290,14 +290,12 @@
                 datatype: 'json',
                 processData: false,
                 contentType: false,
-                //contentType: "application/json",
-                //datatype: "string",
+
                 success : function(data) {
-                    alert("update성공");
-                    window.location.href="/";  //list로 이동
+                    alert("정보수정 성공");
+                    window.location.href="/";
                 },
                 error : function() {
-                    alert(this.url);
                     alert("실패");
                 }
             });

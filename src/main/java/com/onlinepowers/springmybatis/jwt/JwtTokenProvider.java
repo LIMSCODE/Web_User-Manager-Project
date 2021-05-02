@@ -50,7 +50,6 @@ public class JwtTokenProvider {     // JWT토큰 생성 및 유효성을 검증�
 				.compact();
 	}
 
-
 	// JWT 토큰에서 인증 정보 조회
 	public Authentication getAuthentication(String token) {
 		UserDetails userDetails = loginUserDetailsService.loadUserByUsername(this.getUserPk(token));

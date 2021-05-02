@@ -3,12 +3,13 @@
 <%response.setContentType("text/html; charset=UTF-8");%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <title>관리자 메인페이지</title>
 <body>
 <br /> <br /> <br />
 <!--검색영역-->
-<div sec:authorize="isAuthenticated()">
+<sec:authorize access="isAuthenticated()">
 <div id="adv-search" class="input-group" >
     <div class="input-group-btn">
         <div class="btn-group" role="group">
@@ -106,20 +107,22 @@
 
 </div>
 </div>
+</sec:authorize>
 
 <script type="text/javascript">
 
-    //화면로딩시 ajax로 json데이터 변환해서 화면에 뿌리기
+    //list컨트롤러로 화면 호출후, json데이터 변환해서 화면에 뿌리기 컨트롤러
     $(document).ready(function() {
 
 	    $.ajax({
 		    dataType : "json",
-		    url : "/opmanager/user/list1",
+		    url : "/opmanager/user/ajax-list",
+
 		    success : function(data){
-		    	alert("데이터로딩 시작");
 		    	resultHtml(data);
-		    	},
-		    error : function(){ alert("로딩실패!"); }
+            },
+		    error : function(){ alert("로딩실패!");
+		    }
 	    });
     });
 
@@ -146,7 +149,8 @@
 	    html += "</thead>";
 	    html += "<tbody>";
 
-	    $.each(data, function(key, value){
+	    $.each(data, function(key, value){      //data에는 컨트롤러에서 userPage값 받음
+	                                            //Page<User> userPage = userService.getUserList(user, pageable, jpaPaging);
 
 		    if (key == "content") {
 
@@ -171,7 +175,6 @@
                     html += "<td>";
                     html += "<button class='delete' type='submit'  onclick='deleteUser(" + value[i].id + ");'>삭제</button>";
 				    html += "</td>";
-
 				    html += "</tr>";
 			    }
 		    }
@@ -191,13 +194,11 @@
 			$.ajax({
 				url : "/opmanager/user/delete/" + long,
 				type : "post",
-				//contentType: "application/json",
-				//datatype: "string",
+
 				success : function(data) {
 					location.reload();
 				},
 				error : function() {
-					alert(this.url);
 					alert("실패");
 				}
 			});

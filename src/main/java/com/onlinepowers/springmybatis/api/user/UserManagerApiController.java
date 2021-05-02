@@ -2,23 +2,22 @@ package com.onlinepowers.springmybatis.api.user;
 
 import com.onlinepowers.springmybatis.jwt.JwtTokenProvider;
 import com.onlinepowers.springmybatis.paging.JpaPaging;
+import com.onlinepowers.springmybatis.user.LoginUserDetails;
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.user.UserService;
-import com.onlinepowers.springmybatis.util.SHA256Util;
 import com.onlinepowers.springmybatis.util.UserUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
@@ -29,9 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -72,18 +69,7 @@ public class UserManagerApiController {
 	 * @return
 	 */
 	@PostMapping("/login")
-	public ResponseEntity<String> login(User user, HttpSession session, Model model) {
-	
-		//이거 세줄 써야 @Authen 메인컨트롤러에서 받와와짐, 안쓰면 null임
-		// 아이디와 패스워드로, Security 가 알아 볼 수 있는 token 객체로 변경
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getLoginId(), user.getPassword());
-		// AuthenticationManager 에 token 을 넘기면 UserDetailsService 가 받아 처리
-		Authentication authentication = authenticationManager.authenticate(token);
-		// 실제 SecurityContext 에 authentication 정보를 등록
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
-		ResponseEntity<String> responseEntity = null;
+	public String login(User user, HttpSession session, Model model) {
 
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
@@ -93,38 +79,49 @@ public class UserManagerApiController {
 		//아이디가 널일때
 		if (loginUser == null) {
 			log.debug("아이디 안넘어옴");
-			//return responseEntity;
-			responseEntity = new ResponseEntity("Login_fail",HttpStatus.OK);
-			return responseEntity;
+			return "";
 		}
 
-		String storedPassword = loginUser.getPassword();    //항상 일정
+		String storedPassword = loginUser.getPassword();
 		log.debug(storedPassword);
 
 		//비밀번호 일치하지않으면
 		if (!passwordEncoder.matches(user.getPassword(), storedPassword)) {
 			log.debug("비밀번호 일치하지 않음");
-			responseEntity = new ResponseEntity("Login_fail",HttpStatus.OK);
-			return responseEntity;
+			return "";
 		}
 
 		//관리자가 아닐때
 		if (!"ROLE_OPMANAGER".equals(loginUser.getUserRole().getAuthority())) {
 			log.debug("권한이 사용자가 아닙니다.");
-			responseEntity = new ResponseEntity("Login_fail",HttpStatus.OK);
-			return responseEntity;
+			return "";
 		}
 
 		session.setAttribute("loginUser", loginUser);
 		session.setMaxInactiveInterval(1000 * 1000);
 
-		responseEntity = new ResponseEntity("Login_SUCCEEDED",HttpStatus.OK);
-		return responseEntity;
+		// 아이디와 패스워드로, Security 가 알아 볼 수 있는 token 객체로 변경
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getLoginId(), user.getPassword());
+		// AuthenticationManager 에 token 을 넘기면 UserDetailsService 가 받아 처리
+		Authentication authentication = authenticationManager.authenticate(token);
+		// 실제 SecurityContext 에 authentication 정보를 등록
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		return jwtTokenProvider.createToken(loginUser.getLoginId(), loginUser.getUserRole().getAuthority());
 	}
 
 
+	/**
+	 * 회원목록
+	 * @param jpaPaging
+	 * @param user
+	 * @param pageable
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/list")
-	public ModelAndView getUserList1(@ModelAttribute("jpaPaging") JpaPaging jpaPaging,
+	public ModelAndView getUserList(@ModelAttribute("jpaPaging") JpaPaging jpaPaging,
 	                                 User user, @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC, size = 2) Pageable pageable,
 	                                 HttpSession session, Model model) {
 
@@ -132,7 +129,6 @@ public class UserManagerApiController {
 		model.addAttribute("loginUser", loginUser);
 
 		Page<User> userPage = userService.getUserList(user, pageable, jpaPaging); //페이지 객체 담아서 뷰로 보낸다.
-		//model.addAttribute("userPage", userPage);
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/opmanager/user/list");
@@ -143,15 +139,15 @@ public class UserManagerApiController {
 
 
 	/**
-	 * 회원 목록
+	 * 회원 목록 - ajax
 	 * @param jpaPaging
 	 * @param user
 	 * @param session
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("/list1")
-	public ResponseEntity<Page<User>> getUserList(@ModelAttribute("jpaPaging") JpaPaging jpaPaging,
+	@GetMapping("/ajax-list")
+	public ResponseEntity<Page<User>> getUserListByAjax(@ModelAttribute("jpaPaging") JpaPaging jpaPaging,
 	                          User user, @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC, size = 2) Pageable pageable,
 	                          HttpSession session, Model model) {
 
@@ -212,21 +208,14 @@ public class UserManagerApiController {
 		User storedUser = userService.getUserByLoginId(user.getLoginId());
 		if (storedUser != null) {
 			log.debug("해당아이디 존재");
-
 			responseEntity = new ResponseEntity("해당아이디 존재", HttpStatus.BAD_REQUEST);
-
 			return responseEntity;
-			//return "redirect:/opmanager/user/create";
 		}
 
 		userService.insertUser(user);
 
-		User loginUser = UserUtils.getLoginUser(session);
-		model.addAttribute("loginUser", loginUser);
-
 		responseEntity = new ResponseEntity("ADD_SUCCEEDED", HttpStatus.OK);
 		return responseEntity;
-
 	}
 
 
@@ -283,9 +272,7 @@ public class UserManagerApiController {
 			model.addAttribute("user", user);
 
 			responseEntity = new ResponseEntity("다시입력해주세요",HttpStatus.BAD_REQUEST);
-
 			return responseEntity;
-			//return "/opmanager/user/form";
 		}
 
 		userService.updateUser(user);
@@ -295,7 +282,6 @@ public class UserManagerApiController {
 		rttr.addAttribute("searchKeyword", jpaPaging.getSearchKeyword());
 
 		responseEntity = new ResponseEntity("MOD_SUCCEEDED",HttpStatus.OK);
-
 		return responseEntity;
 	}
 
@@ -323,8 +309,6 @@ public class UserManagerApiController {
 
 		responseEntity = new ResponseEntity("Delete Sucess", HttpStatus.OK);
 		return responseEntity;
-
-		//return "redirect:/opmanager/user/list";
 	}
 
 
@@ -349,10 +333,9 @@ public class UserManagerApiController {
 
 		} else {
 			map.put("isDuplicated", true);
-
 		}
-		return new ResponseEntity<>(map, HttpStatus.OK);
 
+		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 
 }
