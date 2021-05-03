@@ -67,43 +67,16 @@
     </div>
 </div>
 
-<ul class="pagination">
-    <c:if test="${!userPage.first}">
-        <c:set var="page" value="${userPage.pageable.pageNumber}" scope="session"/>
-        <li class="previous">
-            <a href="javascript:void(0)" class="on"
-               onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(page - 1)}'">&larr;</a>
-        </li>
-    </c:if>
-
-    <c:forEach begin="${1}" end="${userPage.totalPages}" var="idx">
-        <c:if test="${idx == userPage.pageable.pageNumber + 1}">
-            <li class="active">
-                <a href="javascript:void(0)" class="on"
-                   onclick="location.href='/opmanager/user/list'  + '${user.makeQueryString(idx - 1)}'">${idx}</a>
-            </li>
-        </c:if>
-        <c:if test="${idx != userPage.number + 1}">
-            <li class="">
-                <a href="javascript:void(0)" class="on"
-                   onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(idx - 1)}'">${idx}</a>
-            </li>
-        </c:if>
-    </c:forEach>
-
-    <c:if test="${!userPage.last}">
-        <c:set var="page" value="${userPage.pageable.pageNumber}" scope="session"/>
-        <li class="previous">
-            <a href="javascript:void(0)" class="on"
-               onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(page + 1)}'">&rarr;</a>
-        </li>
-    </c:if>
-    </p>
-</ul>
 
 <form action="/opmanager/user/create">
     <input type="submit" value="등록" id="create" style="float:right">
 </form>
+<br><br><br>
+    <div class="container-fluid">
+        <div class="row">
+            <div id="paging">
+            </div>
+        </div>
 
 </div>
 </div>
@@ -129,6 +102,8 @@
     function resultHtml(data) {
 
         var html = "";
+	    var paging = "";
+
 	    html += "<table class='table table-hover type09'>";
 	    html += "<thead>";
 	    html += "<tr class='warning'>";
@@ -151,24 +126,9 @@
 
 	    $.each(data, function(key, value){      //data에는 컨트롤러에서 userPage값 받음
 	                                            //Page<User> userPage = userService.getUserList(user, pageable, jpaPaging);
-
 		    if (key == "content") {
 
 			    for (var i = 0; i < value.length; i++) {
-
-			    	if (value[i].userDetail.receiveSms == 1) {
-                        var receiveSmsTitle = "수신";
-
-                    } else {
-					    var receiveSmsTitle = "수신안함";
-                    }
-
-			    	if (value[i].userRole.authority == "ROLE_USER") {
-                        var authorityTitle = "회원"
-
-                    } else {
-					    var authorityTitle = "관리자"
-                    }
 
                     html == "<tr>";
 				    html += "<td>" + value[i].pagingId + "</td>";
@@ -181,8 +141,8 @@
 				    html += "<td>" +value[i].userDetail.address + "</td>";
 				    html += "<td>" +value[i].userDetail.addressDetail + "</td>";
 				    html += "<td>" +value[i].userDetail.phoneNumber + "</td>";
-				    html += "<td>" + receiveSmsTitle + "</td>";
-				    html += "<td>" + authorityTitle + "</td>";
+				    html += "<td>" +value[i].userDetail.receiveSmsTitle+ "</td>";
+				    html += "<td>" +value[i].userRole.authorityTitle+ "</td>";
                     html += "<td>";
                     html += "<a id='edit' href='/opmanager/user/edit/" + value[i].id + "'>수정</a>";
                     html += "</td>";
@@ -192,13 +152,41 @@
 				    html += "</tr>";
 			    }
 		    }
-	    });
+        });
 
 	    html += "</tbody>";
 	    html += "</table>";
 
+	    var totalPages = data.totalPages;   //총페이지 3개
+	    alert(totalPages);
+	    alert(data.pageable.pageNumber);    //0 페이지
+
+	    for (var i = 1 ; i < totalPages ; i++) {    //14페이지까지 돌면서
+
+		    var j = i - 1;
+		    alert("000");
+		    if (j == data.pageable.pageNumber) {    //현재 0페이지
+                    alert("111");
+			    html += "<ul class='pagination'>";
+			    html += "<li class='active'>";
+			    html += "<a href='javascript:void(0)' class='on' onclick='location.href='/opmanager/user/list?page =" + j + "''>";
+			    html += "</li>";
+			    html += "</ul>";
+
+		    } else {
+			        alert("2222");
+			    html += "<ul class='pagination'>";
+			    html += "<li class='active'>";
+			    html += "<a href='javascript:void(0)' class='on' onclick='location.href='/opmanager/user/list?page =" + j + "''>";
+			    html += "</li>";
+			    html += "</ul>";
+            }
+
+	    }
+
 	    $("#display").empty();
 	    $("#display").append(html);
+
     }
 
 	function deleteUser(long) {

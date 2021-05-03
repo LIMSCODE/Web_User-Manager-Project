@@ -1,6 +1,7 @@
 package com.onlinepowers.springmybatis;
 
 import com.onlinepowers.springmybatis.jwt.JwtAuthenticationFilter;
+import com.onlinepowers.springmybatis.jwt.JwtEntryPoint;
 import com.onlinepowers.springmybatis.jwt.JwtTokenProvider;
 import com.onlinepowers.springmybatis.security.LoginUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,11 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
+
+	@Bean
+	public JwtEntryPoint jwtEntryPoint(){
+		return new JwtEntryPoint();
+	}
 
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -88,11 +94,9 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 		*/
 
 		http.cors().and().csrf().disable()
-				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+				.exceptionHandling().authenticationEntryPoint(jwtEntryPoint());
 				//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-				//.and()
-				//.exceptionHandling().authenticationEntryPoint(jwtEntryPoint)      //빈 등록이안되서
-				//.and()
 				//지우면 시큐리티 로그인 컨트롤러url 동작하고, 객체도 받아와진다.
 	}
 
