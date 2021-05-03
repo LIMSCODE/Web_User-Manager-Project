@@ -6,10 +6,10 @@
 <div class="">
 <br><br><br><br><br>
 <span>[관리자 페이지] </span>
-<sec:authorize access="isAuthenticated()">
+    <sec:authorize access="hasAnyRole('ROLE_OPMANAGER')">
     <span><sec:authentication property="name"/> 님 안녕하세요</span>   <br><br><br>
     <a class="btn" href="/opmanager/logout" onclick="logout();">로그아웃</a>   <br><br><br>
-</sec:authorize>
+    </sec:authorize>
 </div>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

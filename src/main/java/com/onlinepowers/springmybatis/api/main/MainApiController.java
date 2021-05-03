@@ -1,6 +1,6 @@
 package com.onlinepowers.springmybatis.api.main;
 
-import com.onlinepowers.springmybatis.user.LoginUserDetails;
+import com.onlinepowers.springmybatis.security.LoginUserDetails;
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;

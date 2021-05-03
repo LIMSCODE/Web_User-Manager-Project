@@ -15,7 +15,7 @@
 <div class="">
     <br><br><br><br>
 
-    <sec:authorize access="isAuthenticated()">
+    <sec:authorize access="hasAnyRole('ROLE_USER')">        <!--유저일때-->
     <span>
          <span><sec:authentication property="name"/>님 안녕하세요</span>   <br><br><br>        <!--Authentication 객체의 property를 반환-->
          <a class="btn" href="/user/password-check"  >정보수정</a>      <br><br><br>

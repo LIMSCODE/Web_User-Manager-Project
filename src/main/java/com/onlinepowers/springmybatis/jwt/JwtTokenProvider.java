@@ -1,6 +1,6 @@
 package com.onlinepowers.springmybatis.jwt;
 
-import com.onlinepowers.springmybatis.user.LoginUserDetailsService;
+import com.onlinepowers.springmybatis.security.LoginUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component

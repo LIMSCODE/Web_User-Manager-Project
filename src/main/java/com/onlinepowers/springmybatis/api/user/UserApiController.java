@@ -1,7 +1,7 @@
 package com.onlinepowers.springmybatis.api.user;
 
 import com.onlinepowers.springmybatis.jwt.JwtTokenProvider;
-import com.onlinepowers.springmybatis.user.LoginUserDetails;
+import com.onlinepowers.springmybatis.security.LoginUserDetails;
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.user.UserService;
 import com.onlinepowers.springmybatis.util.UserUtils;
@@ -60,6 +60,11 @@ public class UserApiController {
 	}
 
 
+	/**
+	 * 회원 로그인
+	 * @param user
+	 * @return
+	 */
 	@GetMapping("/login")
 	public ModelAndView login(User user) {
 		ModelAndView mv = new ModelAndView();
@@ -68,6 +73,13 @@ public class UserApiController {
 	}
 
 
+	/**
+	 * 회원 로그인
+	 * @param user
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("/login")
 	public String login(User user, HttpSession session, Model model) {
 
@@ -103,6 +115,7 @@ public class UserApiController {
 		// 실제 SecurityContext 에 authentication 정보를 등록
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
+		//토큰 생성후 ajax로 쿠키에 저장, API요청시 자동으로 헤더에 포함시켜 보내짐
 		return jwtTokenProvider.createToken(loginUser.getLoginId(), loginUser.getUserRole().getAuthority());
 	}
 

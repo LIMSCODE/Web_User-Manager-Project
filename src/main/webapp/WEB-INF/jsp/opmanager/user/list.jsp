@@ -9,7 +9,7 @@
 <body>
 <br /> <br /> <br />
 <!--검색영역-->
-<sec:authorize access="isAuthenticated()">
+<sec:authorize access="hasAnyRole('ROLE_OPMANAGER')">
 <div id="adv-search" class="input-group" >
     <div class="input-group-btn">
         <div class="btn-group" role="group">
@@ -156,6 +156,20 @@
 
 			    for (var i = 0; i < value.length; i++) {
 
+			    	if (value[i].userDetail.receiveSms == 1) {
+                        var receiveSmsTitle = "수신";
+
+                    } else {
+					    var receiveSmsTitle = "수신안함";
+                    }
+
+			    	if (value[i].userRole.authority == "ROLE_USER") {
+                        var authorityTitle = "회원"
+
+                    } else {
+					    var authorityTitle = "관리자"
+                    }
+
                     html == "<tr>";
 				    html += "<td>" + value[i].pagingId + "</td>";
 				    html += "<td>" +value[i].name + "</td>";
@@ -167,8 +181,8 @@
 				    html += "<td>" +value[i].userDetail.address + "</td>";
 				    html += "<td>" +value[i].userDetail.addressDetail + "</td>";
 				    html += "<td>" +value[i].userDetail.phoneNumber + "</td>";
-				    html += "<td>" +value[i].userDetail.getReceiveSmsTitle + "</td>";
-				    html += "<td>" +value[i].userRole.getAuthorityTitle + "</td>";
+				    html += "<td>" + receiveSmsTitle + "</td>";
+				    html += "<td>" + authorityTitle + "</td>";
                     html += "<td>";
                     html += "<a id='edit' href='/opmanager/user/edit/" + value[i].id + "'>수정</a>";
                     html += "</td>";

@@ -266,7 +266,6 @@
                 contentType: false,
 
                 success : function(token) {
-                    alert("회원가입 성공");
                     console.log(token);
                     alert(token);
                     var expireDay = 24 * 60 * 60 * 1000; //1일

@@ -252,8 +252,7 @@
             return false;
         }
 
-
-	    if($("input:radio[name='userDetail.receiveSms']").is(":checked") == false) {
+	    if ($("input:radio[name='userDetail.receiveSms']").is(":checked") == false) {
 		    alert("sms 수신여부 선택해주세요");
 		    return false;
 	    }

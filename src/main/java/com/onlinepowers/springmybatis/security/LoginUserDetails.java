@@ -1,10 +1,6 @@
-package com.onlinepowers.springmybatis.user;
-import lombok.AllArgsConstructor;
+package com.onlinepowers.springmybatis.security;
+import com.onlinepowers.springmybatis.user.User;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import java.util.Collection;
 import org.springframework.security.core.authority.AuthorityUtils;
 
 @Data

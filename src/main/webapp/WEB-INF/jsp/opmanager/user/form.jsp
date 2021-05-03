@@ -9,7 +9,7 @@
 <title>회원등록</title>
 
 <body>
-<sec:authorize access="isAuthenticated()">
+<sec:authorize access="hasAnyRole('ROLE_OPMANAGER')">
 <%--@elvariable id="user" type="User"--%>
 <form:form modelAttribute="user" method="post" id="target" >
     <c:if test="${id != null}">

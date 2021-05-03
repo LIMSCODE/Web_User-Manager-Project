@@ -21,7 +21,6 @@ public class MVCConfiguration implements WebMvcConfigurer {
 				.excludePathPatterns("/user/create")
 				.excludePathPatterns("/user/check-id");
 
-
 		UserRoleInterceptor userRoleInterceptor = new UserRoleInterceptor();	//user일때 관리자 접근x
 
 		registry.addInterceptor(userRoleInterceptor)
@@ -34,7 +33,6 @@ public class MVCConfiguration implements WebMvcConfigurer {
 
 		registry.addInterceptor(managerRoleInterceptor)
 				.addPathPatterns("/user/**");
-
 
 		UserRoleEditInterceptor userRoleEditInterceptor = new UserRoleEditInterceptor();  //user일때 다른사람것 수정x
 

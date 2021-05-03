@@ -1,6 +1,6 @@
 package com.onlinepowers.springmybatis.jwt;
 
-import com.onlinepowers.springmybatis.user.LoginUserDetailsService;
+import com.onlinepowers.springmybatis.security.LoginUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

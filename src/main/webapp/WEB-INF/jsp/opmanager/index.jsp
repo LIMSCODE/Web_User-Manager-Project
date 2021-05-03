@@ -8,7 +8,7 @@
 <body>
 <div class="">
     <br><br><br><br>
-    <sec:authorize access="isAuthenticated()">
+    <sec:authorize access="hasAnyRole('ROLE_OPMANAGER')">
         <main id="right">메인페이지</main>
     </sec:authorize>
 </div>

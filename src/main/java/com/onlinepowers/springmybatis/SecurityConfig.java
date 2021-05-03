@@ -1,10 +1,8 @@
 package com.onlinepowers.springmybatis;
 
 import com.onlinepowers.springmybatis.jwt.JwtAuthenticationFilter;
-import com.onlinepowers.springmybatis.jwt.JwtEntryPoint;
 import com.onlinepowers.springmybatis.jwt.JwtTokenProvider;
-import com.onlinepowers.springmybatis.user.LoginUserDetailsService;
-import lombok.RequiredArgsConstructor;
+import com.onlinepowers.springmybatis.security.LoginUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +12,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 @EnableWebSecurity      // Spring Security를 활성화
 @Configuration
 class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security의 설정파일로서의 역할을 하기 위해 상속
@@ -24,19 +22,20 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 	@Autowired
 	private LoginUserDetailsService loginUserDetailsService; // 유저 정보를 가져올 클래스
 
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
+
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
 		return new JwtAuthenticationFilter();
 	}
-
-	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
 
 	@Bean
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
+
 
 	/**
 	 * 비밀번호 암호화
@@ -72,33 +71,29 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 							"/user/login", "/opmanager/user/login").permitAll() 	// 누구나 접근 허용
 					.antMatchers("/user/**").hasRole("USER")        // user일경우에만 접근가능, 위에서 설정한부분은 예외.
 					.antMatchers("/opmanager/**").hasRole("OPMANAGER")
-				;
+		;
 
-		//formLogin은 JWT토큰사용시 사용하지 않는다.
-		// 이유 : formLogin loginProcessingUrl 하면 로그인컨트롤러 못거치고 시큐리티가 처리하는데,
-		// 로그인컨트롤러를 사용해야하므로.
+		//formLogin loginProcessingUrl 하면 로그인컨트롤러 못거치고 시큐리티가 처리
+		//로그인컨트롤러를 사용해야하므로 formLogin은 JWT토큰 사용시 사용하지 않는다.
 		/*
 		http
 				.formLogin()
 				.loginProcessingUrl("/user/login")
-				.loginPage("/user/login") 	// 로그인 페이지 링크
-											// 이걸 일치시키면 컨트롤러 진입안됨, 객체는 가져와짐
+				.loginPage("/user/login")
 				.failureUrl("/guest/login?error")
-				//.defaultSuccessUrl("/", true)
+				.defaultSuccessUrl("/", true)
 				.usernameParameter("loginId")
 				.passwordParameter("password")
 				.permitAll();
 		*/
 
-		http.cors().and().csrf().disable();
-				//이거없어도 update됨
-				//.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.cors().and().csrf().disable()
+				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 				//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 				//.and()
 				//.exceptionHandling().authenticationEntryPoint(jwtEntryPoint)      //빈 등록이안되서
 				//.and()
-
-		//이거 지워야 시큐리티 로그인 컨트롤러url 동작하고, 객체도 받아와진다. 왜일까???
+				//지우면 시큐리티 로그인 컨트롤러url 동작하고, 객체도 받아와진다.
 	}
 
 
@@ -109,10 +104,9 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 	 */
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(loginUserDetailsService)        // UserDetailsService를 implements해서 loadUserByUsername() 구현
-				.passwordEncoder(passwordEncoder()); 	//패스워드 인코더는 위에서 빈으로 등록해놓은 passwordEncoder()를 사용
+		auth.userDetailsService(loginUserDetailsService)        //UserDetailsService를 implements해서 loadUserByUsername() 구현
+				.passwordEncoder(passwordEncoder()); 	        //패스워드 인코더는 위에서 빈으로 등록해놓은 passwordEncoder()를 사용
 
-		System.out.println("시큐리티config");       //antMatcher설정하고 로그인했더니 여기까지 뜸
 	}
 
 }
