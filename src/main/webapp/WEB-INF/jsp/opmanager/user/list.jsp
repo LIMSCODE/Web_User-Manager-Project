@@ -150,7 +150,8 @@
 		html += "</thead>";
 		html += "<tbody>";
 
-		$.each(data, function(key, value) {      //data에는 컨트롤러에서 userPage값 받음
+		$.each(data, function(key, value) {
+			//data에는 컨트롤러에서 userPage값 받음
 			//Page<User> userPage = userService.getUserList(user, pageable, jpaPaging);
 
 			if (key == "content") {
@@ -159,16 +160,16 @@
 
 					html == "<tr>";
 					html += "<td>" + value[i].pagingId + "</td>";
-					html += "<td>" +value[i].name + "</td>";
-					html += "<td>" +value[i].loginId + "</td>";
-					html += "<td>" +value[i].email + "</td>";
-					html += "<td>" +value[i].createdDate + "</td>";
-					html += "<td>" +value[i].userDetail.zipcode + "</td>";
-					html += "<td>" +value[i].userDetail.address + "</td>";
-					html += "<td>" +value[i].userDetail.addressDetail + "</td>";
-					html += "<td>" +value[i].userDetail.phoneNumber + "</td>";
-					html += "<td>" +value[i].userDetail.receiveSmsTitle+ "</td>";
-					html += "<td>" +value[i].userRole.authorityTitle+ "</td>";
+					html += "<td>" + value[i].name + "</td>";
+					html += "<td>" + value[i].loginId + "</td>";
+					html += "<td>" + value[i].email + "</td>";
+					html += "<td>" + value[i].createdDate + "</td>";
+					html += "<td>" + value[i].userDetail.zipcode + "</td>";
+					html += "<td>" + value[i].userDetail.address + "</td>";
+					html += "<td>" + value[i].userDetail.addressDetail + "</td>";
+					html += "<td>" + value[i].userDetail.phoneNumber + "</td>";
+					html += "<td>" + value[i].userDetail.receiveSmsTitle+ "</td>";
+					html += "<td>" + value[i].userRole.authorityTitle+ "</td>";
 					html += "<td>";
 					html += "<a id='edit' href='/opmanager/user/edit/" + value[i].id + "'>수정</a>";
 					html += "</td>";
@@ -176,6 +177,7 @@
 					html += "<button class='delete' type='submit'  onclick='deleteUser(" + value[i].id + ");'>삭제</button>";
 					html += "</td>";
 					html += "</tr>";
+
 				}
 			}
 		});
@@ -187,7 +189,11 @@
 		$("#display").append(html);
 
 		for (var num = 1; num <= endpage; num++) {
+
 			if (num == data.pageable.pageNumber + 1) {
+
+
+
 			}
 		}
 	}
