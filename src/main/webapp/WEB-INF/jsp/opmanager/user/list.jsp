@@ -17,7 +17,7 @@
                     <div class="dropdown-menu dropdown-menu-right" role="menu">
 
                         <!--/* 검색 form */-->
-                        <form id="searchForm" action="/opmanager/user/list" method="get"
+                        <form id="searchForm" action="/opmanager/user/ajax-list" method="get"
                               class="form-horizontal" role="form">
                             <!-- /* 현재 페이지 번호, 페이지당 출력할 데이터 개수, 페이지 하단에 출력할 페이지 개수 Hidden 파라미터 */ -->
                             <input type="hidden" name="currentPageNo" value="1"/>
@@ -81,7 +81,7 @@
                 <c:if test="${idx == userPage.pageable.pageNumber + 1}">
                     <li class="active">
                         <a href="javascript:void(0)" class="on"
-                           onclick="location.href='/opmanager/user/list'  + '${user.makeQueryString(idx - 1)}'">${idx}</a>
+                           onclick="movePage(${idx});">${idx}</a>
                     </li>
                 </c:if>
                 <c:if test="${idx != userPage.number + 1}">
@@ -114,11 +114,9 @@
 
 	//list컨트롤러로 화면 호출후, json데이터 변환해서 화면에 뿌리기 컨트롤러
 	$(document).ready(function() {
-
 		$.ajax({
 			dataType : "json",
-			url : "/opmanager/user/ajax-list",
-
+			url : "/opmanager/user/ajax-list?page=" + pageNum,      //페이지넘버 전달받는법
 			success : function(data){
 				resultHtml(data);
 			},
@@ -127,8 +125,22 @@
 		});
 	});
 
-	function resultHtml(data) {
 
+	//페이지 넘버 onclick시 위의 ajax 다시돌린다. (검색기능 포함 onclick 함수안에 ajax만들고, pageNum을 매개변수로)
+	function movePage(pageNum) {
+
+		$.ajax({
+			dataType : "json",
+			url : "/opmanager/user/list",
+			success : function(data){
+				resultHtml(data);
+			},
+			error : function(){ alert("로딩실패!");
+			}
+		});
+	}
+
+	function resultHtml(data) {
 		var html = "";
 		html += "<table class='table table-hover type09'>";
 		html += "<thead>";
@@ -155,10 +167,8 @@
 			//Page<User> userPage = userService.getUserList(user, pageable, jpaPaging);
 
 			if (key == "content") {
-
 				for (var i = 0; i < value.length; i++) {
-
-					html == "<tr>";
+					html += "<tr>";
 					html += "<td>" + value[i].pagingId + "</td>";
 					html += "<td>" + value[i].name + "</td>";
 					html += "<td>" + value[i].loginId + "</td>";
@@ -168,8 +178,8 @@
 					html += "<td>" + value[i].userDetail.address + "</td>";
 					html += "<td>" + value[i].userDetail.addressDetail + "</td>";
 					html += "<td>" + value[i].userDetail.phoneNumber + "</td>";
-					html += "<td>" + value[i].userDetail.receiveSmsTitle+ "</td>";
-					html += "<td>" + value[i].userRole.authorityTitle+ "</td>";
+					html += "<td>" + value[i].userDetail.receiveSmsTitle + "</td>";
+					html += "<td>" + value[i].userRole.authorityTitle + "</td>";
 					html += "<td>";
 					html += "<a id='edit' href='/opmanager/user/edit/" + value[i].id + "'>수정</a>";
 					html += "</td>";
@@ -177,35 +187,42 @@
 					html += "<button class='delete' type='submit'  onclick='deleteUser(" + value[i].id + ");'>삭제</button>";
 					html += "</td>";
 					html += "</tr>";
-
 				}
 			}
 		});
-
 		html += "</tbody>";
 		html += "</table>";
 
-		$("#display").empty();
-		$("#display").append(html);
+		//data는 컨트롤러에서 받아온 값이다.
+        //뷰에서 페이지 넘길때의 값을 컨트롤러로 전송해야한다.
 
-		for (var num = 1; num <= endpage; num++) {
+		alert(data.pageable.pageNumber);    //페이지 이동해도, 항상 0으로 뜨는데 이것때문에
 
-			if (num == data.pageable.pageNumber + 1) {
-
-
-
+        for (var num = 0; num < data.totalPages; num++) {
+			if (num == data.pageable.pageNumber) {
+				html += "<li class='active'>";
+				//html += "<a href='/opmanager/user/list?page=" + num +"'"+ "class='on'  >"    //onclick(페이지넘버 매개변수)
+				html += "<a href='/opmanager/user/ajax-list?page=" + num + "'" + "class='on' onclick='movePage("+ num+");'>"
+				html += num + 1;
+				html += "</a>";
+				html += "</li>";
+			}else {
+				html += "<li class=''>";
+				html += "<a href='/opmanager/user/ajax-list?page=" + num + "'" + "class='on' onclick='movePage("+ num+");'>"
+				html += num + 1;
+				html += "</a>";
+				html += "</li>";
 			}
 		}
+		$("#display").empty();
+		$("#display").append(html);
 	}
 
 	function deleteUser(long) {
-
 		if (confirm("정말 삭제하시겠습니까 ?") == true) {
-
 			$.ajax({
 				url : "/opmanager/user/delete/" + long,
 				type : "post",
-
 				success : function(data) {
 					location.reload();
 				},
@@ -213,11 +230,9 @@
 					alert("실패");
 				}
 			});
-
 		} else {
 			return false;
 		}
 	};
-
 </script>
 </body>

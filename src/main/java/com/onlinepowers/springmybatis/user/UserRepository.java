@@ -5,6 +5,7 @@ import sun.rmi.runtime.Log;
 
 public interface UserRepository extends JpaRepository<User, Long>, CustomizedUserRepository {
 
+
 	/**
 	 * 아이디 중복 확인
 	 * @param loginId
