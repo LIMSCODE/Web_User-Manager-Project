@@ -72,15 +72,16 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http
-				.authorizeRequests() 		// 접근에 대한 인증 설정
+				.authorizeRequests()
 					.antMatchers( "/", "/user/create", "/opmanager", "/user/check-id",
-							"/user/login", "/opmanager/user/login").permitAll() 	// 누구나 접근 허용
-					.antMatchers("/user/**").hasRole("USER")        // user일경우에만 접근가능, 위에서 설정한부분은 예외.
+							"/user/login", "/opmanager/user/login").permitAll()     // 누구나 접근 허용
+					.antMatchers("/user/**").hasRole("USER")             // user일경우에만 접근가능, 위에서 설정한부분은 예외.
 					.antMatchers("/opmanager/**").hasRole("OPMANAGER")
 		;
 
-		//formLogin loginProcessingUrl 하면 로그인컨트롤러 못거치고 시큐리티가 처리
-		//로그인컨트롤러를 사용해야하므로 formLogin은 JWT토큰 사용시 사용하지 않는다.
+
+		//formLogin loginProcessingUrl - 로그인컨트롤러 안거치고 시큐리티가 처리
+		//JWT토큰 사용시 로그인컨트롤러 거쳐야함 - formLogin 사용x
 		/*
 		http
 				.formLogin()
@@ -93,11 +94,12 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 				.permitAll();
 		*/
 
+
 		http.cors().and().csrf().disable()
 				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.exceptionHandling().authenticationEntryPoint(jwtEntryPoint());
 				//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-				//지우면 시큐리티 로그인 컨트롤러url 동작하고, 객체도 받아와진다.
+
 	}
 
 

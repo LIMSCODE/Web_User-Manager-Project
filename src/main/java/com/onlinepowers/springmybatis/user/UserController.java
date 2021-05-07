@@ -4,7 +4,6 @@ import com.onlinepowers.springmybatis.util.SHA256Util;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
