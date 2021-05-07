@@ -43,27 +43,6 @@ public class UserApiController {
 
 
 	/**
-	 * JWT에 담긴 권한 확인
-	 * @param user
-	 * @return
-	 */
-	@GetMapping("/checkJWT")
-	public String jwt(Principal user){
-
-		//권한체크 예시 - 로그인시 발급받은 토큰에서 온 것
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		LoginUserDetails securityUser = (LoginUserDetails) authentication.getPrincipal();
-		String userAuthority = securityUser.getUser().getUserRole().getAuthority();
-
-		if (!"ROLE_USER".equals(userAuthority)) {
-			log.debug("권한 체크");
-		}
-
-		return  securityUser.getUser().getUserRole().getAuthority() + " / " + securityUser.getUser().getPassword();
-	}
-
-
-	/**
 	 * 회원 로그인
 	 * @param user
 	 * @return
@@ -270,7 +249,7 @@ public class UserApiController {
 		User updatedUser = userService.getUserByLoginId(user.getLoginId());     //비밀번호 수정후 바뀐 DTO를 session에 set해줘야함.
 		session.setAttribute("loginUser", updatedUser);
 
-		responseEntity = new ResponseEntity("MOD_SUCCEEDED",HttpStatus.OK);
+		responseEntity = new ResponseEntity("MOD_SUCCEEDED", HttpStatus.OK);
 		return responseEntity;
 	}
 

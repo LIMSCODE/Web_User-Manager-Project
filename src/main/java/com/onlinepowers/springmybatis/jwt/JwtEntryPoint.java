@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class JwtEntryPoint implements AuthenticationEntryPoint {   //권한이 없을 경우 알려주는.. 401 에러
+public class JwtEntryPoint implements AuthenticationEntryPoint {   //권한이 없을 경우 알려주는.. 401 에러 - 뜨는것 확인
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,

@@ -58,33 +58,12 @@ public class JwtTokenProvider {     // JWT토큰 생성 및 유효성을 검증�
 
 
 	/**
-	 * JWT 토큰에서 인증 정보 조회
-	 * @param token
-	 * @return
-	 */
-	public Authentication getAuthentication(String token) {
-		UserDetails userDetails = loginUserDetailsService.loadUserByUsername(this.getUserPk(token));
-		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-	}
-
-
-	/**
 	 * 토큰에서 회원 정보 추출
 	 * @param token
 	 * @return
 	 */
 	public String getUserPk(String token) {
 		return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
-	}
-
-
-	/**
-	 * Request의 Header에서 token 값을 가져온다. "X-AUTH-TOKEN" : "TOKEN값'
-	 * @param request
-	 * @return
-	 */
-	public String resolveToken(HttpServletRequest request) {
-		return request.getHeader("X-AUTH-TOKEN");
 	}
 
 
@@ -103,4 +82,26 @@ public class JwtTokenProvider {     // JWT토큰 생성 및 유효성을 검증�
 			return false;
 		}
 	}
+
+
+	/**
+	 * JWT 토큰에서 인증 정보 조회
+	 * @param token
+	 * @return
+	 */
+	public Authentication getAuthentication(String token) {
+		UserDetails userDetails = loginUserDetailsService.loadUserByUsername(this.getUserPk(token));
+		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+	}
+
+
+	/**
+	 * Request의 Header에서 token 값을 가져온다. "X-AUTH-TOKEN" : "TOKEN값'
+	 * @param request
+	 * @return
+	 */
+	public String resolveToken(HttpServletRequest request) {
+		return request.getHeader("X-AUTH-TOKEN");
+	}
+
 }

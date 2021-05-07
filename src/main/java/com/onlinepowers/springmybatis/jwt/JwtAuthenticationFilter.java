@@ -36,17 +36,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		try {
 			String token = getToken(request);   //아래의 getToken함수 실행
 
-			//Bearer로 토큰을 받으면 토큰을 추출하여 올바른 토큰인지 체크하고, 토큰에 있는 정보(username, role 등등) 을 가져와 인증
+			//Bearer로 토큰을 받으면 토큰을 추출하여 올바른 토큰인지 체크
 			if (token != null && jwtTokenProvider.validateToken(token)) {
 				String username = jwtTokenProvider.getUserPk(token);
-				
-				UserDetails userDetails = loginUserDetailsService.loadUserByUsername(username);     //로그인 객체 가져오기
-				UsernamePasswordAuthenticationToken authentication
-						= new UsernamePasswordAuthenticationToken( userDetails, null, userDetails.getAuthorities());
 
+				//로그인 객체 가져와서 토큰에 있는 정보(username, role 등) 인증
+				UserDetails userDetails = loginUserDetailsService.loadUserByUsername(username);
+				UsernamePasswordAuthenticationToken authentication
+						= new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-				// SecurityContext 에 Authentication 객체를 저장합니다.
+				// SecurityContext에 Authentication 객체를 저장합니다.
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
 
