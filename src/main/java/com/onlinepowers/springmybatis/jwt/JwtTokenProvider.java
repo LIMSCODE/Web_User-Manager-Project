@@ -48,8 +48,8 @@ public class JwtTokenProvider {     // JWT토큰 생성 및 유효성을 검증�
 		claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
 		Date now = new Date();
 		return Jwts.builder()
-				.setClaims(claims) // 정보 저장
-				.setIssuedAt(now) // 토큰 발행 시간 정보
+				.setClaims(claims)  // 정보 저장
+				.setIssuedAt(now)   // 토큰 발행 시간 정보
 				.setExpiration(new Date(now.getTime() + EXPIRATION_TIME)) // set Expire Time
 				.signWith(SignatureAlgorithm.HS256, SECRET_KEY)  // 사용할 암호화 알고리즘과
 				// signature 에 들어갈 secret값 세팅
