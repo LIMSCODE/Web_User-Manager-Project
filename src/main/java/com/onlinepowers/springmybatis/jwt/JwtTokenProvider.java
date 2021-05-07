@@ -21,10 +21,8 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {     // JWT토큰 생성 및 유효성을 검증하는 컴포넌트
 
-	// 암호화 키
 	public static final String SECRET_KEY = "dsaidmosidqnwpqe";     //secretKey
 
-	// 토큰 유효기간 15분
 	public static final Long EXPIRATION_TIME = 15 * 60 * 1000L;     //tokenValidTime
 
 	private final LoginUserDetailsService loginUserDetailsService;

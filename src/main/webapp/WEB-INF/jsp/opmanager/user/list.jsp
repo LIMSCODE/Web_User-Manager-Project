@@ -92,6 +92,7 @@
 
 	//검색시 이벤트
 	$("#searchForm").on("submit", function(e) {
+
 		e.preventDefault();
 
 		let searchForm = new FormData($("#searchForm")[0]);
@@ -99,7 +100,7 @@
         let searchKeyword = $("#searchKeyword").val();
 
 		$.ajax({
-			url : "/opmanager/user/ajax-list?searchType="+searchType+"&searchKeyword="+searchKeyword,
+			url : "/opmanager/user/ajax-list?searchType=" + searchType + "&searchKeyword=" + searchKeyword,
 			type : "get",
 			data : searchForm,
 			datatype: 'json',
@@ -110,7 +111,7 @@
 				resultHtml(data);
 			},
 			error : function() {
-				alert("실패");
+				alert("검색 에러");
 			}
 		});
 	});

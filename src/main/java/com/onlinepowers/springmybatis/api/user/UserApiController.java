@@ -50,12 +50,15 @@ public class UserApiController {
 	@GetMapping("/checkJWT")
 	public String jwt(Principal user){
 
-		//권한체크 - 로그인시 발급받은 토큰에서 온 것
+		//권한체크 예시 - 로그인시 발급받은 토큰에서 온 것
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		LoginUserDetails securityUser = (LoginUserDetails) authentication.getPrincipal();
 		String userAuthority = securityUser.getUser().getUserRole().getAuthority();
+
 		if (!"ROLE_USER".equals(userAuthority)) {
+			log.debug("권한 체크");
 		}
+
 		return  securityUser.getUser().getUserRole().getAuthority() + " / " + securityUser.getUser().getPassword();
 	}
 
@@ -156,6 +159,7 @@ public class UserApiController {
 
 		//입력받은 아이디에 해당하는 DTO값이 db에 있으면 insert안되도록
 		User storedUser = userService.getUserByLoginId(user.getLoginId());
+
 		if (storedUser != null) {
 			log.debug("해당아이디 존재");
 			responseEntity = new ResponseEntity("register_fail", HttpStatus.BAD_REQUEST);

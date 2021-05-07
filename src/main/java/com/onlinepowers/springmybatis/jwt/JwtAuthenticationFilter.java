@@ -26,7 +26,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Autowired
 	private LoginUserDetailsService loginUserDetailsService;
 
-
 	@Override       //요청당 한번의 filter를 수행하도록
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
