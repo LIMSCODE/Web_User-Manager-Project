@@ -26,7 +26,7 @@
 
                             <div class="form-group">
                                 <label>검색 유형</label>
-                                <select name="searchType" class="form-control">
+                                <select name="searchType" id="searchType" class="form-control">
                                     <option value="all">전체</option>
                                     <option value="name">이름
                                     </option>
@@ -44,9 +44,9 @@
                                     </option>
                                 </select>
 
-                                <input type="text" name="searchKeyword" class="form-control"/>
+                                <input type="text" name="searchKeyword" id="searchKeyword" class="form-control"/>
 
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" >
                                     <span class="glyphicon glyphicon-search" aria-hidden="true"></span>검색
                                 </button>
 
@@ -77,9 +77,11 @@
 
 	//list컨트롤러로 화면 호출후, json데이터 변환해서 화면에 뿌리기 컨트롤러
 	$(document).ready(function() {
+
 		$.ajax({
 			dataType : "json",
 			url : "/opmanager/user/ajax-list",
+
 			success : function(data){
 				resultHtml(data);
 			},
@@ -88,6 +90,30 @@
 		});
 	});
 
+	//검색시 이벤트
+	$("#searchForm").on("submit", function(e) {
+		e.preventDefault();
+
+		let searchForm = new FormData($("#searchForm")[0]);
+		let searchType = $("#searchType").val();
+        let searchKeyword = $("#searchKeyword").val();
+
+		$.ajax({
+			url : "/opmanager/user/ajax-list?searchType="+searchType+"&searchKeyword="+searchKeyword,
+			type : "get",
+			data : searchForm,
+			datatype: 'json',
+			processData: false,
+			contentType: false,
+
+			success : function(data) {
+				resultHtml(data);
+			},
+			error : function() {
+				alert("실패");
+			}
+		});
+	});
 
 	//페이지 넘버 onclick시
 	function movePage(pageNum) {
@@ -107,6 +133,7 @@
 
 	//테이블 완성
 	function resultHtml(data) {
+
 		var html = "";
 		html += "<table class='table table-hover type09'>";
 		html += "<thead>";
@@ -158,12 +185,13 @@
 		html += "</tbody>";
 		html += "</table>";
 
+
         //페이징
         for (var num = 0; num < data.totalPages; num++) {
 
 			if (num == data.pageable.pageNumber) {
 				html += "<li class='active'>";
-				html += "<a class='on' onclick='movePage("+ num+");'>"  //뷰에서 페이지 넘길때의 값을 컨트롤러로 전송
+				html += "<a class='on' onclick='movePage(" + num + ");'>"  //뷰에서 페이지 넘길때의 값을 컨트롤러로 전송
 				html += num + 1;
 				html += "</a>";
 				html += "</li>";
@@ -171,7 +199,7 @@
 
 			}else {
 				html += "<li class=''>";
-				html += "<a class='on' onclick='movePage("+ num+");'>"
+				html += "<a class='on' onclick='movePage(" + num + ");'>"
 				html += num + 1;
 				html += "</a>";
 				html += "</li>";
