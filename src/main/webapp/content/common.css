@@ -64,6 +64,7 @@ ul {
     list-style:none;
 }
 li {
+    list-style: none;
     float: left;
 }
 table.type09 {

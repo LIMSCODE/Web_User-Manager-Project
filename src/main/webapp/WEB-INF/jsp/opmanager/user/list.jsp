@@ -60,54 +60,17 @@
             </div>
         </div>
     </div>
-
     <div class="container-fluid">
         <div class="row">
             <div id="display">
             </div>
         </div>
-
-
-        <ul class="pagination">
-            <c:if test="${!userPage.first}">
-                <c:set var="page" value="${userPage.pageable.pageNumber}" scope="session"/>
-                <li class="previous">
-                    <a href="javascript:void(0)" class="on"
-                       onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(page - 1)}'">&larr;</a>
-                </li>
-            </c:if>
-
-            <c:forEach begin="${1}" end="${userPage.totalPages}" var="idx">
-                <c:if test="${idx == userPage.pageable.pageNumber + 1}">
-                    <li class="active">
-                        <a href="javascript:void(0)" class="on"
-                           onclick="movePage(${idx});">${idx}</a>
-                    </li>
-                </c:if>
-                <c:if test="${idx != userPage.number + 1}">
-                    <li class="">
-                        <a href="javascript:void(0)" class="on"
-                           onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(idx - 1)}'">${idx}</a>
-                    </li>
-                </c:if>
-            </c:forEach>
-
-            <c:if test="${!userPage.last}">
-                <c:set var="page" value="${userPage.pageable.pageNumber}" scope="session"/>
-                <li class="previous">
-                    <a href="javascript:void(0)" class="on"
-                       onclick="location.href='/opmanager/user/list' + '${user.makeQueryString(page + 1)}'">&rarr;</a>
-                </li>
-            </c:if>
-            </p>
-        </ul>
-
+        <br><br><br>
         <form action="/opmanager/user/create">
             <input type="submit" value="등록" id="create" style="float:right">
         </form>
     </div>
     </div>
-
 </sec:authorize>
 
 <script type="text/javascript">
@@ -116,7 +79,7 @@
 	$(document).ready(function() {
 		$.ajax({
 			dataType : "json",
-			url : "/opmanager/user/ajax-list?page=" + pageNum,      //페이지넘버 전달받는법
+			url : "/opmanager/user/ajax-list",
 			success : function(data){
 				resultHtml(data);
 			},
@@ -126,12 +89,13 @@
 	});
 
 
-	//페이지 넘버 onclick시 위의 ajax 다시돌린다. (검색기능 포함 onclick 함수안에 ajax만들고, pageNum을 매개변수로)
+	//페이지 넘버 onclick시
 	function movePage(pageNum) {
 
 		$.ajax({
 			dataType : "json",
-			url : "/opmanager/user/list",
+			url : "/opmanager/user/ajax-list?page=" + pageNum,
+
 			success : function(data){
 				resultHtml(data);
 			},
@@ -140,6 +104,8 @@
 		});
 	}
 
+
+	//테이블 완성
 	function resultHtml(data) {
 		var html = "";
 		html += "<table class='table table-hover type09'>";
@@ -162,9 +128,7 @@
 		html += "</thead>";
 		html += "<tbody>";
 
-		$.each(data, function(key, value) {
-			//data에는 컨트롤러에서 userPage값 받음
-			//Page<User> userPage = userService.getUserList(user, pageable, jpaPaging);
+		$.each(data, function(key, value) {     //data - 컨트롤러에서 userPage값 받음
 
 			if (key == "content") {
 				for (var i = 0; i < value.length; i++) {
@@ -190,39 +154,42 @@
 				}
 			}
 		});
+
 		html += "</tbody>";
 		html += "</table>";
 
-		//data는 컨트롤러에서 받아온 값이다.
-        //뷰에서 페이지 넘길때의 값을 컨트롤러로 전송해야한다.
-
-		alert(data.pageable.pageNumber);    //페이지 이동해도, 항상 0으로 뜨는데 이것때문에
-
+        //페이징
         for (var num = 0; num < data.totalPages; num++) {
+
 			if (num == data.pageable.pageNumber) {
 				html += "<li class='active'>";
-				//html += "<a href='/opmanager/user/list?page=" + num +"'"+ "class='on'  >"    //onclick(페이지넘버 매개변수)
-				html += "<a href='/opmanager/user/ajax-list?page=" + num + "'" + "class='on' onclick='movePage("+ num+");'>"
+				html += "<a class='on' onclick='movePage("+ num+");'>"  //뷰에서 페이지 넘길때의 값을 컨트롤러로 전송
 				html += num + 1;
 				html += "</a>";
 				html += "</li>";
+				//html += "<a href='/opmanager/user/list?page=" + num +"'"+ "class='on'  >"    //onclick(페이지넘버 매개변수)
+
 			}else {
 				html += "<li class=''>";
-				html += "<a href='/opmanager/user/ajax-list?page=" + num + "'" + "class='on' onclick='movePage("+ num+");'>"
+				html += "<a class='on' onclick='movePage("+ num+");'>"
 				html += num + 1;
 				html += "</a>";
 				html += "</li>";
 			}
 		}
+
 		$("#display").empty();
 		$("#display").append(html);
 	}
 
 	function deleteUser(long) {
+
 		if (confirm("정말 삭제하시겠습니까 ?") == true) {
+
 			$.ajax({
 				url : "/opmanager/user/delete/" + long,
 				type : "post",
+
 				success : function(data) {
 					location.reload();
 				},
@@ -230,9 +197,11 @@
 					alert("실패");
 				}
 			});
+
 		} else {
 			return false;
 		}
 	};
+
 </script>
 </body>
