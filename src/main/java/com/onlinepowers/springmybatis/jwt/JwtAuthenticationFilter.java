@@ -16,32 +16,31 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-	//요청이 들어올 때 마다 JWT를 인증할 Filter를 생성
-	//Bearer로 토큰을 받으면 토큰을 추출하여 올바른 토큰인지 체크
-	//토큰이 올바르다면, 토큰에 있는 정보(username, role 등등) 을 가져와 인증을 시킨다.
-	//토큰이 없거나, 올바르지않다면 그냥 다음으로 넘어간다.
 
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 	@Autowired
 	private LoginUserDetailsService loginUserDetailsService;
 
-	@Override       //요청당 한번의 filter를 수행하도록
+	/**
+	 * 요청이 들어올 때 마다 JWT를 인증할 Filter (시큐리티에서 필터처리)
+	 * @param request
+	 * @param response
+	 * @param filterChain
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-		/*
-		로직에서는 헤더에서 Authorization값을 꺼내어 토큰을 검사하고 해당 유저가 실제 DB에 있는지 검사하는 등의
-		전반적인 인증처리를 여기서 진행한다.
-		 */
-
 		try {
-			String token = getToken(request);
+			String token = getToken(request);   //아래의 getToken함수 실행
 
-			// 유효한 토큰인지 확인합니다.
+			//Bearer로 토큰을 받으면 토큰을 추출하여 올바른 토큰인지 체크하고, 토큰에 있는 정보(username, role 등등) 을 가져와 인증
 			if (token != null && jwtTokenProvider.validateToken(token)) {
 				String username = jwtTokenProvider.getUserPk(token);
 				
-				UserDetails userDetails = loginUserDetailsService.loadUserByUsername(username);     //로그인 객체
+				UserDetails userDetails = loginUserDetailsService.loadUserByUsername(username);     //로그인 객체 가져오기
 				UsernamePasswordAuthenticationToken authentication
 						= new UsernamePasswordAuthenticationToken( userDetails, null, userDetails.getAuthorities());
 
@@ -59,9 +58,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 
+	/**
+	 * 헤더에서 Authorization값을 꺼내어 토큰 가져오기
+	 * @param request
+	 * @return
+	 */
 	private String getToken(HttpServletRequest request) {
 
-		String headerAuth = request.getHeader("Authorization");     //헤더에서 JWT
+		String headerAuth = request.getHeader("Authorization");
 
 		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
 			return headerAuth.substring(7, headerAuth.length());

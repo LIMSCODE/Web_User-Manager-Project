@@ -23,9 +23,6 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 	@Autowired
 	private LoginUserDetailsService loginUserDetailsService; // 유저 정보를 가져올 클래스
 
-	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
-
 	@Bean
 	public JwtEntryPoint jwtEntryPoint(){
 		return new JwtEntryPoint();
