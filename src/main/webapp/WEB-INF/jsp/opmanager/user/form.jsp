@@ -162,10 +162,10 @@
         let $createPasswordConfirm = $("#createPasswordConfirm");
         let $email = $("#email");
 
-        let $zipcode = $("#zipcode");
-        let $address = $("#address");
-        let $addressDetail = $("#addressDetail");
-        let $phoneNumber = $("#phoneNumber");
+        let $zipcode = $("#userDetail.zipcode");
+        let $address = $("#userDetail.address");
+        let $addressDetail = $("#userDetail.addressDetail");
+        let $phoneNumber = $("#userDetail.phoneNumber");
 
         let $idCheckStatus = $("#idCheckStatus");     //아이디 중복체크 했는지 여부
 
@@ -274,13 +274,42 @@
                 contentType: false,
 
                 success : function(data) {
-                    window.location.href="/opmanager/user/list";  //list로 이동
+
+                    //var data1 = eval('('+ data +')');
+	                if (data.success) {
+		                alert(data.success);
+		                window.location.href ="/opmanager/user/list";  //list로 이동
+	                }
+
+	                $('#email').html(data.emailErr);
+	                $('#userDetail.zipcode').html(data.zipcodeErr);
+
                 },
-                error : function() {
+                error : function(data) {
+	                markingErrorField(data);
                     alert("실패");
                 }
             });
 	    }
+
+	    var markingErrorField = function (data) {
+
+		    console.log(JSON.stringify(data));
+		    alert(data.responseJSON.field);//userDetail.zipcode뜸
+		    alert(data.responseJSON.defaultMessage);
+
+		    var $field, error;
+		    for(var i = 0 ; i < data.length ; i++) {
+			    error = data[i];
+			    alert(error);
+			    $field = $('#'+error['field']);
+
+			    if($field && $field.length > 0){
+				    $field.siblings('.error-message').remove();
+				    $field.after('<span class="error-message text-muted taxt-small text-danger">'+error.defaultMessage+'</span>');
+			    }
+		    }
+	    };
 
 	    if ($id.val() != null) {
 
@@ -290,13 +319,21 @@
 			    url : "/opmanager/user/edit/" + $id.val(),
 			    type : "post",
 			    data : editFormData,
-			    datatype: 'json',
-			    processData: false,
-			    contentType: false,
+			    datatype : 'json',
+			    processData : false,
+			    contentType : false,
 
 			    success : function(data) {
-				    window.location.href="/opmanager/user/list";  //list로 이동
+				    window.location.href ="/opmanager/user/list";  //list로 이동
+				    // var data1 = eval('('+ data +')');
+				    // if(data1.success){
+				    //     alert(data1.success);
+				    //
+				    // }
+				    //
+				    // $('#email').html(data1.emailErr);
 			    },
+
 			    error : function() {
 				    alert("실패");
 			    }

@@ -32,7 +32,7 @@ public class OpmanagerApiController {
 		ModelAndView mv = new ModelAndView();
 
 		//로그인안됬거나, 유저일때
-		if (loginUser == null || UserUtils.isUserLogin(session)) {
+		if (loginUser == null ) {
 			mv.setViewName("/opmanager/user/login");
 			log.debug("=================매니저 " + loginUserDetails);
 			return mv;

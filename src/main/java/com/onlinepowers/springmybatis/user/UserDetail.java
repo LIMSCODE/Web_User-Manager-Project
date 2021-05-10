@@ -1,7 +1,9 @@
 
 package com.onlinepowers.springmybatis.user;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -19,6 +21,8 @@ import javax.validation.constraints.Size;
 @Table(name = "OP_USER_DETAIL")
 @OnDelete(action = OnDeleteAction.CASCADE)
 @EqualsAndHashCode(exclude="user")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class UserDetail {
 
     @Id

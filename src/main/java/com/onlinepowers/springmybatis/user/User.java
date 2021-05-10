@@ -1,6 +1,8 @@
 package com.onlinepowers.springmybatis.user;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.onlinepowers.springmybatis.paging.JpaPaging;
 import lombok.AllArgsConstructor;
@@ -13,7 +15,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +22,8 @@ import javax.validation.constraints.*;
 @Entity
 @Table(name = "OP_USER")
 @DynamicUpdate
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class User extends JpaPaging {
 
 	@Id

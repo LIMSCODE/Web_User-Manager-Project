@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -189,10 +191,11 @@ public class UserManagerApiController {
 	 * @return
 	 */
 	@PostMapping("/create")
-	public ResponseEntity<String> createUser(@Valid User user, BindingResult userResult,
-	                         HttpSession session, Model model) {
+	public ResponseEntity<Map<String, Object>> createUser(@Valid User user, BindingResult userResult,
+	                                         HttpSession session, Model model) {
 
-		ResponseEntity<String> responseEntity = null;
+		Map<String, Object> map = new HashMap<String, Object>();
+		ResponseEntity<Object> responseEntity = null;
 
 		if (userResult.hasErrors()) {
 			User loginUser = UserUtils.getLoginUser(session);
@@ -200,22 +203,27 @@ public class UserManagerApiController {
 			model.addAttribute("loginUser", loginUser);
 			model.addAttribute("user", user);
 
-			responseEntity = new ResponseEntity("다시입력해주세요", HttpStatus.BAD_REQUEST);
-			return responseEntity;
+			List<ObjectError> errors = userResult.getAllErrors();
+
+			for (int i = 0; i < errors.size(); i++ ){
+				errors.get(i);
+				log.debug(String.valueOf(errors.get(i)));
+				log.debug("===============" + errors.get(i).getDefaultMessage());
+				log.debug("===============" + errors.get(i).getCodes().toString());
+				map.put("error", errors.get(i).getCode());
+			}
+			return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
 		}
 
 		//입력받은 아이디에 해당하는 DTO값이 db에 있으면 insert안되도록
 		User storedUser = userService.getUserByLoginId(user.getLoginId());
 		if (storedUser != null) {
 			log.debug("해당아이디 존재");
-			responseEntity = new ResponseEntity("해당아이디 존재", HttpStatus.BAD_REQUEST);
-			return responseEntity;
+			return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
 		}
 
 		userService.insertUser(user);
-
-		responseEntity = new ResponseEntity("ADD_SUCCEEDED", HttpStatus.OK);
-		return responseEntity;
+		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 
 
