@@ -18,7 +18,7 @@
     <span>
          아이디 <form:input path="loginId" maxlength="12" /> <br>
          비밀번호 <form:password path="password" maxlength="8"/> <br>
-    <input type="submit" class="submit" value="로그인"  formaction="/user/login">
+    <input type="submit" class="submit" value="로그인"  formaction="/api/user/login">
     </span>
     </p>
 </form:form>
@@ -49,7 +49,7 @@
 		var loginFormData = new FormData($("#target")[0]);
 
 		$.ajax({
-			url : "/user/login",
+			url : "/api/user/login",
 			type : "post",
 			data : loginFormData,
 			datatype: 'text',       //생성된 토큰을 받는다.

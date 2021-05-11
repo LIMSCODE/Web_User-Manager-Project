@@ -22,7 +22,7 @@
         비밀번호<form:password path="password" maxlength="8"/> <br>
     </span>
     <span>
-    <input type="submit" class="submit" value="비밀번호 확인" formaction="/user/password-check">
+    <input type="submit" class="submit" value="비밀번호 확인" formaction="/api/user/password-check">
     </span>
 </form:form>
 
@@ -49,7 +49,7 @@
         var passwordFormData = new FormData($("#target")[0]);
 
         $.ajax({
-            url : "/user/password-check",
+            url : "/api/user/password-check",
             type : "post",
             data : passwordFormData,
             datatype: 'json',
@@ -62,7 +62,6 @@
                 window.location.href = "/user/edit/" + data.id     //json으로 넘긴 값
             },
             error : function() {
-                alert(this.url);
                 alert("실패");
             }
         });

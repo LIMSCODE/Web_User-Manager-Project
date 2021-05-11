@@ -18,7 +18,7 @@
     function logout() {
 
         $.ajax({
-            url : "/opmanager/logout",
+            url : "/api/opmanager/user/logout",
             type : "get",
             datatype: 'text',
             processData: false,

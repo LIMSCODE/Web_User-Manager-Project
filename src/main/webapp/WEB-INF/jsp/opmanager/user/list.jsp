@@ -17,7 +17,7 @@
                     <div class="dropdown-menu dropdown-menu-right" role="menu">
 
                         <!--/* 검색 form */-->
-                        <form id="searchForm" action="/opmanager/user/ajax-list" method="get"
+                        <form id="searchForm" action="/api/opmanager/user/ajax-list" method="get"
                               class="form-horizontal" role="form">
                             <!-- /* 현재 페이지 번호, 페이지당 출력할 데이터 개수, 페이지 하단에 출력할 페이지 개수 Hidden 파라미터 */ -->
                             <input type="hidden" name="currentPageNo" value="1"/>
@@ -80,7 +80,7 @@
 
 		$.ajax({
 			dataType : "json",
-			url : "/opmanager/user/ajax-list",
+			url : "/api/opmanager/user/ajax-list",
 
 			success : function(data){
 				resultHtml(data);
@@ -100,7 +100,7 @@
         let searchKeyword = $("#searchKeyword").val();
 
 		$.ajax({
-			url : "/opmanager/user/ajax-list?searchType=" + searchType + "&searchKeyword=" + searchKeyword,
+			url : "/api/opmanager/user/ajax-list?searchType=" + searchType + "&searchKeyword=" + searchKeyword,
 			type : "get",
 			data : searchForm,
 			datatype: 'json',
@@ -121,7 +121,7 @@
 
 		$.ajax({
 			dataType : "json",
-			url : "/opmanager/user/ajax-list?page=" + pageNum,
+			url : "/api/opmanager/user/ajax-list?page=" + pageNum,
 
 			success : function(data){
 				resultHtml(data);
@@ -216,7 +216,7 @@
 		if (confirm("정말 삭제하시겠습니까 ?") == true) {
 
 			$.ajax({
-				url : "/opmanager/user/delete/" + long,
+				url : "/api/opmanager/user/delete/" + long,
 				type : "post",
 
 				success : function(data) {

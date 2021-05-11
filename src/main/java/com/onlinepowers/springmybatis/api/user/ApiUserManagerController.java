@@ -22,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -31,12 +30,11 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/opmanager/user")
-public class UserManagerApiController {
+@RequestMapping("/api/opmanager/user")
+public class ApiUserManagerController {
 
 	@Autowired
 	private UserService userService;
@@ -46,20 +44,6 @@ public class UserManagerApiController {
 	private AuthenticationManager authenticationManager;
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
-
-
-	/**
-	 * 관리자 로그인
-	 * @param user
-	 * @return
-	 */
-	@GetMapping("/login")
-	public ModelAndView login(User user) {
-
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/opmanager/user/login");
-		return mv;
-	}
 
 
 	/**
@@ -114,33 +98,6 @@ public class UserManagerApiController {
 
 
 	/**
-	 * 회원목록
-	 * @param jpaPaging
-	 * @param user
-	 * @param pageable
-	 * @param session
-	 * @param model
-	 * @return
-	 */
-	@GetMapping("/list")
-	public ModelAndView getUserList(@ModelAttribute("jpaPaging") JpaPaging jpaPaging,
-	                                 User user, @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC, size = 2) Pageable pageable,
-	                                 HttpSession session, Model model) {
-
-		User loginUser = UserUtils.getLoginUser(session);
-		model.addAttribute("loginUser", loginUser);
-
-		Page<User> userPage = userService.getUserList(user, pageable, jpaPaging); //페이지 객체 담아서 뷰로 보낸다.
-
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/opmanager/user/list");
-		mv.addObject("userPage", userPage);
-
-		return mv;
-	}
-
-
-	/**
 	 * 회원 목록 - ajax
 	 * @param jpaPaging
 	 * @param user
@@ -160,25 +117,6 @@ public class UserManagerApiController {
 		model.addAttribute("userPage", userPage);
 
 		return new ResponseEntity<>(userPage, HttpStatus.OK);
-	}
-
-
-	/**
-	 * 회원 등록
-	 * @param user
-	 * @param session
-	 * @param model
-	 * @return
-	 */
-	@GetMapping("/create")
-	public ModelAndView registerForm(User user, HttpSession session, Model model) {
-
-		ModelAndView mv = new ModelAndView();
-		User loginUser = UserUtils.getLoginUser(session);
-
-		mv.addObject("loginUser", loginUser);
-		mv.setViewName("/opmanager/user/form");
-		return mv;
 	}
 
 
@@ -224,33 +162,6 @@ public class UserManagerApiController {
 
 		userService.insertUser(user);
 		return new ResponseEntity<>(map, HttpStatus.OK);
-	}
-
-
-	/**
-	 * 회원정보 수정
-	 * @param id
-	 * @param user
-	 * @param session
-	 * @param model
-	 * @return
-	 */
-	@GetMapping("/edit/{id}")
-	public ModelAndView updateForm(@PathVariable("id") long id, @ModelAttribute("jpaPaging")JpaPaging jpaPaging,
-							 Optional<User> user, HttpSession session, Model model) {
-
-		ModelAndView mv = new ModelAndView();
-
-		user = Optional.ofNullable(userService.getUserById(id));
-		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
-		model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
-
-		//세션 저장 정보
-		User loginUser = UserUtils.getLoginUser(session);
-
-		mv.addObject("loginUser", loginUser);
-		mv.setViewName("/opmanager/user/form");
-		return mv;
 	}
 
 
@@ -344,6 +255,21 @@ public class UserManagerApiController {
 		}
 
 		return new ResponseEntity<>(map, HttpStatus.OK);
+	}
+
+
+	/**
+	 * 관리자 로그아웃
+	 * @param session
+	 * @return
+	 */
+	@GetMapping("/logout")
+	public ResponseEntity<String> managerLogout(HttpSession session) {
+
+		ResponseEntity<String> responseEntity = null;
+		session.invalidate();
+		responseEntity = new ResponseEntity("logout", HttpStatus.OK);
+		return responseEntity;
 	}
 
 }

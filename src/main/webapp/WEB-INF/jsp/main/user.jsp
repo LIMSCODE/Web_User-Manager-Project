@@ -19,7 +19,7 @@
     <span>
          <span><sec:authentication property="name"/>님 안녕하세요</span>   <br><br><br>        <!--Authentication 객체의 property를 반환-->
          <a class="btn" href="/user/password-check"  >정보수정</a>      <br><br><br>
-         <a class="btn" href="/user/logout" onclick="logout();">로그아웃</a>
+         <a class="btn" onclick="logout();">로그아웃</a>
     </span>
     </sec:authorize>
 
@@ -38,17 +38,16 @@
     function logout() {
 
         $.ajax({
-            url : "/user/logout",
+            url : "/api/user/logout",
             type : "get",
-            datatype: 'text',       //생성된 토큰을 받는다.
-            processData: false,
-            contentType: false,
+            datatype : 'text',       //생성된 토큰을 받는다.
+            processData : false,
+            contentType : false,
 
             success : function(data) {
                 document.cookie = "X-AUTH-TOKEN =" + ';';  //쿠키 공백으로 넣음
                 window.location.href = "/"
             },
-
             error : function() {
                 alert("실패");
             }

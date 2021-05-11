@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
-@RequestMapping("/before-api/opmanager/user")
+@RequestMapping("/api/opmanager/user")
 @Controller
 @RequiredArgsConstructor
 public class UserManagerController {
@@ -39,49 +39,6 @@ public class UserManagerController {
 	public String login(User user) {
 
 		return "/opmanager/user/login";
-	}
-
-
-	/**
-	 * 관리자 로그인
-	 * @param user
-	 * @param session
-	 * @param model
-	 * @return
-	 */
-	@PostMapping("/login")
-	public String login(User user, HttpSession session, Model model) {
-
-		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
-		User loginUser = userService.getUserByLoginId(user.getLoginId());
-
-		//아이디가 널일때
-		if (loginUser == null) {
-			log.debug("아이디 안넘어옴");
-			return "redirect:/opmanager/user/login";
-		}
-
-		//입력한 비밀번호를 해시함수로
-		String hashPassword = SHA256Util.getEncrypt(user.getPassword(), loginUser.getId());
-		log.debug(hashPassword);
-		log.debug(loginUser.getPassword());
-
-		//비밀번호 일치하지않으면
-		if (!loginUser.getPassword().equals(hashPassword)) {
-			log.debug("비밀번호 일치하지 않음");
-			return "redirect:/opmanager/user/login";
-		}
-
-		//관리자가 아닐때
-		if (!"ROLE_OPMANAGER".equals(loginUser.getUserRole().getAuthority())) {
-			log.debug("권한이 사용자가 아닙니다.");
-			return "redirect:/opmanager/user/login";
-		}
-
-		session.setAttribute("loginUser", loginUser);
-		session.setMaxInactiveInterval(1000 * 1000);
-
-		return "redirect:/opmanager";
 	}
 
 
@@ -107,6 +64,7 @@ public class UserManagerController {
 		return "/opmanager/user/list";
 	}
 
+
 	/**
 	 * 회원 등록
 	 * @param user
@@ -121,43 +79,6 @@ public class UserManagerController {
 		model.addAttribute("loginUser", loginUser);
 
 		return "/opmanager/user/form";
-	}
-
-
-	/**
-	 * 회원 등록
-	 * @param user
-	 * @param userResult
-	 * @param session
-	 * @param model
-	 * @return
-     */
-	@PostMapping("/create")
-	public String createUser(@Valid User user, BindingResult userResult,
-							 HttpSession session, Model model) {
-
-		if (userResult.hasErrors()) {
-			User loginUser = UserUtils.getLoginUser(session);
-
-			model.addAttribute("loginUser", loginUser);
-			model.addAttribute("user", user);
-			return "/opmanager/user/form";
-		}
-
-		//입력받은 아이디에 해당하는 DTO값이 db에 있으면 insert안되도록
-		User storedUser = userService.getUserByLoginId(user.getLoginId());
-		if (storedUser != null) {
-			log.debug("해당아이디 존재");
-			return "redirect:/opmanager/user/create";
-		}
-
-		userService.insertUser(user);
-
-		User loginUser = UserUtils.getLoginUser(session);
-		model.addAttribute("loginUser", loginUser);
-
-		//관리자페이지에서 등록하는 경우
-		return "redirect:/opmanager/user/list";
 	}
 
 
@@ -184,87 +105,5 @@ public class UserManagerController {
 		return "/opmanager/user/form";
 	}
 
-
-	/**
-	 * 회원정보 수정
-	 * @param id
-	 * @param jpaPaging
-	 * @param user
-	 * @param userResult
-	 * @param session
-	 * @param model
-	 * @param rttr
-	 * @return
-	 */
-	@PostMapping("/edit/{id}")
-	public String updateUser(@PathVariable("id") long id, @ModelAttribute("jpaPaging") JpaPaging jpaPaging,
-							 @Valid User user,  BindingResult userResult,
-							 HttpSession session, Model model, RedirectAttributes rttr) {
-
-		if (userResult.hasErrors()) {
-			User loginUser = UserUtils.getLoginUser(session);
-
-			model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
-			model.addAttribute("loginUser", loginUser);
-			model.addAttribute("user", user);
-			return "/opmanager/user/form";
-		}
-
-//		user.getUserDetail().setUserId(user.getId());
-//		user.getUserRole().setUserId(user.getId());
-
-		userService.updateUser(user);
-
-		rttr.addAttribute("page", jpaPaging.getPage());
-		rttr.addAttribute("searchType", jpaPaging.getSearchType());
-		rttr.addAttribute("searchKeyword", jpaPaging.getSearchKeyword());
-
-		return "redirect:/opmanager/user/list";
-
-	}
-
-
-	/**
-	 * 회원 삭제
-	 * @param id
-	 * @param jpaPaging
-	 * @param rttr
-	 * @return
-	 */
-	@PostMapping("/delete/{id}")
-	public String deleteUser(@PathVariable("id") long id, @ModelAttribute("jpaPaging") JpaPaging jpaPaging,
-	                         RedirectAttributes rttr) {
-
-		userService.deleteUserById(id);
-
-		rttr.addAttribute("page", jpaPaging.getPage());
-		rttr.addAttribute("searchType", jpaPaging.getSearchType());
-		rttr.addAttribute("searchKeyword", jpaPaging.getSearchKeyword());
-
-		return "redirect:/opmanager/user/list";
-	}
-
-
-	@ResponseBody
-	@PostMapping(value = "/check-id")
-	public Map<String, Object> checkId(User user) {
-
-		String loginId = user.getLoginId();
-		log.debug(loginId);
-
-		int userCount = userService.getUserCountByLoginId(loginId); //오류
-		log.debug(String.valueOf(userCount));
-
-		Map<String, Object> map=new HashMap<String, Object>();
-
-		if (userCount > 0) {
-			map.put("isDuplicated", false);
-
-		} else {
-			map.put("isDuplicated", true);
-
-		}
-		return map;
-	}
 
 }

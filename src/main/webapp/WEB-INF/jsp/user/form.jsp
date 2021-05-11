@@ -123,15 +123,14 @@
 
     <c:if test="${id != null}">
     <span>
-        <input type="submit" class="submit" value="수정"  formaction="/user/edit/${id}" ><br><br>
-        <!--https://www.baeldung.com/spring-thymeleaf-path-variables url파싱 $%7Bid%7D로 안넘어가는 방법 찾음.-->
+        <input type="submit" class="submit" value="수정"  formaction="/api/user/edit/${id}" ><br><br>
         <td><a class="btn" href="/">메인화면</a> </td>
     </span>
     </c:if>
 
     <c:if test="${id == null}">
     <span>
-        <input type="submit" class="submit" value="등록" formaction="/user/create">
+        <input type="submit" class="submit" value="등록" formaction="/api/user/create">
     </span>
     </c:if>
 </form:form>
@@ -258,7 +257,7 @@
             let createFormData = new FormData($("#target")[0]);
 
             $.ajax({
-                url : "/user/create",
+                url : "/api/user/create",
                 type : "post",
                 data : createFormData,
                 datatype: 'json',   //생성된 토큰을 받는다.
@@ -281,7 +280,7 @@
             var editFormData = new FormData($("#target")[0]);
 
             $.ajax({
-                url : "/user/edit/" + $id.val(),
+                url : "/api/user/edit/" + $id.val(),
                 type : "post",
                 data : editFormData,
                 datatype: 'json',
@@ -322,7 +321,7 @@
 		let query = { "loginId" : $loginId.val() };
 
 		$.ajax({
-			url : "/user/check-id",
+			url : "/api/user/check-id",
 			type : "post",
 			data : query,
 			datatype: "json",

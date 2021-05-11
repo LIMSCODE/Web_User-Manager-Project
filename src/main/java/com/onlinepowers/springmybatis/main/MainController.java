@@ -14,16 +14,9 @@ import javax.servlet.http.HttpSession;
 
 @Slf4j
 @Controller
-@RequestMapping("/before-api")
+@RequestMapping("/")
 @RequiredArgsConstructor
 public class MainController {
-
-	private final UserService userService;
-
-	@GetMapping("/hello")
-	public String welcome() {
-		return "/hello";
-	}
 
 
 	/**
@@ -55,28 +48,5 @@ public class MainController {
 		return "/main/user";
 	}
 
-
-	/**
-	 * 유저 로그아웃
-	 * @param session
-	 * @return
-	 */
-	@GetMapping("/user/logout")
-	public String userLogout(HttpSession session) {
-		session.invalidate();
-		return "redirect:/";
-	}
-
-
-	/**
-	 * 관리자 로그아웃
-	 * @param session
-	 * @return
-	 */
-	@GetMapping("/opmanager/logout")
-	public String managerLogout(HttpSession session) {
-		session.invalidate();
-		return "redirect:/";
-	}
 
 }

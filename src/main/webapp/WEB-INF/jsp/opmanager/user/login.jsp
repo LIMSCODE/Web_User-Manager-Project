@@ -38,6 +38,7 @@
 			$loginId.focus();
 			return false;
 		}
+
 		if ($password.val() == "") {
 			alert("비밀번호 입력해주세요");
 			$password.focus();
@@ -48,7 +49,7 @@
 
         $.ajax({
 
-            url : "/opmanager/user/login",
+            url : "/api/opmanager/user/login",
             type : "post",
             data : loginFormData,
             datatype: 'text',

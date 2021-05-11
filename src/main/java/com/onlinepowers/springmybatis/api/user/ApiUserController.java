@@ -29,8 +29,8 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/user")
-public class UserApiController {
+@RequestMapping("/api/user")
+public class ApiUserController {
 
 	@Autowired
 	private UserService userService;
@@ -40,19 +40,6 @@ public class UserApiController {
 	private AuthenticationManager authenticationManager;
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
-
-
-	/**
-	 * 회원 로그인
-	 * @param user
-	 * @return
-	 */
-	@GetMapping("/login")
-	public ModelAndView login(User user) {
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/user/login");
-		return mv;
-	}
 
 
 	/**
@@ -105,20 +92,6 @@ public class UserApiController {
 	/**
 	 * 회원가입
 	 * @param user
-	 * @return
-	 */
-	@GetMapping("/create")
-	public ModelAndView register(User user) {
-
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/user/form");
-		return mv;
-	}
-
-
-	/**
-	 * 회원가입
-	 * @param user
 	 * @param userResult
 	 * @param session
 	 * @param model
@@ -158,19 +131,6 @@ public class UserApiController {
 	/**
 	 * 수정 전 비밀번호 확인
 	 * @param user
-	 * @return
-	 */
-	@GetMapping("/password-check")
-	public ModelAndView checkPassword(User user) {
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/user/password-check");
-		return mv;
-	}
-
-
-	/**
-	 * 수정 전 비밀번호 확인
-	 * @param user
 	 * @param session
 	 * @param model
 	 * @return
@@ -198,28 +158,6 @@ public class UserApiController {
 		log.debug("비밀번호 일치, 수정폼으로 이동 ");
 		map.put("id", securityUser.getUser().getId());
 		return new ResponseEntity<>(map, HttpStatus.OK);
-	}
-
-
-	/**
-	 * 개인정보 수정
-	 * @param id
-	 * @param user
-	 * @param session
-	 * @param model
-	 * @return
-	 */
-	@GetMapping("/edit/{id}")
-	public ModelAndView updateForm(@PathVariable("id") long id,
-							 Optional<User> user, HttpSession session, Model model) {
-
-		ModelAndView mv = new ModelAndView();
-		user = Optional.ofNullable(userService.getUserById(id));
-
-		mv.addObject("user", user);
-		mv.addObject("id", user.get().getId());
-		mv.setViewName("/user/form");
-		return mv;
 	}
 
 
@@ -279,6 +217,45 @@ public class UserApiController {
 
 		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
+
+
+	/**
+	 * 유저 로그아웃
+	 * @param session
+	 * @return
+	 */
+	@GetMapping("/logout")
+	public ResponseEntity<String> userLogout(HttpSession session) {
+
+		ResponseEntity<String> responseEntity = null;
+		session.invalidate();
+		responseEntity = new ResponseEntity("logout", HttpStatus.OK);
+		return responseEntity;
+	}
+
+
+	/**
+	 * JWT에 담긴 권한 확인
+	 * @param user
+	 * @return
+	 */
+	@GetMapping("/checkJWT")
+	public String jwt(Principal user){
+
+		//권한체크 예시 - 로그인시 발급받은 토큰에서 온 것 ,
+		//혹은 @AuthenticationPrincipal LoginUserDetails securityUser 로 컨트롤러에서 제어한다.
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		LoginUserDetails securityUser = (LoginUserDetails) authentication.getPrincipal();
+		String userAuthority = securityUser.getUser().getUserRole().getAuthority();
+
+		if (!"ROLE_USER".equals(userAuthority)) {
+			log.debug("권한 체크");
+		}
+
+		//만약 로그인되지 않은상태면 Filter에서 걸림
+		return  securityUser.getUser().getUserRole().getAuthority() + " / " + securityUser.getUser().getPassword();
+	}
+
 
 }
 
