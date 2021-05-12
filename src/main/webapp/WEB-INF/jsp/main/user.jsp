@@ -46,6 +46,7 @@
 
             success : function(data) {
                 document.cookie = "X-AUTH-TOKEN =" + ';';  //쿠키 공백으로 넣음
+	            localStorage.removeItem('wtw-token');
                 window.location.href = "/"
             },
             error : function() {

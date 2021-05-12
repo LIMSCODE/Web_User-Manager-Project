@@ -1,7 +1,10 @@
 package com.onlinepowers.springmybatis.user;
 
+import com.onlinepowers.springmybatis.security.LoginUserDetails;
+import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +53,8 @@ public class UserController {
 	 * @return
 	 */
 	@GetMapping("/password-check")
-	public String checkPassword(User user) {
+	public String checkPassword(User user, @AuthenticationPrincipal LoginUserDetails securityUser) {
+		log.debug("비밀번호 확인 창=============" + securityUser.getUser().getUserRole());
 
 		return "/user/password-check";
 	}
@@ -66,7 +70,9 @@ public class UserController {
 	 */
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id,
-	                         Optional<User> user, HttpSession session, Model model) {
+	                         Optional<User> user, HttpSession session, Model model, @AuthenticationPrincipal LoginUserDetails securityUser) {
+		
+		log.debug("수정창=============" + securityUser.getUser().getUserRole());
 
 		user = Optional.ofNullable(userService.getUserById(id));
 

@@ -1,10 +1,12 @@
 package com.onlinepowers.springmybatis.main;
 
+import com.onlinepowers.springmybatis.security.LoginUserDetails;
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.user.UserService;
 import com.onlinepowers.springmybatis.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,12 +28,13 @@ public class MainController {
 	 * @return
 	 */
 	@GetMapping("/")
-	public String userMain(HttpSession session, Model model) {
+	public String userMain(HttpSession session, Model model, @AuthenticationPrincipal LoginUserDetails securityUser) {
 
 		User loginUser = UserUtils.getLoginUser(session);
-		log.debug("메인");
 
 		if (loginUser == null) {
+			log.debug("메인=============" );
+
 			return "/main/user";
 		}
 
@@ -41,6 +44,8 @@ public class MainController {
 		}
 
 		if (UserUtils.isUserLogin(session)) {
+			log.debug("메인=============" + securityUser.getUser().getUserRole());
+
 			model.addAttribute("loginUser", loginUser);
 			return "/main/user";    //null이 아니면 정보수정 뜨고, null이면 회원가입 뜬다.
 		}

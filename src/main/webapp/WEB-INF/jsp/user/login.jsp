@@ -24,14 +24,14 @@
 </form:form>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script type="text/javascript">
-
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js">
 	//최종 제출시 이벤트
 	$("#target").on("submit", function(e) {
 
-        e.preventDefault();
+		e.preventDefault();
 
-        let $loginId = $("#loginId");
+		let $loginId = $("#loginId");
 		let $password = $("#password");
 
 		if ($loginId.val() == "") {
@@ -48,28 +48,23 @@
 
 		var loginFormData = new FormData($("#target")[0]);
 
-		$.ajax({
-			url : "/api/user/login",
-			type : "post",
-			data : loginFormData,
+		axios.request({
+			url: "/api/user/login", 11111111111
+			method: "post",
+			data: loginFormData,
 			datatype: 'text',       //생성된 토큰을 받는다.
 			processData: false,
 			contentType: false,
 
-            success : function(token) {
-				console.log(token);
-	            localStorage.setItem('wtw-token', token);
-				//var expireDay = 24 * 60 * 60 * 1000; //1일
-                //document.cookie = "X-AUTH-TOKEN=" + token + expireDay +"; path=/";  //쿠키에 토큰 저장
-                window.location.href = "/"
-			},
+		}) .then (token => {
+			console.log(token);
+			localStorage.setItem('wtw-token', token);
+			//var expireDay = 24 * 60 * 60 * 1000; //1일
+			//document.cookie = "X-AUTH-TOKEN=" + token + expireDay +"; path=/";  //쿠키에 토큰 저장
+			window.location.href = "/"
+		}) .catch(err => this.setState({ error: err.toString() }));
 
-			error : function() {
-				alert("실패");
-			}
-		});
 	});
-
 </script>
 
 </body>

@@ -31,7 +31,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
-		return new JwtAuthenticationFilter();
+		return new JwtAuthenticationFilter();  //"/api/**"
 	}
 
 	@Bean
@@ -72,9 +72,11 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 		http
 				.authorizeRequests()
 					.antMatchers( "/", "/user/create", "/opmanager", "/user/check-id",
-							"/user/login", "/opmanager/user/login").permitAll()     // 누구나 접근 허용
+							"/user/login", "/opmanager/user/login",
+							"/api/**").permitAll()     // 누구나 접근 허용
 					.antMatchers("/user/**").hasRole("USER")             // user일경우에만 접근가능, 위에서 설정한부분은 예외.
 					.antMatchers("/opmanager/**").hasRole("OPMANAGER")
+
 		;
 
 
@@ -93,7 +95,11 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 		*/
 
 
-		http.cors().and().csrf().disable()
+		http
+				.cors().and().csrf().disable();
+
+
+		http
 				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.exceptionHandling().authenticationEntryPoint(jwtEntryPoint());
 		//http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -55,8 +55,10 @@
             datatype: 'json',
             processData: false,
             contentType: false,
-            //contentType: "application/json",
-            //datatype: "string",
+
+	        headers: {
+		        'Authorization': 'Bearer ' + localStorage.getItem('wtw-token')
+	        },
             success : function(data) {
                 alert("비밀번호 일치 확인");
                 window.location.href = "/user/edit/" + data.id     //json으로 넘긴 값
