@@ -40,12 +40,12 @@
         $.ajax({
             url : "/api/user/logout",
             type : "get",
-            datatype : 'text',       //생성된 토큰을 받는다.
+            datatype : 'text',
             processData : false,
             contentType : false,
 
             success : function(data) {
-                document.cookie = "X-AUTH-TOKEN =" + ';';  //쿠키 공백으로 넣음
+                //document.cookie = "X-AUTH-TOKEN =" + ';';  //쿠키 공백으로 넣음
 	            localStorage.removeItem('wtw-token');
                 window.location.href = "/"
             },

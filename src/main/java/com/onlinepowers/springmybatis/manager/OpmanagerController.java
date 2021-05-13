@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 
 @Slf4j
 @Controller
-@RequestMapping("/before-api")
+@RequestMapping("/")
 public class OpmanagerController {
 
 	/**

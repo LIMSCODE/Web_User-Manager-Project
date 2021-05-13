@@ -74,8 +74,8 @@ public class UserController {
 		
 		log.debug("수정창=============" + securityUser.getUser().getUserRole());
 
-		user = Optional.ofNullable(userService.getUserById(id));
-
+		//api ajax로 정보 불러옴
+		//user = Optional.ofNullable(userService.getUserById(id));
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
 		model.addAttribute("id", user.get().getId());   //form 뷰에서 id있을때로 처리됨.
 

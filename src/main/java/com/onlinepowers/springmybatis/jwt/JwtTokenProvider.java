@@ -101,7 +101,7 @@ public class JwtTokenProvider {     // JWT토큰 생성 및 유효성을 검증�
 	 * @return
 	 */
 	public String resolveToken(HttpServletRequest request) {
-		return request.getHeader("X-AUTH-TOKEN");
+		return request.getHeader("Authorization");
 	}
 
 }

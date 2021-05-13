@@ -56,7 +56,7 @@
             processData: false,
             contentType: false,
 
-	        headers: {
+	        headers: {      //헤더에 토큰 없으면 filter에서 401에러로 보낸다.
 		        'Authorization': 'Bearer ' + localStorage.getItem('wtw-token')
 	        },
             success : function(data) {

@@ -6,7 +6,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,8 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -37,10 +34,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-			try {
+		int isLoginUrl = request.getRequestURI().indexOf("/login");
+		if (request.getRequestURI().startsWith("/api") && isLoginUrl == -1) {       //api이고 인증컨트롤러가 아닐때
 
+			try {
 				String token = getToken(request);   //아래의 getToken함수 실행
-				System.out.println("필터에서 토큰 넘어왔는지 확인 ==============" + token);
+				System.out.println("필터로 토큰 넘어왔는지 확인 ==============" + token);
+
+				if (token == null) {
+					response.sendError(401, "권한 없음");
+					return;
+				}
 
 				//헤더에 포함시킨 Bearer 토큰을 받으면 토큰을 추출하여 올바른 토큰인지 체크
 				if (token != null && jwtTokenProvider.validateToken(token)) {
@@ -61,10 +65,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				logger.error("Cannot set user authentication: {}", e);
 			}
 
-			filterChain.doFilter(request, response);
+		} else {
+
 		}
-
-
+			filterChain.doFilter(request, response);
+	}
 
 
 	/**

@@ -138,26 +138,56 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
 
+	let $id = $("#id");
+	let $name= $("#name");
+	let $loginId= $("#loginId");
+	let $password = $("#password");
+	let $passwordConfirm = $("#passwordConfirm");
+	let $createPassword = $("#createPassword");
+	let $createPasswordConfirm = $("#createPasswordConfirm");
+	let $email = $("#email");
+
+	let $zipcode = $("#userDetail.zipcode");
+	let $address = $("#userDetail.address");
+	let $addressDetail = $("#userDetail.addressDetail");
+	let $phoneNumber = $("#userDetail.phoneNumber");
+
+	let $idCheckStatus = $("#idCheckStatus");     //아이디 중복체크 했는지 여부
+
+	$(document).ready(function() {
+
+		if ($id.val() != null) {        //수정하는 창에 set
+			$.ajax({
+				dataType : "json",
+				url : "/api/user/edit-detail",
+
+				success : function(data){
+					editFormDetail(data);
+				},
+				error : function(){ alert("로딩실패!");
+				}
+			});
+		}
+	});
+
+	//수정 폼데이터 채우기
+	function editFormDetail(data) {
+		//로그인객체의 각각의 값을 가져옴 -> id값으로 불러온 태그의 value
+		$name.val(data.name);
+		$loginId.val(data.loginId);
+		$email.val(data.email);
+		$zipcode.val(data.userDetail.zipcode);
+		$address.val(data.userDetail.address);
+		$addressDetail.val(data.userDetail.addressDetail);
+		$phoneNumber.val(data.userDetail.phoneNumber);
+		$receiveSms.val(data.userDetail.receiveSms);
+	}
+
+
 	//최종 제출시 이벤트
 	$("#target").on("submit", function(e) {
 
         e.preventDefault();
-
-        let $id = $("#id");
-		let $name= $("#name");
-		let $loginId= $("#loginId");
-		let $password = $("#password");
-		let $passwordConfirm = $("#passwordConfirm");
-		let $createPassword = $("#createPassword");
-		let $createPasswordConfirm = $("#createPasswordConfirm");
-		let $email = $("#email");
-
-		let $zipcode = $("#userDetail.zipcode");
-		let $address = $("#userDetail.address");
-		let $addressDetail = $("#userDetail.addressDetail");
-		let $phoneNumber = $("#userDetail.phoneNumber");
-
-		let $idCheckStatus = $("#idCheckStatus");     //아이디 중복체크 했는지 여부
 
 		if ($name.val() == "") {
 			alert("이름을 입력해주세요");

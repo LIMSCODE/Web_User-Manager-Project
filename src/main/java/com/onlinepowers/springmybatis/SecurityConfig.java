@@ -97,10 +97,9 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {   // Spring Security
 
 		http
 				.cors().and().csrf().disable();
-
-
 		http
-				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http
 				.exceptionHandling().authenticationEntryPoint(jwtEntryPoint());
 		//http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

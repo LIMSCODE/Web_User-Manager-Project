@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
-@RequestMapping("/api/opmanager/user")
+@RequestMapping("/opmanager/user")
 @Controller
 @RequiredArgsConstructor
 public class UserManagerController {
@@ -58,8 +58,8 @@ public class UserManagerController {
 		User loginUser = UserUtils.getLoginUser(session);
 		model.addAttribute("loginUser", loginUser);
 
-		Page<User> userPage = userService.getUserList(user, pageable, jpaPaging); //페이지 객체 담아서 뷰로 보낸다.
-		model.addAttribute("userPage", userPage);
+		//Page<User> userPage = userService.getUserList(user, pageable, jpaPaging); //페이지 객체 담아서 뷰로 보낸다.
+		//model.addAttribute("userPage", userPage);
 
 		return "/opmanager/user/list";
 	}
@@ -94,7 +94,7 @@ public class UserManagerController {
 	public String updateForm(@PathVariable("id") long id, @ModelAttribute("jpaPaging")JpaPaging jpaPaging,
 	                         Optional<User> user, HttpSession session, Model model) {
 
-		user = Optional.ofNullable(userService.getUserById(id));
+		//user = Optional.ofNullable(userService.getUserById(id));
 		model.addAttribute("user", user);  //뷰에서 밸류값 지정하면 기존아이디 뜸
 		model.addAttribute("id", id);   //form 뷰에서 id있을때로 처리됨.
 
