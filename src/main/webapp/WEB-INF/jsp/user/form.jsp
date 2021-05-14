@@ -161,6 +161,9 @@
 				dataType : "json",
 				url : "/api/user/edit-detail",
 
+				headers: {      //헤더에 토큰 없으면 filter에서 401에러로 보낸다.
+					'Authorization': 'Bearer ' + localStorage.getItem('wtw-token')
+				},
 				success : function(data){
 					editFormDetail(data);
 				},
@@ -294,6 +297,9 @@
                 processData: false,
                 contentType: false,
 
+	            headers: {      //헤더에 토큰 없으면 filter에서 401에러로 보낸다.
+		            'Authorization': 'Bearer ' + localStorage.getItem('wtw-token')
+	            },
                 success : function(token) {
                     var expireDay = 24 * 60 * 60 * 1000; //1일
                     document.cookie = "X-AUTH-TOKEN=" + token + expireDay +"; path=/";  //쿠키에 토큰 저장
@@ -311,12 +317,15 @@
 
             $.ajax({
                 url : "/api/user/edit/" + $id.val(),
-                type : "post",
+                type : "put",
                 data : editFormData,
                 datatype: 'json',
                 processData: false,
                 contentType: false,
 
+	            headers: {      //헤더에 토큰 없으면 filter에서 401에러로 보낸다.
+		            'Authorization': 'Bearer ' + localStorage.getItem('wtw-token')
+	            },
                 success : function(data) {
                     alert("정보수정 성공");
                     window.location.href="/";
