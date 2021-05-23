@@ -31,6 +31,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api/opmanager/user")
+@CrossOrigin(origins="*", maxAge = 3600)
 public class ApiUserManagerController {
 
 	@Autowired

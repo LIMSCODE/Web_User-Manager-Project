@@ -21,7 +21,6 @@
         <label for="email">email</label>
         <input type="text" id="email" name="email" v-model="email" />
       </div>
-
       <div>
         <label for="zipcode">우편번호</label>
         <input type="text" id="zipcode" name="zipcode" v-model="zipcode" />
@@ -50,19 +49,17 @@
         <input type="hidden" name="authority" id="authority"
                value="ROLE_USER" >
       </span>
-      <div>
-        parameter : {{param}}
-      </div>
 
       <button type="submit">회원가입</button>
-      <User></User>
     </form>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+
 export default {
+  props : ['id'],
   user:function(){
     return{
       loginId: '',
@@ -76,20 +73,7 @@ export default {
       receiveSms:''
     }
   },
-  created () {
-    // fetch the data when the view is created and the data is
-    // already being observed
-    this.SignupForm()
-  },
-  watch: {
-    // call again the method if the route changes
-    '$route': 'SignupForm'
-  },
-  computed: {
-    param: function () {
-      return this.$route.params;
-    }
-  },
+
   methods:{
     SignupForm:function(){
       console.log(this.loginId, this.password);
@@ -107,7 +91,6 @@ export default {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json; charset = utf-8',
-          'Authorization': 'Bearer ' + localStorage.getItem('wtw-token')
         }
       }
       let form = new FormData();
@@ -121,7 +104,7 @@ export default {
       form.append('userDetail.phoneNumber', user.phoneNumber);
       form.append('userDetail.receiveSms', user.receiveSms);
       form.append('userRole.authority', 'ROLE_USER');   //바로 유저로 만듬
-      axios.post(url, form, { useCredentails: true })
+      axios.post(url, form)
           .then(function(response){
             console.log(response);
             window.location.href = "/";

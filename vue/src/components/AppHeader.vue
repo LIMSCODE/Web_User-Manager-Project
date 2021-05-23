@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import Constant from '../Constant';
+import Constant from './Constant';
 export default {
   name : "AppHeader",
   computed : {

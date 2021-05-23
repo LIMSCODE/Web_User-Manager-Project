@@ -11,6 +11,6 @@ export default {
   LOGIN : "login",
   SET_USER_INFO : "setUserInfo",
 
-  BASEURL : 'https://todosvc2.herokuapp.com',
-  //BASEURL : 'http://localhost:8082',
+  BASEURL1 : 'https://todosvc2.herokuapp.com',
+  BASEURL : 'http://localhost:8080',
 }

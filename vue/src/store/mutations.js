@@ -1,7 +1,11 @@
 import Vue from 'vue';
-import Constant from '../Constant';
+import Constant from '../components/Constant';
 
 export default {
+    [Constant.SET_USER_INFO] : (state, payload)=> {
+        state.userInfo = payload.userInfo;
+        state.token = payload.token;    //state의 상태를 바꾸는 변이.
+    },
     [Constant.ADD_TODO] :(state,payload)=> {
         state.todolist.push({ ...payload.todoitem });
         state.todoitem = { id:"", todo:"", desc:"", done:false };
@@ -30,9 +34,5 @@ export default {
     },
     [Constant.CHANG_ISLOADING] : (state, payload)=> {
         state.isloading = payload.isloading;
-    },
-    [Constant.SET_USER_INFO] : (state, payload)=> {
-        state.userInfo = payload.userInfo;
-        state.token = payload.token;
     }
 }

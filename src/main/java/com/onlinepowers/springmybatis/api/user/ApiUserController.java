@@ -30,6 +30,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin(origins="*", maxAge = 3600)
 public class ApiUserController {
 
 	@Autowired

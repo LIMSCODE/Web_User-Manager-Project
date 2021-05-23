@@ -1,10 +1,49 @@
 import axios from 'axios';
-import Constant from '../Constant';
+import Constant from '../components/Constant';
 import { getUserInfoFromToken } from '../tokenutil';
 
 let BASEURL = Constant.BASEURL;
 
 export default {
+    [Constant.LOGIN] : (store, payload) => {
+        let { loginId, password } = payload;
+        axios.post(`${BASEURL}/api/user/login`, { loginId, password })
+            .then((token)=> {
+               // if (response.data.status === "success") {
+
+                    window.localStorage.setItem("token", token);    //컨트롤러에서 200뜸
+                    console.log("로그인액션=============="+token);
+
+                   const userInfo = getUserInfoFromToken();
+                   store.commit(Constant.SET_USER_INFO, { token, userInfo })
+                    //commit : 변이를 수행한다. 페이로드값을 매개변수로. state에 저장한다.
+                       // payload.callback(token);
+                // } else {
+                //     payload.callback(respoㅇnse.data);
+                // }
+            })
+            .catch((error)=>{
+                payload.callback({ status:"fail", message:"로그인 실패222 : " + error});
+            })
+    },
+    [Constant.SET_USER_INFO] : (store, payload)=> {
+        store.commit(Constant.SET_USER_INFO, { userInfo: payload.userInfo, token: payload.token })
+    },
+
+    [Constant.CREATE_USER] : (store, payload) => {
+        let { id, password, username } = payload;
+        axios.post(`${BASEURL}/api/user/create`, {
+            id, password, username
+        })
+            .then((response)=> {
+                payload.callback(response.data);
+            })
+            .catch((error)=> {
+                console.log("## 사용자 생성 실패 : " + error);
+                payload.callback({ message: "사용자 계정 생성 실패", status:"fail" });
+            })
+    },
+
     [Constant.ADD_TODO] : (store, payload) => {
         let { todo, desc } = payload.todoitem;
         store.commit(Constant.CHANG_ISLOADING, { isloading: true })
@@ -96,39 +135,6 @@ export default {
                 console.log("## 에러 : ", error);
                 store.commit(Constant.CHANG_ISLOADING, { isloading: false })
             })
-    },
-    [Constant.CREATE_USER] : (store, payload) => {
-        let { id, password, username } = payload;
-        axios.post(`${BASEURL}/users/create`, {
-            id, password, username
-        })
-            .then((response)=> {
-                payload.callback(response.data);
-            })
-            .catch((error)=> {
-                console.log("## 사용자 생성 실패 : " + error);
-                payload.callback({ message: "사용자 계정 생성 실패", status:"fail" });
-            })
-    },
-    [Constant.LOGIN] : (store, payload) => {
-        let { id, password } = payload;
-        axios.post(`${BASEURL}/login`, { id, password })
-            .then((response)=> {
-                if (response.data.status === "success") {
-                    const token = response.data.token;
-                    window.localStorage.setItem("token", response.data.token)
-                    const userInfo = getUserInfoFromToken();
-                    store.commit(Constant.SET_USER_INFO, { token, userInfo })
-                    payload.callback(response.data);
-                } else {
-                    payload.callback(response.data);
-                }
-            })
-            .catch((error)=>{
-                payload.callback({ status:"fail", message:"로그인 실패 : " + error});
-            })
-    },
-    [Constant.SET_USER_INFO] : (store, payload)=> {
-        store.commit(Constant.SET_USER_INFO, { userInfo: payload.userInfo, token: payload.token })
     }
+
 }

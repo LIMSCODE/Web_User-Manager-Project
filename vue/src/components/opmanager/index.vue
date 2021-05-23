@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
-    <h1>Welcome to {{title}}</h1>
-    <input type="text" v-model="input1"/>
+    <h1>관리자 메인페이지</h1>
+    <router-link to="/opmanager/user/list">회원 목록</router-link>
   </div>
 </template>
 
@@ -9,8 +9,6 @@
 export default {
   data() {
     return {
-      title: "개발자의 품격",
-      input1:"abc"
     };
   }
 };

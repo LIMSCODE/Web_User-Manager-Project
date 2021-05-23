@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Constant from '../Constant';
+import Constant from './Constant';
 import TodoItem from './TodoItem';
 export default {
   name:"todoList",

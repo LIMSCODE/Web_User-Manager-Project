@@ -28,6 +28,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin(origins="*", maxAge = 3600)
 public class UserAuthenticationController {
 
 	@Autowired
@@ -52,6 +53,7 @@ public class UserAuthenticationController {
 
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
 		User loginUser = userService.getUserByLoginId(user.getLoginId());
+		log.debug(user.getLoginId()+"____________________로그인아이디");
 
 		//아이디가 널일때
 		if (loginUser == null) {

@@ -35,7 +35,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
 		int isLoginUrl = request.getRequestURI().indexOf("/login");
-		if (request.getRequestURI().startsWith("/api") && isLoginUrl == -1) {       //api이고 인증컨트롤러가 아닐때
+		int isCreateUrl = request.getRequestURI().indexOf("/create");
+
+		if (request.getRequestURI().startsWith("/api") && isLoginUrl == -1 && isCreateUrl == -1) {       //api이고 인증컨트롤러가 아닐때
 
 			try {
 				String token = getToken(request);   //아래의 getToken함수 실행

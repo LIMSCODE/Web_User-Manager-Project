@@ -1,66 +1,152 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-6 well well-sm">
-        <legend><i class="glyphicon glyphicon-globe"></i> 사용자 계정 등록</legend>
-        <br />
-        <input class="form-control" name="userid" placeholder="id로 사용할 email 주소" type="email" v-model="userid" />
-        <br />
-        <input class="form-control" name="username" placeholder="사용자 이름" type="text" v-model="username"/>
-        <br />
-        <input class="form-control" name="password" placeholder="암호" type="password" minlength="8" v-model="password"/>
-        <br />
-        <input class="form-control" name="password" placeholder="암호 한번 더" type="password" minlength="8" v-model="password2"/>
-        <br />
-        <br />
-        <button class="btn btn-primary" type="submit" @click="createUser">계정 등록</button>&nbsp;
-        <button class="btn btn-primary" type="cancel" @click="goToHome">취소</button>
+    <form @submit.prevent="SignupForm" >
+      <div>
+        <label for="loginId">아이디</label>
+        <input type="text" id="loginId" name="loginId" v-model="loginId" />
       </div>
-    </div>
+      <div>
+        <label for="name">성함</label>
+        <input type="text" id="name" name="name" v-model="name" />
+      </div>
+      <div>
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" v-model="password" />
+      </div>
+      <div>
+        <label for="passwordConfirm">비밀번호 확인</label>
+        <input type="password" id="passwordConfirm" name="passwordConform" v-model="passwordConfirm" />
+      </div>
+      <div>
+        <label for="email">email</label>
+        <input type="text" id="email" name="email" v-model="email" />
+      </div>
+
+      <div>
+        <label for="zipcode">우편번호</label>
+        <input type="text" id="zipcode" name="zipcode" v-model="zipcode" />
+      </div>
+      <div>
+        <label for="address">주소</label>
+        <input type="text" id="address" name="address" v-model="address" />
+      </div>
+      <div>
+        <label for="addressDetail">상세주소</label>
+        <input type="text" id="addressDetail" name="addressDetail" v-model="addressDetail" />
+      </div>
+      <div>
+        <label for="phoneNumber">전화번호</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" v-model="phoneNumber" />
+      </div>
+
+      <div>
+        <label>Sms수신여부</label>
+        수신<input type="radio" name="receiveSms"
+                 v-model="receiveSms" value="1" label="수신" />
+        수신안함<input type="radio" name="receiveSms"
+                   v-model="receiveSms" value="0" label="수신x" />
+      </div>
+      <span>
+        <input type="hidden" name="authority" id="authority"
+               value="ROLE_USER" >
+      </span>
+      <div>
+        parameter : {{param}}
+      </div>
+
+      <button type="submit">회원가입</button>
+      <User></User>
+    </form>
   </div>
 </template>
 
 <script>
-import Constant from '../Constant';
+import axios from "axios";
 export default {
-  data() {
-    return {
-      userid : "",
-      password : "",
-      password2 : "",
-      username : "",
+  user:function(){
+    return{
+      loginId: '',
+      name: '',
+      password: '',
+      email:'',
+      zipcode:'',
+      address:'',
+      addressDetail:'',
+      phoneNumber:'',
+      receiveSms:''
     }
   },
-  methods: {
-    goToHome() {
-      this.$router.push({name:'home'});
-    },
-    createUser() {
-      const callback = (result) => {
-        window.alert(result.message);
-        if (result.status === "success") {
-          this.$router.push({ name:'login' });
+  created () {
+    // fetch the data when the view is created and the data is
+    // already being observed
+    this.SignupForm()
+  },
+  watch: {
+    // call again the method if the route changes
+    '$route': 'SignupForm'
+  },
+  computed: {
+    param: function () {
+      return this.$route.params;
+    }
+  },
+  methods:{
+    SignupForm:function(){
+      console.log(this.loginId, this.password);
+      var url = 'http://localhost:8080/api/user/create';
+      var user = {
+        loginId: this.loginId,
+        name : this.name,
+        password: this.password,
+        email : this.email,
+        zipcode : this.zipcode,
+        address : this.address,
+        addressDetail:this.addressDetail,
+        phoneNumber : this.phoneNumber,
+        receiveSms : this.receiveSms,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json; charset = utf-8',
+          'Authorization': 'Bearer ' + localStorage.getItem('wtw-token')
         }
       }
-      if (this.password.trim().length < 8) {
-        window.alert("암호가 너무 짧습니다. 8글자 이상을 입력하세요.");
-        return;
-      }
-      if (this.password.trim() !== this.password2.trim()) {
-        window.alert("암호가 일치하지 않습니다.")
-        return;
-      }
-      this.$store.dispatch(Constant.CREATE_USER, { id: this.userid, password:this.password.trim(), username:this.username, callback })
+      let form = new FormData();
+      form.append('loginId', user.loginId);
+      form.append('name', user.name);
+      form.append('password', user.password);
+      form.append('email', user.email);
+      form.append('userDetail.zipcode', user.zipcode);
+      form.append('userDetail.address', user.address);
+      form.append('userDetail.addressDetail', user.addressDetail);
+      form.append('userDetail.phoneNumber', user.phoneNumber);
+      form.append('userDetail.receiveSms', user.receiveSms);
+      form.append('userRole.authority', 'ROLE_USER');   //바로 유저로 만듬
+      axios.post(url, form, { useCredentails: true })
+          .then(function(response){
+            console.log(response);
+            window.location.href = "/";
+          })
+          .catch(function(response){
+            console.log(response);
+          });
     }
   },
-}
+};
 </script>
-
-<style>
-.form-control { margin-bottom: 10px; }
-.link
-{
-  display: block;
-  margin-top: 10px;
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+h3 {
+  margin: 40px 0 0;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
 }
 </style>

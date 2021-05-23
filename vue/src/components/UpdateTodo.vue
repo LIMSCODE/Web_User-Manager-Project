@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import Constant from '../Constant';
+import Constant from './Constant';
 import { mapState } from 'vuex';
 export default {
   name : "updateTodo",
