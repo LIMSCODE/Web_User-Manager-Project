@@ -2,12 +2,10 @@
   <div id="nav">
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 text-right">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/login">Login</router-link> |
-        <router-link to="/todolist">TodoList</router-link>
+        <router-link to="/">Home</router-link> | <router-link to="/opmanager/user/login">Login</router-link> |
       </div>
       <div class="col-xs-12 col-sm-12 col-md-12 text-right">
-        {{ userInfo ? userInfo.users_id + " 님" : "로그인하지 않았음" }}&nbsp;&nbsp;
+        {{ userInfo ? userInfo.sub + " 님 안녕하세요" : "로그인하지 않았음" }}&nbsp;&nbsp;
         <a href="#" v-if="userInfo" @click="logout" class="logout">로그아웃</a>
       </div>
     </div>

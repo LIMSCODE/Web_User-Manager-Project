@@ -61,7 +61,7 @@ public class ApiUserManagerController {
 		model.addAttribute("loginUser", loginUser);
 
 		Page<User> userPage = userService.getUserList(user, pageable, jpaPaging); //페이지 객체 담아서 뷰로 보낸다.
-		model.addAttribute("userPage", userPage);
+		//model.addAttribute("userPage", userPage);
 
 		return new ResponseEntity<>(userPage, HttpStatus.OK);
 	}
@@ -164,7 +164,7 @@ public class ApiUserManagerController {
 	                         RedirectAttributes rttr) throws URISyntaxException {
 
 		ResponseEntity<String> responseEntity = null;
-
+		log.debug("삭제 컨트롤러 진입");
 		userService.deleteUserById(id);
 
 		/*

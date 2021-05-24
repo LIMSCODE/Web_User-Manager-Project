@@ -70,7 +70,7 @@ export default {
           .catch(()=>{
             //payload.callback({ status:"fail", message:"로그인 실패222 : " + error});
           })
-    //
+
     //   axios.post(url, form)
     //       .then(function(response){
     //         console.log(response);

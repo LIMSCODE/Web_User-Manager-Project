@@ -5,6 +5,16 @@ import { getUserInfoFromToken } from '../tokenutil';
 let BASEURL = Constant.BASEURL;
 
 export default {
+
+    [Constant.SEARCH_CONTACT] : (store, payload)=> {   //Constant.BASE_URL + payload.name)
+        axios.get('http://localhost:8080/api/opmanager/user/ajax-list?name=' + payload.name)
+            .then((response)=> {
+                store.commit(Constant.SEARCH_CONTACT, { contacts: response.data })
+                if (response.data.length > 0)
+                    store.dispatch(Constant.ADD_KEYWORD, payload);
+            })
+    },
+
     [Constant.LOGIN] : (store, payload) => {
         let { loginId, password } = payload;
         axios.post(`${BASEURL}/api/user/login`, { loginId, password })
@@ -19,7 +29,7 @@ export default {
                     //commit : 변이를 수행한다. 페이로드값을 매개변수로. state에 저장한다.
                        // payload.callback(token);
                 // } else {
-                //     payload.callback(respoㅇnse.data);
+                //     payload.callback(response.data);
                 // }
             })
             .catch((error)=>{
@@ -27,7 +37,7 @@ export default {
             })
     },
     [Constant.SET_USER_INFO] : (store, payload)=> {
-        store.commit(Constant.SET_USER_INFO, { userInfo: payload.userInfo, token: payload.token })
+        store.commit(Constant.SET_USER_INFO, { token: payload.token, userInfo: payload.userInfo })
     },
 
     [Constant.CREATE_USER] : (store, payload) => {
@@ -43,11 +53,28 @@ export default {
                 payload.callback({ message: "사용자 계정 생성 실패", status:"fail" });
             })
     },
+    [Constant.LOAD_TODOLIST] : (store)=> {
+        axios.get(`${BASEURL}/api/opmanager/user/ajax-list`, {
+            headers: { Authorization: "Bearer " + store.state.token }
+        })
+            .then((response)=>{
+                console.log("리스트 데이터 받아오는중");
+                console.log(response.data.content[0]);    //받아와진다.
+                store.commit(Constant.LOAD_TODOLIST, { todolist: response.data.content });
+                //commit : 변이를 수행한다. 페이로드값을 매개변수로. state에 저장한다.
+            })
+            .catch((error)=> {
+                console.log("## 에러 : ", error);
+            })
+    },
 
+    [Constant.INITIALIZE_TODOITEM] : (store, payload) => {
+        store.commit(Constant.INITIALIZE_TODOITEM, payload);
+    },
     [Constant.ADD_TODO] : (store, payload) => {
         let { todo, desc } = payload.todoitem;
         store.commit(Constant.CHANG_ISLOADING, { isloading: true })
-        axios.post(`${BASEURL}/todolist`, { todo, desc }, {
+        axios.post(`${BASEURL}/api/opmanager/user/create`, { todo, desc }, {
             headers: { Authorization: "Bearer " + store.state.token }
         })
             .then((response)=>{
@@ -66,19 +93,39 @@ export default {
     },
     [Constant.DELETE_TODO] : (store, payload) => {
         store.commit(Constant.CHANG_ISLOADING, { isloading: true })
-        axios.delete(`${BASEURL}/todolist/${payload.id}`, {
+        axios.post('http://localhost:8080/api/opmanager/user/delete/' + payload.id , {
+            headers: { Authorization: "Bearer " + store.state.token }
+        })
+            .then((response)=>{
+              //  if (response.data.status === "success") {
+                    store.commit(Constant.DELETE_TODO, payload);
+                console.log("할일 삭제: ", response.data.message);
+                store.commit(Constant.CHANG_ISLOADING, { isloading: false })
+                // } else {
+                //     console.log("할일 삭제 실패 : ", response.data.message);
+                // }
+            })
+            .catch((error)=>{
+                console.log("===액션 할일 삭제 실패 : ", error);
+               store.commit(Constant.CHANG_ISLOADING, { isloading: false })
+            })
+    },
+    [Constant.UPDATE_TODO] : (store, payload) => {
+        store.commit(Constant.CHANG_ISLOADING, { isloading: true })
+        let { id, todo, desc, done } = payload.todoitem;
+        axios.put(`${BASEURL}/api/opmanager/user/${id}`, { todo, desc, done }, {
             headers: { Authorization: "Bearer " + store.state.token }
         })
             .then((response)=>{
                 if (response.data.status === "success") {
-                    store.commit(Constant.DELETE_TODO, payload);
+                    store.commit(Constant.UPDATE_TODO, payload);
                 } else {
-                    console.log("할일 삭제 실패 : ", response.data.message);
+                    console.log("할일 완료 변경 실패 : ", response.data.message);
                 }
                 store.commit(Constant.CHANG_ISLOADING, { isloading: false })
             })
             .catch((error)=>{
-                console.log("할일 삭제 실패 : ", error);
+                console.log("할일 완료 변경 실패 : ", error);
                 store.commit(Constant.CHANG_ISLOADING, { isloading: false })
             })
     },
@@ -100,41 +147,5 @@ export default {
                 store.commit(Constant.CHANG_ISLOADING, { isloading: false })
             })
     },
-    [Constant.UPDATE_TODO] : (store, payload) => {
-        store.commit(Constant.CHANG_ISLOADING, { isloading: true })
-        let { id, todo, desc, done } = payload.todoitem;
-        axios.put(`${BASEURL}/todolist/${id}`, { todo, desc, done }, {
-            headers: { Authorization: "Bearer " + store.state.token }
-        })
-            .then((response)=>{
-                if (response.data.status === "success") {
-                    store.commit(Constant.UPDATE_TODO, payload);
-                } else {
-                    console.log("할일 완료 변경 실패 : ", response.data.message);
-                }
-                store.commit(Constant.CHANG_ISLOADING, { isloading: false })
-            })
-            .catch((error)=>{
-                console.log("할일 완료 변경 실패 : ", error);
-                store.commit(Constant.CHANG_ISLOADING, { isloading: false })
-            })
-    },
-    [Constant.INITIALIZE_TODOITEM] : (store, payload) => {
-        store.commit(Constant.INITIALIZE_TODOITEM, payload);
-    },
-    [Constant.LOAD_TODOLIST] : (store)=> {
-        store.commit(Constant.CHANG_ISLOADING, { isloading: true })
-        axios.get(`${BASEURL}/todolist`, {
-            headers: { Authorization: "Bearer " + store.state.token }
-        })
-            .then((response)=>{
-                store.commit(Constant.LOAD_TODOLIST, { todolist: response.data.todolist });
-                store.commit(Constant.CHANG_ISLOADING, { isloading: false })
-            })
-            .catch((error)=> {
-                console.log("## 에러 : ", error);
-                store.commit(Constant.CHANG_ISLOADING, { isloading: false })
-            })
-    }
 
 }

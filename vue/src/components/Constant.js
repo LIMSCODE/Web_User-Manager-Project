@@ -13,4 +13,7 @@ export default {
 
   BASEURL1 : 'https://todosvc2.herokuapp.com',
   BASEURL : 'http://localhost:8080',
+
+  SEARCH_CONTACT : "searchContact",
+  ADD_KEYWORD: "addKeyword"
 }
