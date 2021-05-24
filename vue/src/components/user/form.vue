@@ -49,10 +49,14 @@
         <input type="hidden" name="authority" id="authority"
                value="ROLE_USER" >
       </span>
+      <button type="button" class="btn btn-default" @click="updateTodo(getId)">원래수정-값뜨는지확인</button>
+
 
       {{ isToken }}
-      {{ userDetail }}
       <button type="submit">회원가입</button>
+      {{ getId }}   <!--8이라고 뜬다.-->
+
+      {{ editDetail }}
     </form>
   </div>
 </template>
@@ -62,7 +66,6 @@ import axios from "axios";
 import Constant from "@/components/Constant";
 
 export default {
-  props : ['id'],
   user:function(){
     return{
       loginId: '',
@@ -76,8 +79,7 @@ export default {
       receiveSms:''
     }
   },
-
-  mounted() {     //변이를 일으키기 위해 this.$store.state 와 같이 저장소의 상태에 접근
+  mounted() {     //수정정보 불러오기
       this.$store.dispatch(Constant.EDIT_DETAIL, {token: this.$route.token});
   },
 
@@ -85,7 +87,10 @@ export default {
     isToken : function() {
       return this.$store.state.token;
     },
-    userDetail : function() {
+    getId : function() {
+      return this.$store.state.userDetail.userDetail.data.id;
+    },
+    editDetail : function()  {
       return this.$store.state.userDetail;
     }
   },
@@ -129,7 +134,14 @@ export default {
           .catch(function(response){
             console.log(response);
           });
-    }
+    },
+
+    updateTodo(id) {
+      console.log(id);
+      this.$router.push({ name:"updateTodo" , params : {"id" : id}});
+      //computed로 상태로부터 계산한 id값을 템플릿의 메서드에서 매개변수로 updateTodo함수에 전달한다.
+      //이렇게하면 주소창에 /id값 뜬다. (라우터에서 :id연결)
+    },
   },
 };
 </script>

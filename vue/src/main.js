@@ -53,19 +53,19 @@ const router = new VueRouter({
     { path:"/home", name: "home", component : Home },
     { path:"/todolist", name:"todoList", component: TodoList },
     { path:"/todolist/add", name:"addTodo", component: AddTodo },
-    { path:"/todolist/update/:id", name:"updateTodo", component: UpdateTodo },
 
     { path:"/login", name:"login", component:Login },
     { path:"/createuser", name:"createUser", component:CreateUser },
     { path:"*", component: NotFound },
 
     {path: '/', name : 'userMain', component : userMain},
-    {path: '/user/create', name : 'userForm', component : userForm},
-    {path: '/user/edit', name : 'userForm', component : userForm,
-      children : [
-        { path: ':no', name:'userForm', component: userForm, props:true }
-      ]
-    },
+    //{path: '/user/create', name : 'userForm', component : userForm},
+    { path:"/todolist/update/:id", name:"updateTodo", component: UpdateTodo },
+    {path: "/user/edit/:id", name : "userForm", component : userForm},
+      // children : [
+      //   { path: ':no', name:'userForm', component: userForm, props:true }
+      // ]
+
     {path: '/user/login', name : 'userLogin', component : userLogin},
     {path: '/user/password-check', name : 'passwordCheck', component : passwordCheck},
 

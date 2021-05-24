@@ -40,9 +40,9 @@ export default {
 
     [Constant.CREATE_USER] : (store, payload) => {
         let { id, password, username } = payload;
-        axios.post(`${BASEURL}/api/user/create`, {
-            id, password, username
-        })
+        axios.post(`${BASEURL}/api/user/create`, {id, password, username},
+            {headers:{Authorization : 'Bearer ' + localStorage.getItem('token')}}
+            )
             .then((response)=> {
                 payload.callback(response.data);
             })
@@ -52,9 +52,8 @@ export default {
             })
     },
     [Constant.LOAD_TODOLIST] : (store)=> {
-        axios.get(`${BASEURL}/api/opmanager/user/ajax-list`, {
-            headers: { Authorization: "Bearer " + store.state.token }
-        })
+        axios.get(`${BASEURL}/api/opmanager/user/ajax-list`,
+        {headers:{Authorization : 'Bearer ' + localStorage.getItem('token')}})
             .then((response)=>{
                 console.log("리스트 데이터 받아오는중");
                 console.log(response.data.content[0]);    //받아와진다.
@@ -88,9 +87,8 @@ export default {
     },
     [Constant.DELETE_TODO] : (store, payload) => {
         store.commit(Constant.CHANG_ISLOADING, { isloading: true })
-        axios.post('http://localhost:8080/api/opmanager/user/delete/' + payload.id , {
-            headers: { Authorization: "Bearer " + store.state.token }
-        })
+        axios.post('http://localhost:8080/api/opmanager/user/delete/' + payload.id ,
+        {headers:{Authorization : 'Bearer ' + localStorage.getItem('token')}})
             .then((response)=>{
               //  if (response.data.status === "success") {
                     store.commit(Constant.DELETE_TODO, payload);
@@ -131,9 +129,8 @@ export default {
     [Constant.EDIT_DETAIL] : (store) => {
         store.commit(Constant.CHANG_ISLOADING, { isloading: false })
 
-        axios.get(`http://localhost:8080/api/user/edit-detail`, {
-            //headers: { Authorization: "Bearer" + store.state.token }
-        })
+        axios.get(`http://localhost:8080/api/user/edit-detail`,
+        {headers:{Authorization : 'Bearer ' + localStorage.getItem('token')}})
             .then((response)=>{
                 store.commit(Constant.EDIT_DETAIL , { userDetail: response});
                 store.commit(Constant.CHANG_ISLOADING, { isloading: false })

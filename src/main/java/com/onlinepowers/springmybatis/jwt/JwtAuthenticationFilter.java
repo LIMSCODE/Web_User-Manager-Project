@@ -35,15 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
 		int isLoginUrl = request.getRequestURI().indexOf("/login");
-		int isCreateUrl = request.getRequestURI().indexOf("/create");
-		int isDeleteUrl = request.getRequestURI().indexOf("/delete");
-		int isSearchUrl = request.getRequestURI().indexOf("/ajax-list");
-		int isEditUrl = request.getRequestURI().indexOf("/edit-detail");
-		int isPasswordUrl = request.getRequestURI().indexOf("/password-check");
 
-		if (request.getRequestURI().startsWith("/api") && isLoginUrl == -1 &&
-				isCreateUrl == -1 && isDeleteUrl == -1&& isSearchUrl == -1 && isEditUrl == -1
-				&& isPasswordUrl == -1) {       //api이고 인증컨트롤러가 아닐때
+		if (request.getRequestURI().startsWith("/api") && isLoginUrl == -1) {       //api이고 인증컨트롤러가 아닐때
 
 			try {
 				String token = getToken(request);   //아래의 getToken함수 실행
