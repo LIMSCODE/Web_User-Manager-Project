@@ -55,14 +55,13 @@ export default {
   methods : {
     editTodo(id) {
       this.$store.dispatch(Constant.INITIALIZE_TODOITEM, { todoitem: { ...this.todoitem } });
-      this.$router.push({ name: 'opmanagerForm', params: { id } })
+      this.$router.push({ name: 'updateTodo', params: { id } })     //id값이 전달된다.
     },
     deleteTodo(id) {
       if (confirm("정말로 삭제하시겠습니까?") == true) {
         this.$store.dispatch(Constant.DELETE_TODO, {id});   //id값을 페이로드로 넘김 액션으로
       }
     },
-
     checked(done) {
       return { "list-group-item":true, "list-group-item-success":done };
     },

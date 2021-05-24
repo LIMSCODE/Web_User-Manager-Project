@@ -6,6 +6,7 @@ export default {
     userInfo : null,
     token:"",
 
+    userDetail : "",
     keywordlist : []    //검색
 }
 

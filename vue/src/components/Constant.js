@@ -1,8 +1,9 @@
 export default {
   ADD_TODO : "addTodo",
   UPDATE_TODO : "updateTodo",
-  TOGGLE_DONE : "toggleDone",
+  EDIT_DETAIL : "editDetail",
   DELETE_TODO : "deleteTodo",
+
   INITIALIZE_TODOITEM : "initializeTodoItem",
   LOAD_TODOLIST : "loadTodoList",
   CHANG_ISLOADING : "changeIsLoading",

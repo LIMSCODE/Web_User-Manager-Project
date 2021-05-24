@@ -50,6 +50,8 @@
                value="ROLE_USER" >
       </span>
 
+      {{ isToken }}
+      {{ userDetail }}
       <button type="submit">회원가입</button>
     </form>
   </div>
@@ -57,6 +59,7 @@
 
 <script>
 import axios from "axios";
+import Constant from "@/components/Constant";
 
 export default {
   props : ['id'],
@@ -71,6 +74,19 @@ export default {
       addressDetail:'',
       phoneNumber:'',
       receiveSms:''
+    }
+  },
+
+  mounted() {     //변이를 일으키기 위해 this.$store.state 와 같이 저장소의 상태에 접근
+      this.$store.dispatch(Constant.EDIT_DETAIL, {token: this.$route.token});
+  },
+
+  computed : {
+    isToken : function() {
+      return this.$store.state.token;
+    },
+    userDetail : function() {
+      return this.$store.state.userDetail;
     }
   },
 
@@ -104,6 +120,7 @@ export default {
       form.append('userDetail.phoneNumber', user.phoneNumber);
       form.append('userDetail.receiveSms', user.receiveSms);
       form.append('userRole.authority', 'ROLE_USER');   //바로 유저로 만듬
+
       axios.post(url, form)
           .then(function(response){
             console.log(response);

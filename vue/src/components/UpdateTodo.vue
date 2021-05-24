@@ -27,7 +27,7 @@
 
 <script>
 import Constant from './Constant';
-import { mapState } from 'vuex';
+import { mapState } from 'vuex';      //이거있어야 번호 :11 전달된다.
 export default {
   name : "updateTodo",
   data() {

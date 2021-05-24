@@ -150,12 +150,8 @@ export default {
     //검색
     keyupEvent : function(e) {
       var val = e.target.value;
-      if (val.length >= 2) {
-        this.$store.dispatch(Constant.SEARCH_CONTACT, { name: val });
-        this.name = "";
-      } else {
-        this.$store.dispatch(Constant.SEARCH_CONTACT, { name: '' })
-      }
+      this.$store.dispatch(Constant.SEARCH_CONTACT, { name: val });
+      this.name = "";
     }
   }
 }

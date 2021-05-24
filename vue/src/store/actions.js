@@ -7,11 +7,9 @@ let BASEURL = Constant.BASEURL;
 export default {
 
     [Constant.SEARCH_CONTACT] : (store, payload)=> {   //Constant.BASE_URL + payload.name)
-        axios.get('http://localhost:8080/api/opmanager/user/ajax-list?name=' + payload.name)
+        axios.get('http://localhost:8080/api/opmanager/user/ajax-list?searchKeyword=' + payload.searchKeyword + '&searchType=' + payload.searchType)
             .then((response)=> {
                 store.commit(Constant.SEARCH_CONTACT, { contacts: response.data })
-                if (response.data.length > 0)
-                    store.dispatch(Constant.ADD_KEYWORD, payload);
             })
     },
 
@@ -61,16 +59,13 @@ export default {
                 console.log("리스트 데이터 받아오는중");
                 console.log(response.data.content[0]);    //받아와진다.
                 store.commit(Constant.LOAD_TODOLIST, { todolist: response.data.content });
-                //commit : 변이를 수행한다. 페이로드값을 매개변수로. state에 저장한다.
+                //commit : 변이를 수행한다. 페이로드값을 매개변수로. state에 불러온 리스트 데이터를 저장한다.
             })
             .catch((error)=> {
                 console.log("## 에러 : ", error);
             })
     },
 
-    [Constant.INITIALIZE_TODOITEM] : (store, payload) => {
-        store.commit(Constant.INITIALIZE_TODOITEM, payload);
-    },
     [Constant.ADD_TODO] : (store, payload) => {
         let { todo, desc } = payload.todoitem;
         store.commit(Constant.CHANG_ISLOADING, { isloading: true })
@@ -113,7 +108,7 @@ export default {
     [Constant.UPDATE_TODO] : (store, payload) => {
         store.commit(Constant.CHANG_ISLOADING, { isloading: true })
         let { id, todo, desc, done } = payload.todoitem;
-        axios.put(`${BASEURL}/api/opmanager/user/${id}`, { todo, desc, done }, {
+        axios.put(`${BASEURL}/api/opmanager/user/edit/${id}`, { todo, desc, done }, {
             headers: { Authorization: "Bearer " + store.state.token }
         })
             .then((response)=>{
@@ -129,23 +124,25 @@ export default {
                 store.commit(Constant.CHANG_ISLOADING, { isloading: false })
             })
     },
-    [Constant.TOGGLE_DONE] : (store, payload) => {
-        store.commit(Constant.CHANG_ISLOADING, { isloading: true })
-        axios.put(`${BASEURL}/todolist/${payload.id}/done`, {}, {
-            headers: { Authorization: "Bearer " + store.state.token }
+    [Constant.INITIALIZE_TODOITEM] : (store, payload) => {
+        store.commit(Constant.INITIALIZE_TODOITEM, payload);
+    },
+
+    [Constant.EDIT_DETAIL] : (store) => {
+        store.commit(Constant.CHANG_ISLOADING, { isloading: false })
+
+        axios.get(`http://localhost:8080/api/user/edit-detail`, {
+            //headers: { Authorization: "Bearer" + store.state.token }
         })
             .then((response)=>{
-                if (response.data.status === "success") {
-                    store.commit(Constant.TOGGLE_DONE, payload);
-                } else {
-                    console.log("할일 완료 변경 실패 : ", response.data.message);
-                }
+                store.commit(Constant.EDIT_DETAIL , { userDetail: response});
                 store.commit(Constant.CHANG_ISLOADING, { isloading: false })
+                console.log(response);
             })
             .catch((error)=>{
-                console.log("할일 완료 변경 실패 : ", error);
+                console.log("=======수정 정보 불러오기 실패 : ", error);
                 store.commit(Constant.CHANG_ISLOADING, { isloading: false })
             })
-    },
+    }
 
 }

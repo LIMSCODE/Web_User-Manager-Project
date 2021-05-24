@@ -19,6 +19,8 @@ import AppHeader from './components/AppHeader';
 import userMain from './components/main/user';
 import userForm from './components/user/form';
 import userLogin from './components/user/login';
+import passwordCheck from './components/user/password-check';
+
 import opmanagerMain from './components/opmanager';
 import opmanagerForm from './components/opmanager/user/form';
 import opmanagerList from './components/opmanager/user/list';
@@ -52,6 +54,7 @@ const router = new VueRouter({
     { path:"/todolist", name:"todoList", component: TodoList },
     { path:"/todolist/add", name:"addTodo", component: AddTodo },
     { path:"/todolist/update/:id", name:"updateTodo", component: UpdateTodo },
+
     { path:"/login", name:"login", component:Login },
     { path:"/createuser", name:"createUser", component:CreateUser },
     { path:"*", component: NotFound },
@@ -64,6 +67,7 @@ const router = new VueRouter({
       ]
     },
     {path: '/user/login', name : 'userLogin', component : userLogin},
+    {path: '/user/password-check', name : 'passwordCheck', component : passwordCheck},
 
     {path: '/opmanager', name : 'opmanagerMain', component:opmanagerMain,
       beforeEnter: requireAuth()
@@ -72,7 +76,11 @@ const router = new VueRouter({
     {path: '/opmanager/user/login', name : 'opmanagerLogin', component:opmanagerLogin},
 
     {path: '/opmanager/user/create', name : 'opmanagerForm', component:opmanagerForm},
-    //{path: '/opmanager/user/edit', name : 'opmanagerForm', component:opmanagerForm},
+    {path: '/opmanager/user/edit', name : 'opmanagerForm', component : opmanagerForm,
+      children : [
+        { path: ':no', name:'opmanagerForm', component: opmanagerForm, props:true }
+      ]
+    },
     {path: '/h',name : 'HelloWorld', component:HelloWorld}
   ]
 })

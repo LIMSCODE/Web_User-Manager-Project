@@ -123,11 +123,15 @@ public class ApiUserController {
 	 * @return
 	 */
 	@GetMapping("/edit-detail")
-	public ResponseEntity<User> getUserListByAjax(User user, HttpSession session, Model model) {
+	public ResponseEntity<User> getUserListByAjax(User user, HttpSession session, Model model
+			,@AuthenticationPrincipal LoginUserDetails securityUser) {
 
 		User loginUser = UserUtils.getLoginUser(session);
+		log.debug(String.valueOf(loginUser));   //null이다.
+		User loginUser1 = securityUser.getUser();
+		log.debug(String.valueOf(loginUser1));   //null이다.
 
-		return new ResponseEntity<>(loginUser, HttpStatus.OK);
+		return new ResponseEntity<>(loginUser1, HttpStatus.OK);
 	}
 
 

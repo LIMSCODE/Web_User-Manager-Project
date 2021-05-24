@@ -33,10 +33,10 @@ export default {
             state.todoitem = { id:"", todo:"", desc:"", done:false };
         }
     },
-    [Constant.TOGGLE_DONE] :(state,payload)=> {
-        let index = state.todolist.findIndex((item)=>item.id === payload.id);
-        state.todolist[index].done= !state.todolist[index].done;
+    [Constant.EDIT_DETAIL] :(state,payload)=> {
+        state.userDetail = payload;
     },
+
     [Constant.CHANG_ISLOADING] : (state, payload)=> {
         state.isloading = payload.isloading;
     }

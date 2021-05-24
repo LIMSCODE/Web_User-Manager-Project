@@ -1,9 +1,9 @@
 <template>
   <div class="hello">
     <div v-if="token">   <!--로그인 후에는 화면이 다르게뜨도록한다.-->
-      로그인후 토큰있는지 확인 <br><br>
-      <router-link to="/user/edit" >정보수정</router-link> <br><br>
-      <router-link to="/user/logout" >로그아웃</router-link> <br><br>
+      <br><br>
+      <router-link to="/user/password-check" >정보수정</router-link> <br><br>
+      <a href="/" @click="logout" class="logout">로그아웃</a>
     </div>
     <div v-else-if="beforeLogin">
       <router-link to="/user/login" >로그인</router-link> <br><br>
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import Constant from "@/components/Constant";
+
 export default {
   computed : {
     beforeLogin() {
@@ -26,6 +28,12 @@ export default {
       return this.$store.state.token;
     }
   },
+  methods : {
+    logout() {
+      this.$store.dispatch(Constant.SET_USER_INFO, { userInfo:null, token:"" })
+      this.$router.push({name:"userMain"})
+    }
+  }
 };
 </script>
 

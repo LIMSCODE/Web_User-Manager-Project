@@ -26,8 +26,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch(Constant.SET_USER_INFO, { userInfo:null, token:"" })
-      this.$logoutProcess();
-      this.$router.push({name:"login"})
+      this.$router.push({name:"userMain"})
     }
   },
 }
