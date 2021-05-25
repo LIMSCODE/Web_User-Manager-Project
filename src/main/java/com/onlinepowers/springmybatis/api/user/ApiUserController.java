@@ -144,7 +144,7 @@ public class ApiUserController {
 	 * @param model
 	 * @return
 	 */
-	@PutMapping("/edit/{id}")
+	@PostMapping("/edit/{id}")
 	public ResponseEntity<String> updateUser(@PathVariable("id") long id,
 	                         @Valid User user, BindingResult userResult,
 	                         HttpSession session, Model model) {
@@ -158,6 +158,7 @@ public class ApiUserController {
 
 		userService.updateUser(user);
 
+		log.debug("수정 컨트롤러 진입");
 		User updatedUser = userService.getUserByLoginId(user.getLoginId());     //비밀번호 수정후 바뀐 DTO를 session에 set해줘야함.
 		session.setAttribute("loginUser", updatedUser);
 

@@ -53,9 +53,7 @@ public class User extends JpaPaging {
 
 	private String password;
 
-	@NotEmpty(message = "이메일 입력해주세요")
-	@Size(max = 30, message = "30글자 이하로 입력하세요")
-	@Email
+
 	private String email;
 
 	@CreatedDate

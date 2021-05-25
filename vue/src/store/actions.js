@@ -133,8 +133,11 @@ export default {
         {headers:{Authorization : 'Bearer ' + localStorage.getItem('token')}})
             .then((response)=>{
                 store.commit(Constant.EDIT_DETAIL , { userDetail: response});
-                store.commit(Constant.CHANG_ISLOADING, { isloading: false })
+                store.commit(Constant.CHANG_ISLOADING, { isloading: false });
                 console.log(response);
+
+
+
             })
             .catch((error)=>{
                 console.log("=======수정 정보 불러오기 실패 : ", error);

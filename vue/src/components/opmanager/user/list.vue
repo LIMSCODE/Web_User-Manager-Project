@@ -137,7 +137,7 @@ export default {
   methods : {
     goAddTodo() {
       this.$store.dispatch(Constant.INITIALIZE_TODOITEM);
-      this.$router.push({ name:"opmanagerForm" });
+      this.$router.push({ name:"opmanagerForm1" });
     },
     reload() {
       this.$store.dispatch(Constant.LOAD_TODOLIST, { token: this.$route.token });

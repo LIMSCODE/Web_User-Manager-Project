@@ -22,7 +22,7 @@ import userLogin from './components/user/login';
 import passwordCheck from './components/user/password-check';
 
 import opmanagerMain from './components/opmanager';
-import opmanagerForm from './components/opmanager/user/form';
+// import opmanagerForm from './components/opmanager/user/form';
 import opmanagerList from './components/opmanager/user/list';
 import opmanagerLogin from './components/opmanager/user/login';
 import HelloWorld from './components/HelloWorld';
@@ -53,15 +53,15 @@ const router = new VueRouter({
     { path:"/home", name: "home", component : Home },
     { path:"/todolist", name:"todoList", component: TodoList },
     { path:"/todolist/add", name:"addTodo", component: AddTodo },
+    { path:"/todolist/update/:id", name:"updateTodo", component: UpdateTodo },
 
     { path:"/login", name:"login", component:Login },
     { path:"/createuser", name:"createUser", component:CreateUser },
     { path:"*", component: NotFound },
 
     {path: '/', name : 'userMain', component : userMain},
-    //{path: '/user/create', name : 'userForm', component : userForm},
-    { path:"/todolist/update/:id", name:"updateTodo", component: UpdateTodo },
-    {path: "/user/edit/:id", name : "userForm", component : userForm},
+    {path: '/user/create', name : 'userForm1', component : userForm},
+    {path: "/user/edit/:id", name : "userForm2", component : userForm},
       // children : [
       //   { path: ':no', name:'userForm', component: userForm, props:true }
       // ]
@@ -75,12 +75,12 @@ const router = new VueRouter({
     {path: '/opmanager/user/list', name : 'opmanagerList', component:opmanagerList},
     {path: '/opmanager/user/login', name : 'opmanagerLogin', component:opmanagerLogin},
 
-    {path: '/opmanager/user/create', name : 'opmanagerForm', component:opmanagerForm},
-    {path: '/opmanager/user/edit', name : 'opmanagerForm', component : opmanagerForm,
-      children : [
-        { path: ':no', name:'opmanagerForm', component: opmanagerForm, props:true }
-      ]
-    },
+    //{path: '/opmanager/user/create', name : 'opmanagerForm1', component:opmanagerForm},
+    //{path: '/opmanager/user/edit:id', name : 'opmanagerForm2', component : opmanagerForm},
+      // children : [
+      //   { path: ':no', name:'opmanagerForm', component: opmanagerForm, props:true }
+      // ]
+
     {path: '/h',name : 'HelloWorld', component:HelloWorld}
   ]
 })

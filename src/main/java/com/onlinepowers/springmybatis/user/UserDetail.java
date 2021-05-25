@@ -51,7 +51,7 @@ public class UserDetail {
     @Size (max= 30, message="30글자 이하로 입력하세요")
     public String phoneNumber;
 
-    @NotNull(message="수신여부 체크해주세요")
+
     public String receiveSms;
 
     public String getReceiveSmsTitle() {

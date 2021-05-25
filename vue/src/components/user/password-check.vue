@@ -66,7 +66,7 @@ export default {
             // if (response.data.status === "success") {
             console.log(localStorage.getItem('token'));
 
-            this.$router.push({ name:"userForm" , params : {"id" : id}});
+            this.$router.push({ name:"userForm2" , params : {"id" : id}});
             //computed로 상태로부터 계산한 id값을 템플릿의 메서드에서 매개변수로 updateTodo함수에 전달한다.
             //이렇게하면 주소창에 /id값 뜬다. (라우터에서 :id연결)
 

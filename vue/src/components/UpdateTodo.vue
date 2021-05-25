@@ -8,7 +8,7 @@
         </div>
         <div class="modal-body">
           번호 :
-          <input id="id" type="text" class="form-control" name="id" disabled v-model="todoitemlocal.id"><br/>
+          <input id="id" type="text" class="form-control" name="id" disabled v-model="todoitem1.id"><br/>
           할일 :
           <input id="todo" type="text" class="form-control" name="msg"
                  placeholder="할일을 여기에 입력!" v-model="todoitemlocal.todo"><br/>
@@ -19,6 +19,8 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-default" @click="updateTodo">수 정</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal" @click="cancel">취 소</button>
+
+          {{ todoitem1 }}
         </div>
       </div>
     </div>
@@ -26,19 +28,28 @@
 </template>
 
 <script>
-import Constant from './Constant';
-import { mapState } from 'vuex';      //이거있어야 번호 :11 전달된다.
+import Constant from '@/components/Constant';
+//import {mapState} from "vuex";
+
 export default {
   name : "updateTodo",
   data() {
-    return { todoitemlocal : {} }
+    return { todoitem: {} }
   },
-  computed : mapState(['todoitem']),
+  //computed : mapState(['todoitem']),    //todoitem
+  computed : {
+
+    todoitem1 : function()  {
+      return this.$store.state.todoitem;
+    }
+  },
+
+
   created() {
     this.todoitemlocal = { ...this.todoitem };
   },
   methods : {
-    updateTodo() {
+    updateTodo() {        //버튼 누를경우
       //console.log("### update")
       this.$router.push({ name:"todoList" });
       this.$store.dispatch(Constant.UPDATE_TODO, { todoitem: this.todoitemlocal });

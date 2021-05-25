@@ -55,7 +55,7 @@ export default {
   methods : {
     editTodo(id) {
       this.$store.dispatch(Constant.INITIALIZE_TODOITEM, { todoitem: { ...this.todoitem } });
-      this.$router.push({ name: 'updateTodo', params: { id } })     //id값이 전달된다.
+      this.$router.push({ name: 'opmanagerForm2', params: { "id" : id } })     //id값이 전달된다.
     },
     deleteTodo(id) {
       if (confirm("정말로 삭제하시겠습니까?") == true) {
@@ -67,7 +67,7 @@ export default {
     },
     toggleDone(id) {
       this.$store.dispatch(Constant.TOGGLE_DONE, { id });
-    },
+    }
   }
 }
 </script>

@@ -10,6 +10,7 @@ export default {
         state.userInfo = payload.userInfo;
         state.token = payload.token;    //state의 상태를 바꾸는 변이.
     },
+
     [Constant.LOAD_TODOLIST] : (state, payload)=> {
         state.todolist = payload.todolist;
     },
