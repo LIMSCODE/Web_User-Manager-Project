@@ -5,11 +5,10 @@
       <router-link to="/user/password-check" >정보수정</router-link> <br><br>
       <a href="/" @click="logout" class="logout">로그아웃</a>
     </div>
-    <div v-else-if="beforeLogin">
+    <div v-else>
       <router-link to="/user/login" >로그인</router-link> <br><br>
       <router-link to="/user/create">회원가입</router-link>
     </div>
-    {{ isToken }}
   </div>
 </template>
 
@@ -18,9 +17,6 @@ import Constant from "@/components/Constant";
 
 export default {
   computed : {
-    beforeLogin() {
-      return 1;
-    },
     token() {
       return this.$store.state.token;
     },
