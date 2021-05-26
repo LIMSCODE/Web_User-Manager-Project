@@ -199,7 +199,7 @@
 				html += "</li>";
 				//html += "<a href='/opmanager/user/list?page=" + num +"'"+ "class='on'  >"    //onclick(페이지넘버 매개변수)
 
-			}else {
+			} else {
 				html += "<li class=''>";
 				html += "<a class='on' onclick='movePage(" + num + ");'>"
 				html += num + 1;

@@ -7,7 +7,6 @@ import store from './store';
 import Constant from './components/Constant';
 import tokenutil, { getUserInfoFromToken, getToken } from './tokenutil';
 
-import TodoList from './components/TodoList';
 import AppHeader from "@/components/AppHeader";
 
 import userMain from './components/main/user';
@@ -41,24 +40,29 @@ const requireAuth = () => (to, from, next) => {
 const router = new VueRouter({
   mode : "history",
   routes : [
-    {path: '/', name : 'userMain', component : userMain},
-    {path: '/user/create', name : 'userCreateForm', component : userForm},
-    {path: "/user/edit/:id", name : "userEditForm", component : userForm},
-    {path: '/user/login', name : 'userLogin', component : userLogin},
-    {path: '/user/password-check', name : 'passwordCheck', component : passwordCheck},
+    {path : '/', name : 'userMain', component : userMain},
+    {path : '/user/create', name : 'userCreateForm', component : userForm},
+    {path : "/user/edit/:id", name : "userEditForm", component : userForm},
+    {path : '/user/login', name : 'userLogin', component : userLogin},
+    {path : '/user/password-check', name : 'passwordCheck', component : passwordCheck},
 
-    {path: '/opmanager', name : 'opmanagerMain', component:opmanagerMain, beforeEnter: requireAuth()},
-    {path: '/opmanager/user/list', name : 'opmanagerList', component:opmanagerList, beforeEnter: requireAuth()},
-    {path: '/opmanager/user/login', name : 'opmanagerLogin', component:opmanagerLogin},
+    {path : '/opmanager', name : 'opmanagerMain', component : opmanagerMain, beforeEnter : requireAuth()},
+    {path : '/opmanager/user/list', name : 'opmanagerList', component : opmanagerList},
+    {path : '/opmanager/user/login', name : 'opmanagerLogin', component : opmanagerLogin},
 
-    {path: '/opmanager/user/create', name : 'opmanagerForm1', component:opmanagerForm},
-    {path: '/opmanager/user/edit:id', name : 'opmanagerForm2', component : opmanagerForm},
+    {path : '/opmanager/user/create', name : 'managerCreateForm', component : opmanagerForm},
+    {path : '/opmanager/user/edit/:id', name : 'managerEditForm', component : opmanagerForm},
       // children : [
       //   { path: ':no', name:'opmanagerForm', component: opmanagerForm, props:true }
       // ]
-    {path:"/todolist", name:"todoList", component: TodoList},
   ]
 })
+
+new Vue({
+  store,      //전역 스토어 생성, 하위컴포넌트에서 this.$store로 스토어 사용
+  router,
+  render: h => h(App),
+}).$mount('#app')
 
 
 /*
@@ -83,14 +87,8 @@ const router = new VueRouter({
       if (userInfo && userInfo.users_id) {
         next();    // 그대로 이동한다.
       } else {
-        next({ name:"login" })  
+        next({ name:"login" })
       }
     });
 */
-
-new Vue({
-  store,      //전역 스토어 생성, 하위컴포넌트에서 this.$store로 스토어 사용
-  router,
-  render: h => h(App),
-}).$mount('#app')
 

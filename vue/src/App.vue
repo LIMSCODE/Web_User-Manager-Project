@@ -3,17 +3,15 @@
     <div class="container">
       <router-view></router-view>
     </div>
-    <Loading v-if="isloading" />
   </div>
 </template>
 
 <script>
-import Loading from './components/Loading';
-import { mapState } from 'vuex';
+// import { mapState } from 'vuex';
 export default {
   name: "app",
-  components : { Loading },
-  computed : mapState(['isloading']),
+  // components : { Loading },
+ // computed : mapState(['isloading']),
 }
 </script>
 

@@ -12,6 +12,7 @@ export default {
     },
 
     [Constant.LOAD_TODOLIST] : (state, payload)=> {
+        console.log("LOAD_TODOLIST");
         state.todolist = payload.todolist;
     },
     [Constant.ADD_TODO] :(state,payload)=> {
@@ -36,9 +37,6 @@ export default {
     },
     [Constant.EDIT_DETAIL] :(state,payload)=> {
         state.userDetail = payload;
-    },
-
-    [Constant.CHANG_ISLOADING] : (state, payload)=> {
-        state.isloading = payload.isloading;
     }
+
 }

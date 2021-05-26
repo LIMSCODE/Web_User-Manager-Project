@@ -12,7 +12,7 @@ export default {
   LOGIN : "login",
   SET_USER_INFO : "setUserInfo",
 
-  BASEURL1 : 'https://todosvc2.herokuapp.com',
+  // BASEURL1 : 'https://todosvc2.herokuapp.com',
   BASEURL : 'http://localhost:8080',
 
   SEARCH_CONTACT : "searchContact",
