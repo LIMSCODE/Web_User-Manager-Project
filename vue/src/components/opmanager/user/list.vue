@@ -114,7 +114,10 @@ export default {
   mounted() {
     if (!this.$store.state.todolist || this.$store.state.todolist.length === 0) {
       this.$store.dispatch(Constant.LOAD_TODOLIST, { token: this.$route.token });
-      // this.todolist = this.$store.state.todolist.data.content;
+      this.$nextTick(function () {
+        this.todolist = this.$store.state.todolist.data.content;
+      };
+
     }
 
     this.$store.dispatch(Constant.LOAD_TODOLIST);   //{ pageno : page }
