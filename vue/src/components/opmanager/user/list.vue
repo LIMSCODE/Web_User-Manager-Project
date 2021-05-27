@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <AppHeader />
+    <div >
     <div class="panel panel-default panel-borderless">
       <div class="panel-body">
         <!--검색 영역-->
@@ -43,7 +44,7 @@
 
         <div class="row">
           <table class='' border='2px' >
-            <thead >
+            <thead>
             <tr>
               <th>Id</th>
               <th>아이디</th>
@@ -59,13 +60,12 @@
               <th>삭제</th>
             </tr>
             </thead>
-<!--            <tbody v-for="todoitem in todolist" :key="todoitem.id" :todoitem="todoitem">
-            <tr :key="todoitem.pagingId" :todoitem="todoitem" >          &lt;!&ndash;v-for='(emp,index) in employee' :key='index' :employee='employee'&ndash;&gt;
+            <tbody v-for="todoitem in todolist" :key="todoitem.id" :todoitem="todoitem">
+            <tr :key="todoitem.pagingId" :todoitem="todoitem" >
               <td>{{todoitem.pagingId}}</td>
               <td>{{todoitem.loginId}}</td>
               <td>{{todoitem.name}}</td>
               <td>{{todoitem.email}}</td>
-
               <td>{{todoitem.userDetail.zipcode}}</td>
               <td>{{todoitem.userDetail.address}}</td>
               <td>{{todoitem.userDetail.addressDetail}}</td>
@@ -75,17 +75,15 @@
               <td><span class="pull-right badge pointer" @click.stop="editTodo(todoitem.id)">수정</span></td>
               <td><span class="pull-right badge pointer" @click.stop="deleteTodo(todoitem.id)">삭제</span></td>
             </tr>
-            </tbody>-->
+            </tbody>
           </table>
         </div>
         <button class="btn btn-info" @click="goAddTodo">회원 등록</button> &nbsp;&nbsp;
         <button class="btn btn-info" @click="reload">새로 고침</button>
-
-
-        {{todolist}}
-
       </div>
+      {{ todolist }}
     </div>
+  </div>
   </div>
 </template>
 
@@ -95,33 +93,36 @@ import Constant from "@/components/Constant";
 // import { mapState } from 'vuex';    //mapState ??
 
 export default {
-  name:"todoList",
+  name:"list",
   //검색
-  data : function() {
-    return { name: ''};
-  },
+  // data : function() {
+  //   return { name: ''};
+  // },
 
   // computed : mapState([    // mapState ??
   //   'keywordlist'
   // ]),
 
-  computed : {
-    todolist : function() {
-      return [];
-    },
+  mounted() {
+    this.$nextTick(function () {
+      this.$store.dispatch(Constant.LOAD_TODOLIST, { token: this.$store.state.token });
+    });
+
   },
 
-  mounted() {
-    if (!this.$store.state.todolist || this.$store.state.todolist.length === 0) {
-      this.$store.dispatch(Constant.LOAD_TODOLIST, { token: this.$route.token });
-      this.$nextTick(function () {
-        this.todolist = this.$store.state.todolist.data.content;
-      };
-
+  computed : {
+    todolist : function() {
+        return this.$store.state.todolist.data.content;
+        //return [];
+    },
+    token() {
+      const token = localStorage.getItem("token");
+      return token;
+      // return this.$store.state.token;
+    },
+    isToken : function() {
+      return this.$store.state.token;
     }
-
-    this.$store.dispatch(Constant.LOAD_TODOLIST);   //{ pageno : page }
-    // this.$refs.pagebuttons.selected = page - 1;
   },
 
   methods : {
@@ -129,9 +130,9 @@ export default {
       this.$store.dispatch(Constant.INITIALIZE_TODOITEM);
       this.$router.push({ name:"managerCreateForm" });
     },
+
     reload() {
       this.$store.dispatch(Constant.LOAD_TODOLIST, { token: this.$route.token });
-
     },
 
     //검색
@@ -146,8 +147,9 @@ export default {
       this.$store.dispatch(Constant.INITIALIZE_TODOITEM, { todoitem: { ...this.todoitem } });
       this.$router.push({ name: 'managerEditForm', params: { "id" : id } })     //id값이 전달된다.
     },
+
     deleteTodo(id) {
-      if (confirm("정말로 삭제하시겠습니까?") == true) {
+      if (confirm("삭제하시겠습니까?") == true) {
         this.$store.dispatch(Constant.DELETE_TODO, {id});   //id값을 페이로드로 넘김 액션으로
       }
     }

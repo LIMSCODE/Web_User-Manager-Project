@@ -27,18 +27,70 @@
     </style>
 </head>
 <body>
-
-<form id="target" th:object="${user}" method="post" >
+<div id="saleson">
+<form id="target" th:object="${user}" method="post" @submit.prevent = "submit" >
     <span>
-         아이디 <input type="text" name="loginId"  id="loginId" th:value="${user.loginId}" maxlength="15" > <br>
-         비밀번호 <input type="password" name="password"  id="password" th:value="${user.password}" maxlength="15" > <br>
+         아이디 <input type="text" name="loginId"  id="loginId" th:value="${user.loginId}" maxlength="15" v-model="loginRequest.loginId"> <br>
+         비밀번호 <input type="password" name="password"  id="password" th:value="${user.password}" maxlength="15" v-model="loginRequest.password"> <br>
     </span>
-
     <input type="submit" class="submit" value="로그인"  formaction="/user/login">
 </form>
+</div>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script type="text/javascript">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+
+<!--다운받은 파일-->
+<script src="/modules/httpVueLoader.js"></script>
+<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+<script type="text/babel" src="/modules/op.vue.js"></script>
+<script type="text/babel">          //<script type="text/javascript">
+
+	var vm = new Vue({
+		el: '#saleson',
+		data: {
+			loginRequest: {
+				loginType: 'ROLE_USER',
+				loginId: '',
+				password: '',
+			}
+		},
+		methods: {
+			submit: function () {
+				// 인증
+				$s.api.getAuthToken(vm.loginRequest, function () {
+
+					var savedLoginId = vm.saveId ? vm.loginRequest.loginId : '';
+					$s.core.setData($s.const.SAVED_LOGIN_ID, savedLoginId);
+
+					var order = $s.core.getSession($s.const.BUY_ORDER);
+					if (order != null) {
+						$s.core.removeSession($s.const.BUY_ORDER);
+
+						vm.order = JSON.parse(order);
+						vm.order.noMemberLogin = true;
+
+						$s.api.buyOrder(vm.order, function () {
+							}
+							, function (error) {
+								console.error(error);	// 실패시 이전 주문정보 조회 (redirect 진행)
+							});
+					}
+					$s.redirect(vm.target);
+
+				}, function (error) {
+
+					$s.alert('아이디/비밀번호를 정확히 입력해 주세요.', function () {
+						vm.loginRequest.loginId = '';
+						vm.loginRequest.password = '';
+						$s.closeAlert();
+					});
+				});
+			}
+		}
+    });
 
 	//최종 제출시 이벤트
 	$("#target").on("submit", function() {
@@ -56,7 +108,6 @@
 			$password.focus();
 			return false;
 		}
-
 	});
 </script>
 
