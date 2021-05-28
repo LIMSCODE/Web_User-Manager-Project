@@ -52,7 +52,7 @@ export default {
       form.append('password', user.password);
 
       // this.$store.dispatch(Constant.LOGIN, {form})
-      axios.post(`http://localhost:8080/api/user/login`, form)
+      axios.post(`http://localhost:8080/api/user/login`, form)    //form에 user안의 정보 포함시켜 보냄 -> user로 받음
           .then((response)=> {
             // if (response.data.status === "success") {
             let token = response.data

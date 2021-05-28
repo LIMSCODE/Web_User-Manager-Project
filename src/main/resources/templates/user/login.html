@@ -1,84 +1,101 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head lang="en">
-    <meta charset="UTF-8"/>
-    <title>회원등록</title>
-    <style>
-        input[type=text],input[type=password] {
-            width: 45%; /*입력 칸 (input field) 의 폭을 지정하기 위해, 폭 속성 (width property) 를 사용하였습니다.*/
-            padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px;
-            box-sizing: border-box; }
-
-        input[type=submit] {
-            width: 50%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-        input[type=button], button[type=button] {
-            width: 20%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-        .btn{
-            width: 20%; background-color: darkslategrey; color: white;
-            padding: 14px 20px; margin: 8px 0; border: none;
-            border-radius: 4px; cursor: pointer; text-decoration: none;
-        }
-    </style>
+<!doctype html>
+<html>
+<head lang="ko">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="../../../../favicon.ico">
+	<title>SalesOn Demo</title>
+	<!-- Bootstrap core CSS -->
 </head>
 <body>
 <div id="saleson">
-<form id="target" th:object="${user}" method="post" @submit.prevent = "submit" >
-    <span>
-         아이디 <input type="text" name="loginId"  id="loginId" th:value="${user.loginId}" maxlength="15" v-model="loginRequest.loginId"> <br>
-         비밀번호 <input type="password" name="password"  id="password" th:value="${user.password}" maxlength="15" v-model="loginRequest.password"> <br>
-    </span>
-    <input type="submit" class="submit" value="로그인"  formaction="/user/login">
-</form>
+	<layout-header></layout-header>
+
+	<section class="contents login_contents">
+		<div class="tit_wrap">
+			<h2 class="tit">로그인</h2>
+		</div>
+		<div class="container">
+			<div class="row no-gutters justify-content-center">
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="form_wrap_line">
+
+						<form @submit.prevent="submit">
+							<fieldset>
+								<legend>로그인</legend>
+								<div class="form-group">
+									<input type="text" id="id" name="loginId" v-model="loginRequest.loginId" class="form-control line"
+									       placeholder="아이디" title="아이디" required>
+								</div>
+								<div class="form-group">
+									<input type="password" id="pw" name="password" ref="pap" v-model="loginRequest.password" autocomplete="off"
+									       class="form-control line" placeholder="비밀번호" title="비밀번호" required>
+								</div>
+								<div class="login_utile">
+								</div>
+								<div class="btn-group">
+									<button type="submit" class="btn btn_lg btn_primary">로그인</button>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+<my-component></my-component>
+					<div class="login_nomem">
+						<p class="join_link">회원이 아니신가요?<a href="/users/join.html">회원가입</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<layout-footer></layout-footer>
 </div>
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<!-- JavaScript -->
+<!-- 404뜸. 8080/modules/op.vue.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/hmac-sha256.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/enc-base64.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
 
-<!--다운받은 파일-->
-<script src="/modules/httpVueLoader.js"></script>
-<script src="/modules/op.config.js"></script>
-<script src="/modules/op.saleson.js"></script>
-<script type="text/babel" src="/modules/op.vue.js"></script>
-<script type="text/babel">          //<script type="text/javascript">
+<script src="/httpVueLoader.js"></script>
+<script src="/op.config.js"></script>
+<script src="/op.saleson.js"></script>
+<script type="text/babel" src="/op.vue.js"></script>
+<script type="text/babel">
 
-	var vm = new Vue({
+	Vue.component('my-component', {
+		template : `<div>aaa</div>`
+	});
+
+	const vm = new Vue({
 		el: '#saleson',
 		data: {
 			loginRequest: {
 				loginType: 'ROLE_USER',
 				loginId: '',
 				password: '',
-			}
+			},
+			saveId: false,
+			target: $s.pages.INDEX,
 		},
 		methods: {
 			submit: function () {
-				// 인증
-				$s.api.getAuthToken(vm.loginRequest, function () {
 
-					var savedLoginId = vm.saveId ? vm.loginRequest.loginId : '';
-					$s.core.setData($s.const.SAVED_LOGIN_ID, savedLoginId);
+				console.log(vm.loginRequest.loginId);	//확인됨
 
-					var order = $s.core.getSession($s.const.BUY_ORDER);
-					if (order != null) {
-						$s.core.removeSession($s.const.BUY_ORDER);
+				// 인증하는부분
+				$s.api.getAuthToken(vm.loginRequest, function () {		//id, pw값 넘김 , req로 받음
 
-						vm.order = JSON.parse(order);
-						vm.order.noMemberLogin = true;
-
-						$s.api.buyOrder(vm.order, function () {
-							}
-							, function (error) {
-								console.error(error);	// 실패시 이전 주문정보 조회 (redirect 진행)
-							});
-					}
-					$s.redirect(vm.target);
+					//주문정보 등 추가사항
 
 				}, function (error) {
 
@@ -88,28 +105,24 @@
 						$s.closeAlert();
 					});
 				});
-			}
-		}
-    });
+			},
+		},
 
-	//최종 제출시 이벤트
-	$("#target").on("submit", function() {
+		mounted: function () {
+			this.$nextTick(function () {
 
-		let $loginId = $("#loginId");
-		let $password = $("#password");
-
-		if ($loginId.val() == "") {
-			alert("아이디 입력해주세요");
-			$loginId.focus();
-			return false;
-		}
-		if ($password.val() == "") {
-			alert("비밀번호 입력해주세요");
-			$password.focus();
-			return false;
+				Saleson.init();
+			});
 		}
 	});
+
 </script>
 
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+
 </body>
+</head>
 </html>

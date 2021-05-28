@@ -43,17 +43,21 @@ public class UserAuthenticationController {
 
 	/**
 	 * 회원 로그인
-	 * @param user
+	 * @param loginRequest
 	 * @param session
 	 * @param model
 	 * @return
 	 */
 	@PostMapping("/login")
-	public String login(User user, HttpSession session, Model model) {
+	public String login(@RequestBody User loginRequest, HttpSession session, Model model) {
+
+		//@requestBody 솔루션형식대로 html파일에서 뷰로 전송하면 사용한다. - 아이디 : user1111 , 비밀번호 : 1로 로그인하면됨, F12에서 토큰값 확인
+		//vue프로젝트 생성한대로 로그인하려면 @RequestBody없애야한다.
+		log.debug("로그인 컨트롤러 진입");
 
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
-		User loginUser = userService.getUserByLoginId(user.getLoginId());
-		log.debug(user.getLoginId()+"____________________로그인아이디");
+		User loginUser = userService.getUserByLoginId(loginRequest.getLoginId());
+		log.debug(loginRequest.getLoginId()+"____________________로그인아이디");
 
 		//아이디가 널일때
 		if (loginUser == null) {
@@ -64,7 +68,7 @@ public class UserAuthenticationController {
 		String storedPassword = loginUser.getPassword();
 		log.debug(storedPassword);
 
-		if (!passwordEncoder.matches(user.getPassword(), storedPassword)) {
+		if (!passwordEncoder.matches(loginRequest.getPassword(), storedPassword)) {
 			log.debug("비밀번호 일치하지않음");
 			return "";
 		}
@@ -78,7 +82,7 @@ public class UserAuthenticationController {
 		session.setMaxInactiveInterval(1000 * 1000);
 
 		// 아이디와 패스워드로, Security 가 알아 볼 수 있는 token 객체로 변경
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getLoginId(), user.getPassword());
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
 		// AuthenticationManager 에 token 을 넘기면 UserDetailsService 가 받아 처리
 		Authentication authentication = authenticationManager.authenticate(token);
 		// 실제 SecurityContext 에 authentication 정보를 등록
