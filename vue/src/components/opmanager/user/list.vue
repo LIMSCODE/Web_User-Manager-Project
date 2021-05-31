@@ -72,14 +72,14 @@
               <td>{{users.userDetail.phoneNumber}}</td>
               <td>{{users.userDetail.receiveSmsTitle}}</td>
               <td>{{users.userRole.authorityTitle}}</td>
-              <td><span class="pull-right badge pointer" @click.stop="editTodo(users.id)">수정</span></td>
-              <td><span class="pull-right badge pointer" @click.stop="deleteTodo(users.id)">삭제</span></td>
+              <td><span class="pull-right badge pointer" @click.stop="editUser(users.id)">수정</span></td>
+              <td><span class="pull-right badge pointer" @click.stop="deleteUser(users.id)">삭제</span></td>
             </tr>
             </tbody>
+
           </table>
         </div>
-        <button class="btn btn-info" @click="goAddTodo">회원 등록</button> &nbsp;&nbsp;
-        <button class="btn btn-info" @click="reload">새로 고침</button>
+        <button class="btn btn-info" @click="insertUser">회원 등록</button> &nbsp;&nbsp;
       </div>
       {{ userList }}
     </div>
@@ -89,20 +89,20 @@
 
 <script>
 import Constant from "@/components/Constant";
+import axios from "axios";
 
 export default {
   name:"list",
 
   mounted() {
     this.$nextTick(function () {
-      this.$store.dispatch(Constant.LOAD_TODOLIST, { token: this.$store.state.token });
+      this.$store.dispatch(Constant.USER_LIST, { token: this.$store.state.token });
     });
-
   },
 
   computed : {
     userList : function() {
-        return this.$store.state.todolist.data.content;
+       return this.$store.state.todolist.data.content;
     },
     token() {
       const token = localStorage.getItem("token");
@@ -114,33 +114,38 @@ export default {
   },
 
   methods : {
-    goAddTodo() {
-      this.$store.dispatch(Constant.INITIALIZE_TODOITEM);
+    insertUser() {
       this.$router.push({ name:"managerCreateForm" });
     },
 
-    reload() {
-      this.$store.dispatch(Constant.LOAD_TODOLIST, { token: this.$route.token });
+    //리스트
+    editUser(id) {
+      this.$router.push({ name: 'managerEditForm', params: { "id" : id } })     //id값이 전달된다.
     },
 
-    //검색
+    deleteUser(id) {
+      if (confirm("삭제하시겠습니까?") == true) {
+        var url = 'http://localhost:8080/api/opmanager/user/delete/' + id;
+
+        axios.post(url, id, {headers : {Authorization : 'Bearer ' + localStorage.getItem('token')}})
+            .then(function(response) {
+              console.log(response);
+              window.location.href = '/opmanager/user/list';
+            })
+            .catch(function(response){
+              console.log(response);
+            });
+      }
+    }
+
+    /*
     keyupEvent : function(e) {
       var val = e.target.value;
       this.$store.dispatch(Constant.SEARCH_CONTACT, { name: val });
       this.name = "";
     },
+     */
 
-    //리스트
-    editTodo(id) {
-      this.$store.dispatch(Constant.INITIALIZE_TODOITEM, { todoitem: { ...this.todoitem } });
-      this.$router.push({ name: 'managerEditForm', params: { "id" : id } })     //id값이 전달된다.
-    },
-
-    deleteTodo(id) {
-      if (confirm("삭제하시겠습니까?") == true) {
-        this.$store.dispatch(Constant.DELETE_TODO, {id});   //id값을 페이로드로 넘김 액션으로
-      }
-    }
   }
 }
 </script>

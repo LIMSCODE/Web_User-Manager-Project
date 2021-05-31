@@ -10,7 +10,7 @@
     </div>
     <button type="submit">login</button>
     <a href="" v-if="token" @click.prevent="onClickLogout">로그인후 토큰있는지 확인</a>
-    {{ isToken }}
+    {{ token }}
   </form>
 </template>
 
@@ -26,14 +26,13 @@ export default {
       password : ''
     }
   },
+
   computed : {
     token() {
       return this.$store.state.token;
-    },
-    isToken : function() {
-      return this.$store.state.token;
     }
   },
+
   methods:{
     submitForm:function(){
       console.log(this.loginId, this.password);

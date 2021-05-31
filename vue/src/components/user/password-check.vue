@@ -17,6 +17,7 @@ export default {
       password : ''
     }
   },
+
   computed : {
     token() {
       return this.$store.state.token;
@@ -28,9 +29,11 @@ export default {
       return this.$store.state.userDetail.userDetail.data.id;   //data undefined뜸
     }
   },
-  mounted() {     //수정정보 불러오기 LJY
+
+  mounted() {
     this.$store.dispatch(Constant.EDIT_DETAIL, {token: this.$route.token});
   },
+
   methods:{
     submitForm:function(id){
       var user = {
@@ -43,9 +46,6 @@ export default {
           {headers:{Authorization : 'Bearer ' + localStorage.getItem('token')}})  // 헤더에 포함되서 보내짐.
           .then(()=> {
             this.$router.push({ name:"userEditForm" , params : {"id" : id}});
-            //computed로 상태로부터 계산한 id값을 템플릿의 메서드에서 매개변수로 updateTodo함수에 전달한다.
-            //이렇게하면 주소창에 /id값 뜬다. (라우터에서 :id연결)
-            //commit : 변이를 수행한다. 페이로드값을 매개변수로. state에 저장한다.
           })
           .catch(()=>{
           })

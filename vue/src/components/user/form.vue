@@ -39,7 +39,7 @@
         <label for="phoneNumber">전화번호</label>
         <input type="text" id="phoneNumber" name="phoneNumber" v-model="editDetail.userDetail.phoneNumber" />
       </div>
-      <div>     <!--수정시 sms수신여부 DB값 불러오도록 해야함 - LJY -->
+      <div>     <!--수정시 sms수신여부 DB값 LJY -->
         <label>Sms수신여부</label>
         수신 <input type="radio" name="receiveSms" v-model="receiveSms" value="1" label="수신" />
         수신안함 <input type="radio" name="receiveSms" v-model="receiveSms" value="0" label="수신x" />
@@ -212,7 +212,8 @@ export default {
       form.append('userDetail.receiveSms', user.receiveSms);
       form.append('userRole.authority', 'ROLE_USER');   //바로 유저로 만듬
 
-      axios.put(url, form, {headers : {Authorization : 'Bearer ' + localStorage.getItem('token')}})
+      axios.put(url, form,
+          {headers : {Authorization : 'Bearer ' + localStorage.getItem('token')}})
           .then(function(response){
             console.log(response);
             window.location.href = "/";

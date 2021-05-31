@@ -110,7 +110,7 @@
 
 <script>
 import axios from "axios";
-import Constant from "@/components/Constant";
+// import Constant from "@/components/Constant";
 
 export default {
   user:function(){
@@ -130,19 +130,24 @@ export default {
   },
 
   mounted() {     //수정정보 불러오기
+    /*
     if(this.user.id) {
       this.$store.dispatch(Constant.EDIT_DETAIL, {token: this.$route.token});
       // this.edits = { ...this.editDetail };
     }
+    */
   },
 
   computed : {
     isToken : function() {
       return this.$store.state.token;
-    },
+    }
+
+    /*
     editDetail : function()  {
       return this.$store.state.userDetail.userDetail.data;
     }
+     */
   },
 
   methods : {
@@ -210,7 +215,7 @@ export default {
       form.append('userDetail.receiveSms', user.receiveSms);
       form.append('userRole.authority', user.authority);
 
-      axios.post(url, form, {headers:{Authorization : 'Bearer ' + localStorage.getItem('token')}})
+      axios.put(url, form, {headers:{Authorization : 'Bearer ' + localStorage.getItem('token')}})
           .then(function(response){
             console.log(response);
             window.location.href = '/opmanager/user/list';

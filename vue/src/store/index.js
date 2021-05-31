@@ -16,7 +16,7 @@ const store = new Vuex.Store({
 })
 
 //commit : 액션에서 변이를 수행한다. 페이로드값을 매개변수로. state에 불러온 리스트 데이터를 저장한다.
-//store.commit(Constant.LOAD_TODOLIST, { todolist: response.data.content });
+//store.commit(Constant.USER_LIST, { todolist: response.data.content });
 
 //dispatch : 컴포넌트에서 액션을 수행한다.
 //this.$store.dispatch(Constant.EDIT_DETAIL, {token: this.$route.token});
