@@ -126,12 +126,10 @@ public class ApiUserController {
 	public ResponseEntity<User> getUserListByAjax(User user, HttpSession session, Model model
 			,@AuthenticationPrincipal LoginUserDetails securityUser) {
 
-		User loginUser = UserUtils.getLoginUser(session);
+		User loginUser = securityUser.getUser();
 		log.debug(String.valueOf(loginUser));   //null이다.
-		User loginUser1 = securityUser.getUser();
-		log.debug(String.valueOf(loginUser1));   //null이다.
 
-		return new ResponseEntity<>(loginUser1, HttpStatus.OK);
+		return new ResponseEntity<>(loginUser, HttpStatus.OK);
 	}
 
 
@@ -141,13 +139,12 @@ public class ApiUserController {
 	 * @param user
 	 * @param userResult
 	 * @param session
-	 * @param model
 	 * @return
 	 */
 	@PutMapping("/edit/{id}")
 	public ResponseEntity<String> updateUser(@PathVariable("id") long id,
 	                         @Valid User user, BindingResult userResult,
-	                         HttpSession session, Model model) {
+	                         HttpSession session, @AuthenticationPrincipal LoginUserDetails securityUser) {
 
 		ResponseEntity<String> responseEntity = null;
 
@@ -159,7 +156,7 @@ public class ApiUserController {
 		userService.updateUser(user);
 
 		log.debug("수정 컨트롤러 진입");
-		User updatedUser = userService.getUserByLoginId(user.getLoginId());     //비밀번호 수정후 바뀐 DTO를 session에 set해줘야함.
+		User updatedUser = securityUser.getUser();     //비밀번호 수정후 바뀐 DTO를 session에 set해줘야함.
 		session.setAttribute("loginUser", updatedUser);
 
 		responseEntity = new ResponseEntity("MOD_SUCCEEDED", HttpStatus.OK);

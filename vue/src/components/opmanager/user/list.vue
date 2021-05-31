@@ -60,20 +60,20 @@
               <th>삭제</th>
             </tr>
             </thead>
-            <tbody v-for="todoitem in todolist" :key="todoitem.id" :todoitem="todoitem">
-            <tr :key="todoitem.pagingId" :todoitem="todoitem" >
-              <td>{{todoitem.pagingId}}</td>
-              <td>{{todoitem.loginId}}</td>
-              <td>{{todoitem.name}}</td>
-              <td>{{todoitem.email}}</td>
-              <td>{{todoitem.userDetail.zipcode}}</td>
-              <td>{{todoitem.userDetail.address}}</td>
-              <td>{{todoitem.userDetail.addressDetail}}</td>
-              <td>{{todoitem.userDetail.phoneNumber}}</td>
-              <td>{{todoitem.userDetail.receiveSmsTitle}}</td>
-              <td>{{todoitem.userRole.authorityTitle}}</td>
-              <td><span class="pull-right badge pointer" @click.stop="editTodo(todoitem.id)">수정</span></td>
-              <td><span class="pull-right badge pointer" @click.stop="deleteTodo(todoitem.id)">삭제</span></td>
+            <tbody v-for="users in userList" :key="users.id" :users="users">
+            <tr :key="users.pagingId" :users="users" >
+              <td>{{users.pagingId}}</td>
+              <td>{{users.loginId}}</td>
+              <td>{{users.name}}</td>
+              <td>{{users.email}}</td>
+              <td>{{users.userDetail.zipcode}}</td>
+              <td>{{users.userDetail.address}}</td>
+              <td>{{users.userDetail.addressDetail}}</td>
+              <td>{{users.userDetail.phoneNumber}}</td>
+              <td>{{users.userDetail.receiveSmsTitle}}</td>
+              <td>{{users.userRole.authorityTitle}}</td>
+              <td><span class="pull-right badge pointer" @click.stop="editTodo(users.id)">수정</span></td>
+              <td><span class="pull-right badge pointer" @click.stop="deleteTodo(users.id)">삭제</span></td>
             </tr>
             </tbody>
           </table>
@@ -81,7 +81,7 @@
         <button class="btn btn-info" @click="goAddTodo">회원 등록</button> &nbsp;&nbsp;
         <button class="btn btn-info" @click="reload">새로 고침</button>
       </div>
-      {{ todolist }}
+      {{ userList }}
     </div>
   </div>
   </div>
@@ -89,19 +89,9 @@
 
 <script>
 import Constant from "@/components/Constant";
-//import Paginate from 'vuejs-paginate';    //왜 설치할까???
-// import { mapState } from 'vuex';    //mapState ??
 
 export default {
   name:"list",
-  //검색
-  // data : function() {
-  //   return { name: ''};
-  // },
-
-  // computed : mapState([    // mapState ??
-  //   'keywordlist'
-  // ]),
 
   mounted() {
     this.$nextTick(function () {
@@ -111,14 +101,12 @@ export default {
   },
 
   computed : {
-    todolist : function() {
+    userList : function() {
         return this.$store.state.todolist.data.content;
-        //return [];
     },
     token() {
       const token = localStorage.getItem("token");
       return token;
-      // return this.$store.state.token;
     },
     isToken : function() {
       return this.$store.state.token;

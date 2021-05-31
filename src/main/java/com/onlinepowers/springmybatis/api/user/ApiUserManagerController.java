@@ -90,7 +90,7 @@ public class ApiUserManagerController {
 
 			List<ObjectError> errors = userResult.getAllErrors();
 
-			for (int i = 0; i < errors.size(); i++ ){
+			for (int i = 0; i < errors.size(); i++ ) {
 				errors.get(i);
 				log.debug(String.valueOf(errors.get(i)));
 				log.debug("===============" + errors.get(i).getDefaultMessage());
