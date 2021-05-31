@@ -212,11 +212,11 @@ export default {
       form.append('userDetail.receiveSms', user.receiveSms);
       form.append('userRole.authority', 'ROLE_USER');   //바로 유저로 만듬
 
-      axios.post(url, form, {headers : {Authorization : 'Bearer ' + localStorage.getItem('token')}})
+      axios.put(url, form, {headers : {Authorization : 'Bearer ' + localStorage.getItem('token')}})
           .then(function(response){
             console.log(response);
-            window.location.href = "/";     // 창 이동하면 로그인 안된 상태로 뜨는것 수정해야함 LJY
-          })                                // 비밀번호 1로 수정하고 다시로그인하면 비밀번호일치x로 뜨는것 수정 LJY
+            window.location.href = "/";
+          })
           .catch(function(response){
             console.log(response);
           });

@@ -28,7 +28,7 @@ export default {
       return this.$store.state.userDetail.userDetail.data.id;   //data undefined뜸
     }
   },
-  mounted() {     //수정정보 불러오기, 첫창에 하면 안되는것 수정 LJY
+  mounted() {     //수정정보 불러오기 LJY
     this.$store.dispatch(Constant.EDIT_DETAIL, {token: this.$route.token});
   },
   methods:{

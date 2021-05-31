@@ -39,7 +39,7 @@
 								<div class="btn-group">
 									<button type="submit" class="btn btn_lg btn_primary">로그인</button>
 								</div>
-								<div>아이디 : user1111 , pw: 1</div>
+								<div>아이디 : user2222 , pw: 1</div>
 								<div>데이터바인딩 후 F12 토큰값 확인</div>
 							</fieldset>
 						</form>
@@ -81,7 +81,6 @@
 		methods: {
 			submit: function () {
 				console.log(vm.loginRequest.loginId);	//확인됨
-
 				$s.api.getAuthToken(vm.loginRequest, function () {		//id, pw값 넘김
 
 					//생략

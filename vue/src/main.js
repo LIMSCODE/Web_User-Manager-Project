@@ -6,9 +6,7 @@ import VueRouter from 'vue-router';
 import store from './store';
 import Constant from './components/Constant';
 import tokenutil, { getUserInfoFromToken, getToken } from './tokenutil';
-
 import AppHeader from "@/components/AppHeader";
-
 import userMain from './components/main/user';
 import userForm from './components/user/form';
 import userLogin from './components/user/login';

@@ -144,7 +144,7 @@ public class ApiUserController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping("/edit/{id}")
+	@PutMapping("/edit/{id}")
 	public ResponseEntity<String> updateUser(@PathVariable("id") long id,
 	                         @Valid User user, BindingResult userResult,
 	                         HttpSession session, Model model) {

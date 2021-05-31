@@ -84,6 +84,7 @@ export default {
                 store.commit(Constant.CHANG_ISLOADING, { isloading: false })
             })
     },
+
     [Constant.DELETE_TODO] : (store, payload) => {
         let {id} = payload.id;
             axios.post(`${BASEURL}/api/opmanager/user/delete/` + payload.id , {id},{
@@ -98,6 +99,7 @@ export default {
                 console.log("===액션 할일 삭제 실패 : ", error);
             })
     },
+
     [Constant.UPDATE_TODO] : (store, payload) => {
         let { id, todo, desc, done } = payload.todoitem;
         axios.put(`${BASEURL}/api/opmanager/user/edit/${id}`, { todo, desc, done },
@@ -113,6 +115,7 @@ export default {
                 store.commit(Constant.CHANG_ISLOADING, { isloading: false })
             })
     },
+
     [Constant.INITIALIZE_TODOITEM] : (store, payload) => {
         store.commit(Constant.INITIALIZE_TODOITEM, payload);
     },

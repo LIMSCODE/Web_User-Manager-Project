@@ -52,13 +52,13 @@ export default {
 
       axios.post(`http://localhost:8080/api/user/login`, form)    //form에 user안의 정보 포함시켜 보냄 -> user로 받음
           .then((response)=> {
-            // if (response.data.status === "success") {
             let token = response.data
             window.localStorage.setItem("token", token);    //컨트롤러에서 200뜸
 
             const userInfo = getUserInfoFromToken();
             this.$store.commit(Constant.SET_USER_INFO, { token, userInfo });
             this.$router.push({ name:"userMain" });
+
           })
           .catch(()=>{
 

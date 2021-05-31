@@ -4,7 +4,6 @@ import Vuex from 'vuex';
 import state from './state';
 import mutations from './mutations';
 import actions from './actions';
-import getters from './getters';
 
 Vue.use(Vuex);
 
@@ -13,8 +12,7 @@ const store = new Vuex.Store({
     strict : process.env.NODE_ENV !== 'production',
     state,      //관리할 상태
     mutations,  //상태를 업데이트 (상태, 페이로드)
-    actions,
-    getters
+    actions
 })
 
 //commit : 액션에서 변이를 수행한다. 페이로드값을 매개변수로. state에 불러온 리스트 데이터를 저장한다.
