@@ -13,8 +13,6 @@
 </head>
 <body>
 <div id="saleson">
-	<layout-header></layout-header>
-
 	<section class="contents login_contents">
 		<div class="tit_wrap">
 			<h2 class="tit">로그인</h2>
@@ -27,6 +25,7 @@
 						<form @submit.prevent="submit">
 							<fieldset>
 								<legend>로그인</legend>
+
 								<div class="form-group">
 									<input type="text" id="id" name="loginId" v-model="loginRequest.loginId" class="form-control line"
 									       placeholder="아이디" title="아이디" required>
@@ -40,18 +39,16 @@
 								<div class="btn-group">
 									<button type="submit" class="btn btn_lg btn_primary">로그인</button>
 								</div>
+								<div>아이디 : user1111 , pw: 1</div>
+								<div>데이터바인딩 후 F12 토큰값 확인</div>
 							</fieldset>
 						</form>
-					</div>
-					<div class="login_nomem">
-						<p class="join_link">회원이 아니신가요?<a href="/users/join.html">회원가입</a></p>
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<layout-footer></layout-footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
@@ -69,6 +66,7 @@
 
 <script type="text/babel" src="/op.vue.js"></script>
 <script type="text/babel">
+
 	const vm = new Vue({
 		el: '#saleson',
 		data: {
@@ -79,6 +77,7 @@
 			},
 			saveId: false
 		},
+
 		methods: {
 			submit: function () {
 				console.log(vm.loginRequest.loginId);	//확인됨

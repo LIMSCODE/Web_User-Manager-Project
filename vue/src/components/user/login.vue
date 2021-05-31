@@ -15,11 +15,10 @@
 </template>
 
 <script>
-// import axios from 'axios';
-// import {getUserInfoFromToken} from "@/tokenutil";
 import Constant from "@/components/Constant";
 import axios from "axios";
 import {getUserInfoFromToken} from "@/tokenutil";
+
 export default {
   user:function(){
     return{
@@ -38,7 +37,7 @@ export default {
   methods:{
     submitForm:function(){
       console.log(this.loginId, this.password);
-     // var url = 'http://localhost:8080/api/user/login';
+
       var user = {
         loginId: this.loginId,
         password: this.password,
@@ -51,7 +50,6 @@ export default {
       form.append('loginId', user.loginId);
       form.append('password', user.password);
 
-      // this.$store.dispatch(Constant.LOGIN, {form})
       axios.post(`http://localhost:8080/api/user/login`, form)    //form에 user안의 정보 포함시켜 보냄 -> user로 받음
           .then((response)=> {
             // if (response.data.status === "success") {
@@ -61,31 +59,10 @@ export default {
             const userInfo = getUserInfoFromToken();
             this.$store.commit(Constant.SET_USER_INFO, { token, userInfo });
             this.$router.push({ name:"userMain" });
-            //commit : 변이를 수행한다. 페이로드값을 매개변수로. state에 저장한다.
-            // payload.callback(token);
-            // } else {
-            //     payload.callback(respoㅇnse.data);
-            // }
           })
           .catch(()=>{
-            //payload.callback({ status:"fail", message:"로그인 실패222 : " + error});
-          })
 
-    //   axios.post(url, form)
-    //       .then(function(response){
-    //         console.log(response);
-    //         localStorage.setItem('token', response.data); //로컬스토리지에 저장후
-    //
-    //         const userInfo = getUserInfoFromToken();
-    //
-    //         //액션을 수행한다.
-    //         this.$store.dispatch(Constant.SET_USER_INFO, { response, userInfo })
-    //
-    //         window.location.href = "/";
-    //       })
-    //       .catch(function(response){
-    //         console.log(response);
-    //       });
+          })
      }
   }
 };

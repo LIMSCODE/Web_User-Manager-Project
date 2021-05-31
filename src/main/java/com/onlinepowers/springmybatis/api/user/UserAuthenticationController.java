@@ -51,8 +51,8 @@ public class UserAuthenticationController {
 	@PostMapping("/login")
 	public String login(@RequestBody User loginRequest, HttpSession session, Model model) {
 
-		//@requestBody 솔루션형식대로 html파일에서 뷰로 전송하면 사용한다. - 아이디 : user1111 , 비밀번호 : 1로 로그인하면됨, F12에서 토큰값 확인
-		//vue프로젝트 생성한대로 로그인하려면 @RequestBody없애야한다.
+		//html(솔루션형식)- @requestBody 사용 / npm vue에서 로그인하려면 @RequestBody없앰
+
 		log.debug("로그인 컨트롤러 진입");
 
 		//넘어온 아이디와 일치하는 정보를 모두 가져와 loginUser에 저장
