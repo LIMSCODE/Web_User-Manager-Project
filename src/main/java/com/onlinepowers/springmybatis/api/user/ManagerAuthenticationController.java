@@ -1,7 +1,6 @@
 package com.onlinepowers.springmybatis.api.user;
 
 import com.onlinepowers.springmybatis.jwt.JwtTokenProvider;
-import com.onlinepowers.springmybatis.security.LoginUserDetails;
 import com.onlinepowers.springmybatis.user.User;
 import com.onlinepowers.springmybatis.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.security.Principal;
 
 @Slf4j
 @RestController
