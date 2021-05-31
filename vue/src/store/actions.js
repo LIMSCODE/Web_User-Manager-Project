@@ -13,8 +13,6 @@ export default {
             })
     },
 
-
-
     [Constant.LOGIN] : (store, payload) => {
         let { loginId, password } = payload;
         axios.post(`${BASEURL}/api/user/login`, { loginId, password })
@@ -29,6 +27,7 @@ export default {
                 payload.callback({ status:"fail", message:"로그인 실패 : " + error});
             })
     },
+
     [Constant.SET_USER_INFO] : (store, payload)=> {
         store.commit(Constant.SET_USER_INFO, { token: payload.token, userInfo: payload.userInfo })
     },
@@ -46,13 +45,8 @@ export default {
                 console.log("액션: 사용자 생성 실패 : " + error);
             })
     },
+
     [Constant.LOAD_TODOLIST] : (store)=> {
-        // var pageno;
-        // if (typeof payload ==="undefined" || typeof payload.pageno ==="undefined") {
-        //     pageno = 1;
-        // } else {
-        //     pageno = payload.pageno;
-        // }
 
         axios.get(`${BASEURL}/api/opmanager/user/ajax-list`,    //{params : {pageNumber: pageno}
             { headers:{Authorization : 'Bearer ' + localStorage.getItem('token')}})

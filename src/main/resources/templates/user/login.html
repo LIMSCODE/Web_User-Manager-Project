@@ -43,7 +43,6 @@
 							</fieldset>
 						</form>
 					</div>
-<my-component></my-component>
 					<div class="login_nomem">
 						<p class="join_link">회원이 아니신가요?<a href="/users/join.html">회원가입</a></p>
 					</div>
@@ -55,8 +54,6 @@
 	<layout-footer></layout-footer>
 </div>
 
-<!-- JavaScript -->
-<!-- 404뜸. 8080/modules/op.vue.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/hmac-sha256.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/enc-base64.min.js"></script>
@@ -69,13 +66,9 @@
 <script src="/httpVueLoader.js"></script>
 <script src="/op.config.js"></script>
 <script src="/op.saleson.js"></script>
+
 <script type="text/babel" src="/op.vue.js"></script>
 <script type="text/babel">
-
-	Vue.component('my-component', {
-		template : `<div>aaa</div>`
-	});
-
 	const vm = new Vue({
 		el: '#saleson',
 		data: {
@@ -84,45 +77,30 @@
 				loginId: '',
 				password: '',
 			},
-			saveId: false,
-			target: $s.pages.INDEX,
+			saveId: false
 		},
 		methods: {
 			submit: function () {
-
 				console.log(vm.loginRequest.loginId);	//확인됨
 
-				// 인증하는부분
-				$s.api.getAuthToken(vm.loginRequest, function () {		//id, pw값 넘김 , req로 받음
+				$s.api.getAuthToken(vm.loginRequest, function () {		//id, pw값 넘김
 
-					//주문정보 등 추가사항
+					//생략
 
 				}, function (error) {
-
-					$s.alert('아이디/비밀번호를 정확히 입력해 주세요.', function () {
-						vm.loginRequest.loginId = '';
-						vm.loginRequest.password = '';
-						$s.closeAlert();
-					});
+					console.log("로그인 에러")
 				});
 			},
 		},
 
 		mounted: function () {
 			this.$nextTick(function () {
-
 				Saleson.init();
 			});
 		}
 	});
 
 </script>
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-
-
 </body>
 </head>
 </html>
