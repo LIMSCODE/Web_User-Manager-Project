@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ko">
+
+<head id="saleson-head">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+    <title>SalesOn Demo</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+
+    <link rel="stylesheet" href="/static/css/item.css">
+</head>
+
+<body>
+<div id="saleson" v-cloak>
+    <layout-header></layout-header>
+
+    <section class="contents search_contents">
+        <div class="container">
+            <h2 class="screen_out">검색결과</h2>
+            <div class="tit_wrap">
+                <h2 class="tit"><span>'{{param.query}}'</span> 검색결과</h2>
+            </div>
+            <div v-if="typeof result.content !== 'undefined' && result.content.length > 0">
+                <div class="sort_area">
+                    <div class="sort_total">
+                        총 <span class="num">{{result.totalElements}}</span>개 상품
+                    </div>
+                    <div class="sort_type">
+                        <select class="btn_sort" @change="sorting($event)">
+                            <option value="ORDERING__ASC" :selected="param.orderBy + '__' + param.sort === 'ORDERING__ASC'">최신순</option>
+                            <option value="HITS__DESC" :selected="param.orderBy + '__' + param.sort === 'HITS__DESC'">인기순</option>
+                            <option value="SALE_PRICE__DESC" :selected="param.orderBy + '__' + param.sort === 'SALE_PRICE__DESC'">높은 가격순</option>
+                            <option value="SALE_PRICE__ASC" :selected="param.orderBy + '__' + param.sort === 'SALE_PRICE__ASC'">낮은 가격순</option>
+                        </select>
+                        <a href="javascript:" :class="param.listType === 'a' ? 'btn_list02' : 'btn_list01'"
+                           @click="itemListType(param.listType)"></a>
+                    </div>
+                </div>
+
+                <div class="item_list thumb" v-if="param.listType === 'a'">
+                    <div class="row">
+                        <div class="col-6 col-md-4 list_area" v-for="data in result.content">
+                            <div class="img_area">
+                                <a href="javascript:void(0)" @click="redirectByItem(data)">
+                                    <img :src="itemImage(data.itemImage)"
+                                         :alt="unescapeHtml(data.itemName)" @error="errorImage">
+                                </a>
+                                <div class="sale_per" v-if="data.discountRate > 0">
+                                    {{data.discountRate}}<span>%</span></div>
+                                <div class="over_btn"
+                                     v-if="data.itemOptionFlag !== 'Y' && (data.stockFlag === 'N' || (data.stockFlag === 'Y' && data.stockQuantity > 0) ) && data.soldOut === '0'">
+                                    <a href="javascript:void(0)" @click="redirectByItem(data)" class="over_link"></a>
+                                    <a href="javascript:" class="btn_cart" title="장바구니 담기"
+                                       :id="'cart_' + data.itemId"
+                                       @click.prevent="addToCart(data.itemId, data.orderMinQuantity)"></a>
+                                    <a href="javascript:" class="btn_wish" title="관심상품 담기"
+                                       :id="'wish_' + data.itemId" @click.prevent="addToWishList(data.itemId)"></a>
+                                </div>
+                                <div class="sold_out" v-if="data.soldOut === '1'">
+                                    <p>품절</p>
+                                </div>
+                            </div>
+                            <div class="txt_area">
+                                <p class="brand">{{data.brand}}</p>
+                                <p class="title"><a href="javascript:void(0)" @click="redirectByItem(data)">{{unescapeHtml(data.itemName)}}</a>
+                                </p>
+                                <div class="price_area">
+                                    <p class="before" v-if="data.totalDiscountAmount > 0 && data.discountRate > 0">
+                                        <span>{{formatNumber(data.salePrice)}}</span>원
+                                    </p>
+                                    <div class="sale_area">
+                                        <p class="price"><span>{{formatNumber(data.presentPrice)}}</span>원</p>
+                                    </div>
+                                </div>
+                                <div class="badge-wrap">
+                                    <span class="badge badge-new badge_txt" v-if="data.itemLabel === '2'">
+                                        <em>NEW</em>
+                                    </span>
+                                    <span class="badge badge_txt" v-if="data.itemLabel === '3'">
+                                        <em>SALE</em>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item_list basic_wide" v-else>
+                    <div class="row no-gutters">
+                        <div class="col-12 col-md-6 list_area" v-for="data in result.content" :id="data.itemId">
+                            <div class="row no-gutters">
+                                <div class="col-5 col-md-6 col-lg-5">
+                                    <div class="img_area">
+                                        <a href="javascript:void(0)" @click="redirectByItem(data)">
+                                            <img :src="itemImage(data.itemImage)"
+                                                 :alt="unescapeHtml(data.itemName)" @error="errorImage">
+                                        </a>
+                                        <div class="sale_per" v-if="data.discountRate > 0">
+                                            {{data.discountRate}}<span>%</span></div>
+                                        <div class="over_btn"
+                                             v-if="data.itemOptionFlag !== 'Y' && (data.stockFlag === 'N' || (data.stockFlag === 'Y' && data.stockQuantity > 0) ) && data.soldOut === '0'">
+                                            <a href="javascript:void(0)" @click="redirectByItem(data)" class="over_link"></a>
+                                            <a href="javascript:" class="btn_cart" title="장바구니 담기"
+                                               :id="'cart_' + data.itemId"
+                                               @click.prevent="addToCart(data.itemId, data.orderMinQuantity)"></a>
+                                            <a href="javascript:" class="btn_wish" title="관심상품 담기"
+                                               :id="'wish_' + data.itemId"
+                                               @click.prevent="addToWishList(data.itemId)"></a>
+                                        </div>
+                                        <div class="sold_out" v-if="data.soldOut === '1'">
+                                            <p>품절</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-7 col-md-6 col-lg-7">
+                                    <div class="txt_area">
+                                        <p class="brand">{{data.brand}}</p>
+                                        <p class="title"><a href="javascript:void(0)" @click="redirectByItem(data)">{{unescapeHtml(data.itemName)}}</a>
+                                        </p>
+                                        <div class="price_area">
+                                            <p class="before"
+                                               v-if="data.totalDiscountAmount > 0 && data.discountRate > 0"><span>{{formatNumber(data.salePrice)}}</span>원
+                                            </p>
+                                            <div class="sale_area">
+                                                <p class="price"><span>{{formatNumber(data.presentPrice)}}</span>원
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="badge-wrap">
+                                                        <span class="badge badge_txt" v-if="data.itemLabel == '2'">
+                                                            <em>NEW</em>
+                                                        </span>
+                                            <span class="badge badge_txt" v-if="data.itemLabel == '3'">
+                                                            <em>SALE</em>
+                                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <pagination :current-page="result.currentPage" :total-pages="result.totalPages"
+                            @change="paging"></pagination>
+            </div>
+
+            <div v-else>
+                <div class="search_txt">
+                    <p>검색 결과가 없습니다.</p>
+                    <div class="title_wrap">
+                        <div class="info_dot">
+                            <p>검색어가 올바르게 입력되었는지 확인 해주세요.</p>
+                            <p>두 단어 이상의 검색어인 경우, 띄어쓰기를 확인해 주세요.(예: 일회용속옷 → 일회용 속옷)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <layout-footer></layout-footer>
+
+</div>
+
+
+<!-- JavaScript -->
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/swiper.min.js"></script>
+<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/jquery.popupoverlay.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.counterup.min.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/header.js"></script>
+<script src="/static/js/footer.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+<script src="/modules/httpVueLoader.js"></script>
+<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+<script type="text/babel" src="/modules/op.vue.js"></script>
+
+
+<script type="text/babel">
+
+    var vm = new Vue({
+        el: '#saleson',
+        components: {
+            'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+            'layout-header': httpVueLoader('/components/layouts/header.vue'),
+            'pagination': httpVueLoader('/components/ui/pagination.vue')
+        },
+        data: {
+            param: {
+                page: 1,
+                itemsPerPage: 20,
+                listType: 'a',
+                orderBy: 'ORDERING',
+                sort: 'ASC',
+                query: '',
+                arrayRequiredItems: []
+            },
+            result: {
+                itemParam: [],
+            }
+        },
+        methods: {
+            submit: function () {
+                $s.api.getSearchResult(vm.param,
+                    function (response) {
+                        vm.result = response;
+                        vm.googleAnalyticsImpression(response.content, '검색결과');
+                    }
+                );
+            },
+
+            paging: function (page) {
+                vm.param.page = page;
+                vm.submit();
+            },
+
+            sorting: function (event) {
+                var value = event.target.value.split("__");
+                vm.param.orderBy = value[0];
+                vm.param.sort = value[1];
+                vm.param.page = 1;
+                vm.submit();
+            },
+
+            itemListType: function (type) {
+                if (type === 'a') {
+                    type = 'b';
+                } else {
+                    type = 'a';
+                }
+                vm.param.listType = type;
+                vm.param.page = 1;
+                vm.submit();
+            },
+
+            addToCart: function (itemId, orderMinQuantity) {
+                var quantity = Number(orderMinQuantity) > 1 ? Number(orderMinQuantity) : 1;
+                vm.param.arrayRequiredItems.push(itemId + '||' + quantity + '||');
+
+                $s.api.addToCart(vm.param, function () {
+                    var arrayRequiredItems = vm.param.arrayRequiredItems;
+                    arrayRequiredItems.splice(0, arrayRequiredItems.length);
+                    document.getElementById('cart_' + itemId).className = 'btn_cart on';
+                    $s.toast("해당 상품이 장바구니에 담겼습니다.");
+                });
+            },
+
+            addToWishList: function (itemId) {
+                $s.api.addToWishList(itemId, function () {
+                    document.getElementById('wish_' + itemId).className = 'btn_wish on';
+                    $s.toast("해당 상품이 관심상품에 담겼습니다.");
+                });
+            },
+
+            redirectByItem: function(item) {
+
+                this.googleAnalyticsSelect(item, '검색결과');
+                this.viewDetails('/items/details.html?code=' + item.itemUserCode, 'paging', 'search');
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+
+                Saleson.init();
+                vm.getHistory("paging", "search");
+
+                vm.param.query = $s.core.getParameter('query');
+                vm.submit();
+            });
+        }
+    });
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,2686 @@
+<!doctype html>
+<html lang="ko" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="icon" href="../../../../favicon.ico">
+	<title>SalesOn Demo</title>
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+	<!-- Custom styles for this template -->
+	<link rel="stylesheet" href="/static/css/swiper.min.css">
+	<link rel="stylesheet" href="/static/css/common.css">
+	<link rel="stylesheet" href="/static/css/layout.css">
+	<link rel="stylesheet" href="/static/css/popup.css">
+	<link rel="stylesheet" href="/static/css/item.css">
+</head>
+<body>
+<div id="saleson" class="items_detail_wrap" style="display: none;">
+	<layout-header :new-cart-quantity="newCartQuantity"></layout-header>
+
+	<div class="viewBg"></div>
+	<section class="contents detail_contents item_view">
+		<h2 class="screen_out">상품상세페이지</h2>
+		<div class="item_category">
+			<div class="container">
+				<div class="item_dropdown pc">
+					<div class="dropDown_wrap">
+						<div class="dropDown" v-for="(currentCate, index) in currentCategories"
+						     v-if="currentCate.codes !== 'undefined' && currentCate.codes.length > 0">
+							<button class="btn dropdown-toggle" type="button" :id="'dropdownMenuButton'+index"
+							        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								{{currentCate.title}}
+							</button>
+							<div class="dropdown-menu" :aria-labelledby="'dropdownMenuButto1'+index">
+								<a v-for="codes in currentCate.codes" :key="codes.url" class="dropdown-item"
+								   @click="link(codes.url, index)">{{codes.name}}</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div> <!--// item_category E-->
+		<div class="view_top container">
+			<div class="row no-gutters">
+				<div class="col-12 col-lg-6 view_photo">
+					<div class="img_area">
+						<ul class="swiper-wrapper">
+							<li class="swiper-slide"
+							    v-for="slide in slides" :key="slide.imageId">
+								<a href="javascript:;" data-toggle="modal" data-target=".popup_detail">
+								<img :src="itemImage(slide.image)" :alt="slide.imageId" @error="errorImage"></a>
+								<div class="sold_out" v-if="item.soldOut === '1'">
+									<p>품절</p>
+									<a href="javascript:" :class="isRestockNotice === true ? 'restock on' : 'restock'" id="restock" @click="restockNotice()">
+										<img src="/static/images/icon/btn_alert_off.png" class="restock_img" alt="재입고 알림 아이콘 off">
+										<span class="restock_tit">재입고 알림</span>
+									</a>
+								</div>
+							</li>
+						</ul>
+						<div class="swiper-button-next pc">
+							<span class="screen_out">다음슬라이드</span>
+						</div>
+						<div class="swiper-button-prev pc">
+							<span class="screen_out">이전슬라이드</span>
+						</div>
+						<div class="swiper-pagination"></div>
+					</div>
+					<div class="thumb_area d-none d-lg-block">
+						<ul class="swiper-wrapper">
+							<li class="swiper-slide" v-for="slide in slides" :key="slide.imageId">
+								<img :src="itemImage(slide.image)" :alt="slide.imageId" @error="errorImage">
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!--// view_photo E-->
+				<div class="col-12 col-lg-6 view_info">
+					<div class="row no-gutters time_sale_wrap" v-if="item.spotItem">
+						<div class="time_sale">
+							<div class="time_txt">
+								<p class="timesale">
+									<span>TIME</span>
+									<span>SALE</span>
+								</p>
+							</div>
+							<div class="time_term">
+								<p class="d_day" v-if="item.spotEndDDay == 0">오늘 마감</p>
+								<p class="d_day" v-else>D-{{item.spotEndDDay}}</p>
+								<p class="time">{{timeFormat(item.spotStartTime)}}~{{timeFormat(item.spotEndTime)}}</p>
+								<p class="date">
+									<span v-for="code in item.spotWeekDayList" v-if="code.detail == '1'">{{code.label.substring(0,1)}}</span>
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<!--// spot_sale E -->
+					<div class="tit_area">
+						<div class="badge-wrap">
+							<span class="badge badge-coupon badge_txt">
+                                <em>COUPON</em>
+                            </span>
+							<span class="badge badge-new badge_txt">
+                                <em>NEW</em>
+                            </span>
+						</div>
+						<div class="brand_mall" v-if="item.brand != ''">
+							<p class="brand">{{item.brand}}</p>
+						</div>
+						<p class="title">{{unescapeHtml(item.itemName)}}</p>
+						<div class="price_area">
+							<p class="before" v-if="item.salePrice > item.presentPrice">
+								<span>{{formatNumber(item.salePrice)}}</span>원
+							</p>
+							<div class="sale_area">
+								<p class="sale" v-if="(Number(item.discountRate) + Number(item.userLevelDiscountRate)) > 0">
+									{{Number(item.discountRate) + Number(item.userLevelDiscountRate)}}%
+								</p>
+								<p class="price"><span>{{formatNumber(item.presentPrice)}}</span>원</p>
+								<div class="ttip_btn">할인혜택보기aa
+									<div class="price_ttip">
+										<p class="tit">할인혜택</p>
+										<dl class="price_det">
+											<dd class="top" v-if="Number(item.itemPrice) > 0">
+												<span>정상가</span>{{formatNumber(item.itemPrice)}}원
+											</dd>
+											<dt><span>판매가</span><b>{{formatNumber(item.salePrice)}}</b>원</dt>
+											<dd  v-if="item.spotItem && item.spotDiscountAmount > 0">
+												<span>
+												타임세일</span>-{{formatNumber(item.spotDiscountAmount)}}원
+											</dd>
+											<dd v-if="item.sellerDiscountAmount > 0">
+												<span>즉시할인</span>-{{formatNumber(item.sellerDiscountAmount)}}원
+											</dd>
+											<dd v-if="item.userLevelDiscountAmount > 0">
+												<span>회원추가할인({{item.levelName}} {{item.userLevelDiscountRate}}%)</span>
+												-{{formatNumber(item.userLevelDiscountAmount)}}원
+											</dd>
+										</dl><!--// price_det -->
+										<div class="btm_total">
+											<p>최대혜택가</p><b>{{formatNumber(item.presentPrice)}}</b>원
+										</div><!--// btm_total -->
+									</div><!--// price_ttip -->
+								</div><!--// ttip_btn -->
+							</div>
+						</div>
+						<a href=".layer_sns" class="btn_sns" data-toggle="modal"><img
+								src="/static/images/icon/btn_share.png" alt="sns공유하기"></a>
+					</div>
+					<!--// tit_area E -->
+					<div class="info_area">
+						<dl class="row no-gutters">
+							<template v-if="cardBenefits">
+								<dt class="col-5 col-lg-4">카드혜택</dt>
+								<dd class="col-7 col-lg-8">
+									<div class="dropdown_detail">
+										<button type="button" class="btn dropdown-toggle" data-toggle="collapse"
+												data-target="#dropdown1" aria-expanded="false" aria-controls="dropdown1">
+											<strong>{{cardBenefits.subject}}</strong>
+										</button>
+									</div>
+								</dd>
+								<dd class="col-12 dropdown_content_wrap">
+									<div id="dropdown1" class="collapse dropdown_content">
+										<p v-html="cardBenefits.content"></p>
+									</div>
+								</dd>
+							</template>
+							<dt class="col-5 col-lg-4 img_lineheight">상품쿠폰</dt>
+							<dd class="col-7 col-xl-8"><a href="javascript:;" class="btn btn_coupon" data-toggle="modal"
+							                              data-target=".pop_down_coupon">쿠폰다운</a></dd>
+							<dt class="col-5 col-lg-4">적립예정포인트</dt>
+							<dd class="col-7 col-lg-8">
+								{{pointInfoText}}
+							</dd>
+							<dt class="col-5 col-lg-4">상품코드</dt>
+							<dd class="col-7 col-lg-8">{{item.itemUserCode}}</dd>
+							<dt class="col-5 col-lg-4">배송비</dt>
+							<dd class="col-7 col-lg-8">
+								<!--                                <p class="release">오늘 5/23(목) 출고예정</p>-->
+								<p>{{formatNumber(item.shipping)}}원 ({{item.shippingFreeAmount == 0 ? '무료배송)' :
+									formatNumber(item.shippingFreeAmount) + '원이상 무료배송)'}}</p>
+								<a href="javascript:;" class="etc" data-toggle="modal" data-target=".pop_delivery_location">도서산간
+									지역보기</a>
+							</dd>
+							<template v-if="item.freeGiftFlag == 'Y' ">
+								<dt class="col-5 col-lg-4">사은품</dt>
+								<dd class="col-7 col-lg-8">{{item.freeGiftName}}</dd>
+							</template>
+						</dl>
+					</div>
+
+					<div class="detail_view_wrap d-none d-md-block">
+						<a href="#" class="btn_open2">바로구매</a>
+						<h4 class="option_layer_tit">{{unescapeHtml(item.itemName)}}</h4>
+						<div class="view_wrap">
+							<div class="view_left">
+								<template v-if="item.itemOptionFlag === 'N'" >
+									<div class="amt_box" v-for="(optionInfo, index) in itemOptionInfo.addOptionList">
+										<span>수량</span>
+										<div class="btn_amt_box">
+											<button type="button" class="btn_minus" @click="minus(index)">
+												<img src="/static/images/icon/btn_minus.png" alt="">
+											</button>
+											<input type="number" title="수량" value="1" class="form-control box number" v-model="optionInfo.quantity" v-on:input="inputQuantity($event, index)">
+											<button type="button" class="btn_plus" @click="plus(index)">
+												<img src="/static/images/icon/btn_add.png" alt="">
+											</button>
+										</div>
+									</div>
+								</template>
+								<div class="dropdown_box" v-if="item.itemOptionFlag == 'Y' && item.itemOptionType != 'T'">
+									<button type="button" class="custom-select box">상품 옵션을 선택하세요.</button>
+									<div class="option_drop">
+										<div class="drop_inner">
+											<p class="drop_tit">상품 옵션을 선택하세요.</p>
+											<div class="dropdown_area" v-if="item.itemOptionFlag == 'Y' && item.itemOptionType == 'S'">
+												<button class="tit">{{item.itemOptions[0].optionName1}}</button>
+												<div class="option_btn">
+													<button type="button"  v-for="(option1, index) in item.itemOptions"
+															@click="writeOptionName(1 ,option1.optionName2, index)">{{option1.optionName2}}</button>
+												</div>
+											</div>
+											<div class="dropdown_area" v-if="item.itemOptionFlag == 'Y' && (item.itemOptionType == 'S2' || item.itemOptionType == 'S3')">
+												<button class="tit" v-if="item.itemOptionTitle1" @click="selectOptionTitle(1)">
+													{{itemOptionInfo.itemOptionTitle1}}
+													{{itemOptionInfo.selectOptionName1 == '' ? '' : '- ' +
+													itemOptionInfo.selectOptionName1 }}
+												</button>
+												<div class="option_btn" v-if="item.itemOptionTitle1">
+													<button type="button"  v-for="(option1, index) in itemOptionInfo.optionName1"
+															@click="writeOptionName(1 ,option1, index)">{{option1}}
+													</button>
+												</div>
+												<button class="tit" v-if="item.itemOptionTitle2" @click="selectOptionTitle(2)">
+													{{itemOptionInfo.itemOptionTitle2}}
+													{{itemOptionInfo.selectOptionName2 == '' ? '' : '- ' +
+													itemOptionInfo.selectOptionName2 }}
+												</button>
+												<div class="option_btn" v-if="item.itemOptionTitle2">
+													<button type="button"  v-for="(option1, index) in itemOptionInfo.optionName2"
+															@click="writeOptionName(2 ,option1, index)">{{option2}}
+													</button>
+												</div>
+												<button class="tit" v-if="item.itemOptionTitle3" @click="selectOptionTitle(3)">
+													{{itemOptionInfo.itemOptionTitle3}}
+													{{itemOptionInfo.selectOptionName3 == '' ? '' : '- ' +
+													itemOptionInfo.selectOptionName3 }}
+												</button>
+												<div class="option_btn" v-if="item.itemOptionTitle3">
+													<button type="button"  v-for="(option3, index) in itemOptionInfo.optionName3"
+															@click="writeOptionName(3 ,option3, index)">{{option3}}
+													</button>
+												</div>
+											</div>
+											<button type="button" class="drop_close"><span class="screen_out">옵션 닫기 버튼</span>
+											</button>
+										</div>
+									</div>
+								</div>
+								<div class="txt_box" v-if="item.itemOptionFlag == 'Y' && item.itemOptionType == 'T'">
+									<div class="item-option-info"  v-for="(option, index) in item.itemOptions">
+										<p><strong>{{option.optionName1}}</strong></p>
+										<input type="hidden" class="text-option-id" :value="option.itemOptionId" />
+										<input type="hidden" class="text-option-name" :value="option.optionName1" />
+										<input type="text" class="form-control box text-option-value" name="text-option-value">
+									</div>
+									<div v-if="item.itemOptionFlag == 'Y' && item.itemOptionType == 'T'">
+										<button type="button" class="btn btn_m btn_outline_secondary btn_add" @click="addTextOption()">추가</button>
+									</div>
+								</div>
+								<div class="option_list" v-if="item.itemOptionFlag === 'Y'">
+									<ul class="list_in">
+										<li v-for="(optionInfo, index) in itemOptionInfo.addOptionList">
+											<p class="op_tit">{{optionInfo.optionName}}</p>
+											<div class="price_wrap">
+												<div class="amt_box">
+													<button type="button" class="btn_minus" @click="minus(index)">
+														<img src="/static/images/icon/btn_minus.png" alt="-">
+													</button>
+													<input type="text" title="수량" value="1" class="form-control box number" v-model="optionInfo.quantity" v-on:input="inputQuantity($event, index)">
+													<button type="button" class="btn_plus" @click="plus(index)">
+														<img src="/static/images/icon/btn_add.png" alt="+">
+													</button>
+												</div>
+												<div class="text-right">
+													<p class="op_price"><span>{{formatNumber(optionInfo.optionPrice)}}</span>원</p>
+												</div>
+											</div>
+											<a href="#" class="btn_item_delete" @click="deleteOption(index)" v-if="item.itemOptionFlag == 'Y'"></a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="view_right">
+								<div class="option_total">
+                                    <span class="total">
+                                        <strong>합계</strong>
+                                    </span>
+									<span class="total">
+                                        <strong>{{formatNumber(optionItemTotal)}}</strong>원
+                                    </span>
+									<div class="item-warning" v-if="item.itemReturnFlag == 'N'">
+										<span>해당상품은 반품/교환이 불가능한 상품입니다.</span>
+									</div>
+								</div>
+
+								<div class="option_btn_wrap">
+									<div class="option_btn_area top">
+										<a href="javascript:void(0);" class="btn btn_save" @click="addToWishList">
+											<span class="screen_out">관심상품</span>
+										</a>
+										<a href="javascript:void(0);" class="btn btn_secondary" @click="addToCart">장바구니</a>
+										<a href="javascript:void(0);" class="btn btn_primary" @click="buyOrder">바로구매</a>
+									</div>
+									<!-- ======= 네이버페이 ======== -->
+									<!--<div class="npay_type1">
+										<div id="NC_ID_1589869366282396" class="npay_storebtn_bx npay_type_A_2">
+											<div id="NPAY_BUTTON_BOX_ID" class="npay_button_box ">
+												<div class="npay_button">
+													<div class="npay_text"><span class="npay_blind">NAVER 네이버 ID로 간편구매 네이버페이</span>
+													</div>
+													<table class="npay_btn_list" cellspacing="0" cellpadding="0">
+														<tbody>
+														<tr>
+															<td class="npay_btn_item"> <a id="NPAY_BUY_LINK_IDNC_ID_1589869366282396" href="#" class="npay_btn_link npay_btn_pay btn_green" style="box-sizing:content-box; " title="새창"><span class="npay_blind">네이버페이 구매하기</span></a>
+															</td>
+															<td class="npay_btn_item btn_width"> <a id="NPAY_WISH_LINK_IDNC_ID_1589869366282396" href="#" class="npay_btn_link npay_btn_zzim " style="box-sizing:content-box; " title="새창"><span class="npay_blind">찜하기</span></a>
+															</td>
+															<td class="npay_btn_item btn_width"> <a id="NPAY_TALK_LINK_IDNC_ID_1589869366282396" href="#" class="npay_btn_link npay_btn_talk " style="box-sizing:content-box; " title="새창"><span class="npay_blind">톡톡</span></a>
+															</td>
+														</tr>
+														</tbody>
+													</table>
+												</div>
+												<div id="NPAY_EVENT_ID" class="npay_event">	<a id="NPAY_PROMOTION_PREV_IDNC_ID_1589869366282396" href="#" class="npay_more npay_more_prev"><span class="npay_blind">이전</span></a>
+													<p id="NPAY_PROMOTION_IDNC_ID_1589869366282396" class="npay_event_text"><strong class="event_title">이벤트</strong><a href="http://event2.pay.naver.com/event/benefit/list" class="event_link" target="_blank">네이버페이</a>
+													</p>	<a id="NPAY_PROMOTION_NEXT_IDNC_ID_1589869366282396" href="#" class="npay_more npay_more_next"><span class="npay_blind">다음</span></a>
+												</div>
+											</div>
+										</div>
+									</div>-->
+									<!--<div class="option_btn_area bottom npay_type2">
+                                        <a href="#" class="btn_naverpay">
+                                            <span class="screen_out">네이버페이 버튼</span>
+                                        </a>
+                                    </div>-->
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<!--// info_area E -->
+					<div class="option_area d-block d-md-none">
+						<button type="button" class="btn_open"><span class="screen_out">옵션버튼</span></button>
+						<div class="conts_area type_option">
+							<template v-if="item.itemOptionFlag === 'N'" >
+								<div class="amt_box" v-for="(optionInfo, index) in itemOptionInfo.addOptionList">
+									<span>수량</span>
+									<button type="button" class="btn_minus" @click="minus(index)">
+										<img src="/static/images/icon/btn_minus.png" alt="마이너스 버튼">
+									</button>
+									<input type="text" title="수량" v-model="optionInfo.quantity"
+										   class="form-control box number" v-on:input="inputQuantity($event, index)">
+									<button type="button" class="btn_plus" @click="plus(index)"><img
+											src="/static/images/icon/btn_add.png" alt="플러스 버튼"></button>
+								</div>
+							</template>
+							<input type="hidden" v-model="param.arrayRequiredItems">
+							<div class="option_yes">
+								<div class="txt_box" v-if="item.itemOptionFlag == 'Y' && item.itemOptionType == 'T'">
+									<div class="item-option-info"  v-for="(option, index) in item.itemOptions">
+										<p><strong>{{option.optionName1}}</strong></p>
+										<input type="hidden" class="text-option-id" :value="option.itemOptionId" />
+										<input type="hidden" class="text-option-name" :value="option.optionName1" />
+										<input type="text" class="form-control box text-option-value" name="text-option-value">
+									</div>
+									<div v-if="item.itemOptionFlag == 'Y' && item.itemOptionType == 'T'">
+										<button type="button" class="btn btn_m btn_outline_secondary btn_add" @click="addTextOption()">추가</button>
+									</div>
+								</div>
+								<div class="dropdown_box" v-if="item.itemOptionFlag == 'Y' && item.itemOptionType != 'T'">
+									<button type="button" class="custom-select box">상품 옵션을 선택하세요.</button>
+									<div class="option_drop">
+										<div class="drop_inner">
+											<p class="drop_tit">상품 옵션을 선택하세요.</p>
+											<div class="dropdown_area"
+											     v-if="item.itemOptionFlag == 'Y' && item.itemOptionType == 'S'">
+												<button class="tit">{{item.itemOptions[0].optionName1}}</button>
+												<div class="option_btn">
+													<button type="button" v-for="(option1, index) in item.itemOptions"
+													        @click="writeOptionName(1 ,option1.optionName2, index)">
+														{{option1.optionName2}}
+													</button>
+												</div>
+											</div>
+											<div class="dropdown_area"
+											     v-if="item.itemOptionFlag == 'Y' && (item.itemOptionType == 'S2' || item.itemOptionType == 'S3')">
+												<button class="tit itemOptionTitle1" v-if="item.itemOptionTitle1" @click="selectOptionTitle(1)">
+													{{itemOptionInfo.itemOptionTitle1}}
+													{{itemOptionInfo.selectOptionName1 == '' ? '' : '- ' +
+													itemOptionInfo.selectOptionName1 }}
+												</button>
+												<div class="option_btn" v-if="item.itemOptionTitle1">
+													<button type="button"
+													        v-for="(option1, index) in itemOptionInfo.optionName1"
+													        @click="writeOptionName(1 ,option1, index)">
+														{{option1}}
+													</button>
+												</div>
+												<button class="tit itemOptionTitle2" v-if="item.itemOptionTitle1" @click="selectOptionTitle(2)">
+													{{itemOptionInfo.itemOptionTitle2}}
+												</button>
+												<div class="option_btn" v-if="item.itemOptionTitle1">
+													<button type="button"
+													        v-for="(option2, index) in itemOptionInfo.optionName2"
+													        @click="writeOptionName(2 ,option2, index)">
+														{{option2}}
+													</button>
+												</div>
+												<button class="tit itemOptionTitle3" v-if="item.itemOptionTitle3">
+													{{itemOptionInfo.itemOptionTitle3}}
+												</button>
+												<div class="option_btn" v-if="item.itemOptionTitle3">
+													<button type="button"
+													        v-for="(option3, index) in itemOptionInfo.optionName3"
+													        @click="writeOptionName(3 ,option3, index)">
+														{{option3}}
+													</button>
+												</div>
+											</div>
+											<button type="button" class="drop_close">
+												<span class="screen_out">옵션 닫기 버튼</span>
+											</button>
+										</div>
+									</div>
+								</div>
+								<!--// form-group E -->
+								<div class="option_list" v-if="item.itemOptionFlag == 'Y'">
+									<ul class="list_in">
+										<li v-for="(optionInfo, index) in itemOptionInfo.addOptionList">
+											<p class="op_tit">{{optionInfo.optionName}}</p>
+											<div class="row no-gutters">
+												<div class="col-6">
+													<div class="amt_box">
+														<button type="button" class="btn_minus" @click="minus(index)">
+															<img src="/static/images/icon/btn_minus.png" alt="-">
+														</button>
+														<input type="text" title="수량" v-model="optionInfo.quantity"
+														       class="number" v-on:input="inputQuantity($event, index)">
+														<button type="button" class="btn_plus" @click="plus(index)"><img
+																src="/static/images/icon/btn_add.png" alt="+"></button>
+													</div>
+												</div>
+												<div class="col-3 text-right">
+													<p class="op_price">
+														<span>{{formatNumber(optionInfo.optionPrice)}}</span>원
+													</p>
+												</div>
+											</div>
+											<a href="javascript:;" class="btn_item_delete" @click="deleteOption(index)"
+											   v-if="item.itemOptionFlag == 'Y'"><img
+													src="/static/images/icon/icon_close_black.png" alt="옵션삭제"></a>
+										</li>
+									</ul>
+								</div>
+								<!--// option_list E-->
+							</div>
+							<!--// option_yes E-->
+						</div>
+						<!--// conts_area E-->
+						<div class="row no-gutters total_price">
+							<div class="col-6">합계</div>
+							<div class="col-6 price"><span>{{formatNumber(optionItemTotal)}}</span>원</div>
+						</div>
+						<!--// total_price E-->
+						<div class="btn_area1" v-if="item.soldOut === '0'">
+							<button type="button" class="btn btn_primary btn_buy">구매하기</button>
+							<a href="javascript:;" class="btn btn_save" @click="addToWishList"><span class="screen_out">찜하기</span></a>
+						</div>
+						<!--// btn_area1 E -->
+						<div class="btn_area2">
+							<div class="btn_area2_wrap">
+								<a href="javascript:;" class="btn btn_secondary btn_cart" @click="addToCart">장바구니</a>
+								<button type="button" class="btn btn_primary" @click="buyOrder">바로구매</button>
+
+								<div class="d-none d-xl-inline-block">
+									<a href="javascript:;" class="btn_save" @click="addToWishList"><span class="screen_out">찜하기</span></a>
+								</div>
+							</div>
+							<!-- ======= 네이버페이 ======== -->
+							<div class="npay_type1">
+								<div id="NC_ID_1589869366282396 " class="npay_storebtn_bx npay_type_A_2">
+									<div id="NPAY_BUTTON_BOX_ID " class="npay_button_box">
+										<div class="npay_button">
+											<div class="npay_text"><span class="npay_blind">NAVER 네이버 ID로 간편구매 네이버페이</span>
+											</div>
+											<table class="npay_btn_list" cellspacing="0" cellpadding="0">
+												<tbody>
+												<tr>
+													<td class="npay_btn_item"> <a id="NPAY_BUY_LINK_IDNC_ID_1589869366282396" href="#" class="npay_btn_link npay_btn_pay btn_green" style="box-sizing:content-box; " title="새창"><span class="npay_blind">네이버페이 구매하기</span></a>
+													</td>
+													<td class="npay_btn_item btn_width"> <a id="NPAY_WISH_LINK_IDNC_ID_1589869366282396" href="#" class="npay_btn_link npay_btn_zzim " style="box-sizing:content-box; " title="새창"><span class="npay_blind">찜하기</span></a>
+													</td>
+													<td class="npay_btn_item btn_width"> <a id="NPAY_TALK_LINK_IDNC_ID_1589869366282396" href="#" class="npay_btn_link npay_btn_talk " style="box-sizing:content-box; " title="새창"><span class="npay_blind">톡톡</span></a>
+													</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+										<div id="NPAY_EVENT_ID" class="npay_event">	<a id="NPAY_PROMOTION_PREV_IDNC_ID_1589869366282396" href="#" class="npay_more npay_more_prev"><span class="npay_blind">이전</span></a>
+											<p id="NPAY_PROMOTION_IDNC_ID_1589869366282396" class="npay_event_text"><strong class="event_title">이벤트</strong><a href="http://event2.pay.naver.com/event/benefit/list" class="event_link" target="_blank">네이버페이</a>
+											</p>	<a id="NPAY_PROMOTION_NEXT_IDNC_ID_1589869366282396" href="#" class="npay_more npay_more_next"><span class="npay_blind">다음</span></a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--// btn_area2 E -->
+					</div>
+					<!--// option_area E-->
+				</div>
+				<!--// view_info E-->
+			</div>
+		</div>
+
+		<div class="modal fade modal_full popup_detail">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-body">
+						<div v-for="(image,index) in item.itemImages">
+							<img :src="itemImage(image.bigImageSrc)" alt="image.imageName" @error="errorImage">
+						</div>
+					</div>
+					<button type="button" class="modal_close" data-dismiss="modal">
+						<span class="screen_out">닫기</span>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- // view_top E -->
+		<div class="item_tab">
+			<div class="container">
+				<ul class="nav nav-tabs nav-justified">
+					<li class="nav-item">
+						<a href="#nav-detail" class="nav-link active" data-toggle="tab">
+							<span class="txt">상품정보</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="#nav-review" class="nav-link" data-toggle="tab">
+							<span class="txt">상품후기</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="#nav-qna" class="nav-link" data-toggle="tab">
+							<span class="txt">Q&amp;A</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="#nav-buyer" class="nav-link" data-toggle="tab">
+							<span class="txt">판매자정보</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!--// item_tab E -->
+		<div class="container tab_container">
+			<div class="tab-content item_view">
+				<div id="nav-detail" class="tab-pane fade show active">
+					<div class="item_detail">
+						<div class="item_info_inner">
+							<table class="item_info_detail tab_inner" v-if="item.itemInfos.length > 0">
+								<caption>상품정보</caption>
+								<colgroup>
+									<col style="width:35%;">
+									<col style="width:65%;">
+								</colgroup>
+								<tbody>
+								<tr v-for="(itemInfo,index) in item.itemInfos">
+									<th scope="row">{{itemInfo.title}}</th>
+									<td>{{itemInfo.description}}</td>
+								</tr>
+								</tbody>
+							</table>
+							<div v-if="item.detailContent != ''" v-html="appendCdnDomain(unescapeHtml(item.detailContent))"></div>
+						</div>
+
+						<div class="item_slider">
+							<p class="tit">다른고객이 함께 구매한 상품</p>
+							<div class="item_list thumb swiper-container">
+								<div class="item_slide_wrapper swiper-wrapper">
+									<div class="list_area swiper-slide" v-for="slide in itemRelations"
+									     :key="slide.relationId">
+										<div class="img_area">
+											<a :href="'/items/details.html?code=' + slide.itemUserCode">
+												<img :src="itemImage(slide.imageSrc)" :alt="slide.relationId" @error="errorImage">
+											</a>
+											<div class="sale_per" v-show="slide.discountRate > 0">{{slide.discountRate}}<span>%</span>
+											</div>
+										</div>
+										<div class="txt_area">
+											<p class="brand">{{slide.brandName == '' ? '' : slide.brandName}}</p>
+											<p class="title"><a
+													:href="'/items/details.html?code=' + slide.itemUserCode">{{unescapeHtml(slide.itemName)}}</a>
+											</p>
+											<div class="price_area">
+												<template
+														v-show="slide.totalDiscountAmount > 0 && slide.discountRate > 0">
+													<p class="before"><span>{{formatNumber(slide.salePrice)}}</span>원
+													</p>
+												</template>
+												<div class="sale_area">
+													<p class="price"><span>{{formatNumber(slide.presentPrice)}}</span>원
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="swiper-button-next pc">
+									<span class="screen_out">다음슬라이드</span>
+								</div>
+								<div class="swiper-button-prev pc">
+									<span class="screen_out">이전슬라이드</span>
+								</div>
+							</div>
+							<!--// swiper-wrapper E-->
+						</div>
+
+						<!--// item_slide E-->
+					</div>
+					<!--// item_detail E-->
+				</div>
+				<div id="nav-review" class="tab-pane fade">
+					<div class="item_review">
+						<div class="total_top">
+							<div class="total_area">
+								<p class="total">전체 <span>{{formatNumber(result.review.totalElements)}}</span></p>
+								<button type="button" class="btn_inquiry" @click="writeReview">후기작성하기</button>
+							</div>
+						</div>
+						<div class="grade" v-if="result.review.content.length > 0">
+							<p class="txt">평점</p>
+							<div class="rating_star lg" v-html="ratingStarHtml"></div>
+							<p class="num"><b>{{ratingStarScore}}</b> / 5</p>
+						</div>
+						<div class="list_wrap review_list">
+							<div class="list_top_sel">
+								<a href="javascript:;" class="btn_my_filter" data-toggle="modal" data-target=".pop_rv_myfilter"
+									@click="openReviewFilter" v-if="reviewFilters != null && reviewFilters.length > 0">>
+									<span>나와 비슷한 체형의 상품후기 모아보기</span>
+								</a>
+								<select id="" name="" class="custom-select line" @change="selectReviewOrderBy">
+									<option value="LIKE_COUNT">추천순</option>
+									<option value="CREATED_DATE">최신순</option>
+									<option value="SCORE">평점순</option>
+								</select>
+							</div><!--// list_top_sel -->
+							<ul v-if="result.review.content.length > 0">
+								<li class="list_area" v-for="(review,index) in result.review.content">
+									<div class="list_in">
+										<div class="review_open">
+											<div class="list_top">
+												<div class="rating_star">
+												<span v-for="i in 5"
+												      :class="{ 'on' : reviewAssessment(i, review.score)}"></span>
+												</div>
+												<div class="id_date">
+													<p class="id">{{review.maskUsername}}</p>
+													<p class="date">{{dateFormat(review.createdDate).substring(0,10)}}</p>
+												</div>
+											</div>
+											<ul class="rv_my_info" v-if="isDisplayReviewInfo(index)">
+												<li v-for="(reviewFilter, filterIndex) in review.filters" v-if="validFilter(reviewFilter.group, reviewFilter.code)">
+													<span class="cate">{{getFilterGroupName(reviewFilter.group)}}</span>
+													{{getFilterCodeName(reviewFilter.group, reviewFilter.code)}}
+												</li>
+												<li v-if="review.displayOptionsFlag && review.options.length > 0">
+													<span class="cate">선택한 옵션</span>
+													<template v-for="(reviewOption, optionIndex) in review.options">
+														<p v-for="options in reviewOption.options">
+															<span>{{options.label}}</span>{{options.value}}
+														</template>
+													</template>
+												</li>
+											</ul><!--// rv_my_info -->
+											<div class="review_origin">
+												<div class="txt_area">
+													<p class="title" v-html="nl2br(review.content)"></p>
+												</div>
+												<div class="img_area" v-if="review.photoReview">
+													<img :src="itemImage(review.thumbnailSrc)" alt="썸네일" class="img_full"  @error="errorImage">
+													<div class="img_more" v-if="review.itemReviewImages.length > 0"><span>{{review.itemReviewImages.length}}</span></div>
+												</div>
+											</div>
+										</div>
+										<div class="review_img" v-if="review.photoReview">
+											<div class="row">
+												<div class="col-12 col-md-3" v-for="image in review.itemReviewImages">
+													<div class="img_area">
+														<a href="javascript:;">
+															<img :src="itemImage(image.imageSrc)" class="img_full"
+															     alt="썸네일" @error="errorImage">
+														</a>
+													</div>
+												</div>
+											</div>
+										</div>
+										<dl class="rv_btm">
+											<dt>&nbsp;</dt>
+											<dd>도움됐어요
+												<a href="javascript:;" class="btn_good" @click="addItemReviewLike(index)">
+													<span>{{formatNumber(review.likeCount)}}</span>
+												</a>
+											</dd>
+										</dl><!--// rv_btm -->
+										<dl class="rv_comment" v-if="review.adminComment !=''">
+											<dt>드루관리자</dt>
+											<dd v-html="nl2br(review.adminComment)"></dd>
+										</dl><!--// rv_comment -->
+									</div>
+								</li>
+							</ul>
+							<pagination :current-page="result.review.currentPage"
+							            :total-pages="result.review.totalPages" :page-target="'review'"
+							            @change="paging" v-if="result.review.content.length > 0"></pagination>
+						</div>
+
+						<div class="review_none" v-if="result.review.content.length == 0">
+							<p>고객님께서 작성해주시는 이용후기는 <br>다른 분의 쇼핑에 소중한 정보가 됩니다.</p>
+						</div>
+
+					</div>
+				</div>
+				<div id="nav-qna" class="tab-pane fade">
+					<div class="item_qna">
+						<div class="total_top">
+							<div class="total_area">
+								<p class="total">전체 <span>{{result.qna.totalElements}}</span></p>
+								<button type="button" class="btn_inquiry">Q&amp;A쓰기</button>
+							</div>
+							<div class="inquiry_write" id="qna_write">
+								<div class="form_wrap_box">
+									<div class="form-group select_check">
+										<div class="row no-gutters">
+											<div class="col-6 col-md-5 col-lg-3">
+												<select class="custom-select box" v-model="itemQna.qnaGroup">
+													<option value="">문의유형 선택</option>
+													<option value="1">배송지연</option>
+													<option value="2">반품문의</option>
+													<option value="3">A/S문의</option>
+													<option value="4">환불문의</option>
+													<option value="5">주문결제문의</option>
+													<option value="6">회원정보문의</option>
+													<option value="7">취소문의</option>
+													<option value="8">교환문의</option>
+													<option value="9">기타문의</option>
+												</select>
+											</div>
+											<div class="col-6 col-md-7 col-lg-9 secret_txt">
+												<div class="check_area">
+													<input type="checkbox" id="a1" v-model="secretFlag">
+													<label for="a1">비밀글</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<input type="text" class="form-control box" placeholder="제목을 입력해주세요"
+										       title="제목을 입력해주세요" v-model="itemQna.subject">
+									</div>
+									<div class="form-group">
+										<textarea class="form-control" cols="30" rows="10" placeholder="내용을 입력해주세요"
+										          v-model="itemQna.question"></textarea>
+									</div>
+									<div class="row no-gutters btn-group right">
+										<div class="col col-md-3 col-lg-2">
+											<button type="button" class="btn btn_lg btn_light btn_cancel">취소</button>
+										</div>
+										<div class="col col-md-3 col-lg-2">
+											<button type="button" class="btn btn_lg btn_primary" @click="registerQna">
+												등록
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="list_wrap faq_list" v-if="result.qna.content.length > 0">
+							<ul>
+								<template v-for="(qna,index) in result.qna.content">
+									<li class="list_area list_open">
+										<div class="list_in">
+											<div class="list_top">
+												<p class="state">{{qna.answerCount > 0 ? '답변완료' : '답변대기'}}</p>
+												<div class="id_date">
+													<p class="id">{{qna.maskUserName}}</p>
+													<p class="date">{{dateFormat(qna.createdDate).substring(0,10)}}</p>
+												</div>
+											</div>
+											<p class="category">[{{qna.qnaGroupLabel}}]</p>
+											<div class="list_tit">
+												<template v-if="qna.secretFlag == 'Y' && qna.userId != userId">
+													<span class="lock"></span>비밀글입니다.
+												</template>
+												<template v-else>
+													{{qna.subject}}
+												</template>
+											</div>
+											<div class="hide_area">
+												<div class="question"><span class="qa">Q.</span>{{qna.question}}</div>
+												<template
+														v-if="(qna.secretFlag == 'N' || qna.userId == userId) && qna.answerCount > 0">
+													<div class="answer"><span class="qa">A.</span>
+														{{qna.qnaAnswer.answer}}
+													</div>
+													<p class="answer_date">답변일 : <span>{{dateFormat(qna.qnaAnswer.answerDate).substring(0,10)}}</span>
+													</p>
+												</template>
+											</div>
+										</div>
+									</li>
+								</template>
+							</ul>
+
+							<pagination :current-page="result.qna.currentPage"
+							            :total-pages="result.qna.totalPages" :page-target="'qna'"
+							            @change="paging" v-if="result.qna.content.length > 0"></pagination>
+						</div>
+						<!--// qna_list E -->
+
+						<div class="review_none" v-if="result.qna.content.length == 0">
+							<p>상품에 대해 궁금한 사항을 적어주세요.</p>
+						</div>
+
+					</div>
+					<!--// item_qna E-->
+				</div>
+				<div id="nav-buyer" class="tab-pane fade">
+					<div class="buyer_wrap">
+						<div class="buyer_area">
+							<table class="item_info_detail">
+								<caption>상품정보</caption>
+								<colgroup>
+									<col style="width:35%;">
+									<col style="width:65%;">
+								</colgroup>
+								<tbody>
+								<tr>
+									<th scope="row">대표자명</th>
+									<td>{{seller.representativeName}}</td>
+								</tr>
+								<tr>
+									<th scope="row">사업자번호</th>
+									<td>{{seller.businessNumber}}</td>
+								</tr>
+								<tr>
+									<th scope="row">연락처</th>
+									<td>{{seller.telephoneNumber}}
+										<!--<a href="javascript:void(0);" class="btn btn_buyer" @click="telLink">
+											<img src="/static/images/icon/ic_phone.png" alt="">
+											<span>전화걸기</span>
+										</a>-->
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">E-mail</th>
+									<td>{{seller.email}}</td>
+								</tr>
+								<tr>
+									<th scope="row">FAX</th>
+									<td>{{seller.faxNumber}}</td>
+								</tr>
+								<tr>
+									<th scope="row" class="vertical_top">소재지</th>
+									<td>{{seller.address}}, {{seller.addressDetail}}</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<!--// buyer_area -->
+						<div class="deli_info">
+							<p class="deli_tit">배송반품교환 상세정보</p>
+							<div class="txt_area">
+								<dl>
+									<dt>배송방법 및 배송기간</dt>
+									<dd>배송지역 : 전국</dd>
+									<dd>배송비 : 30,000원 이상 무료배송</dd>
+									<dd>제품 결제 완료 후 (카드 이용시 카드 승인 완료 후 / 온라인 입금시 입금 확인 후) 3 ~ 4일 이내에 택배로 안전하게 배달해 드립니다.
+										(단, 도서/산간/오지 일부 지역이나 날씨 상황 등에 따라 배송 일정이 변경될 수 있으며 연휴 및 공휴일을 제외한 기간입니다.)
+									</dd>
+									<dd>포인트 적립은 회원 로그인 후 구입한 내역에 대해 배송 완료 후 적립됩니다.</dd>
+									<dd>적립된 포인트는 쇼핑몰에서 현금과 동일하게 이용할 수 있습니다.</dd>
+								</dl>
+								<dl>
+									<dt>교환/환불 시 유의사항</dt>
+									<dd>주문취소, 반품신청, 교환신청은 ‘마이페이지 &gt; 주문배송조회’ 에서 가능합니다.</dd>
+									<dd>주문 취소 신청은 주문완료 후 상품이 "배송중"이 되기 전까지만 가능합니다.</dd>
+									<dd>주문시간을 기준으로 출고일 2시 이후에는 제품 출고가 이루어지는 시간으로 주문취소가 불가합니다.</dd>
+									<dd>주문취소 가능시간 이후에는 주문취소가 아닌 반품 접수를 하셔야 하며, 배송비가 부과될 수 있습니다.</dd>
+									<dd>단순변심으로 인한 반품은 상품 수령 후 7일 이내에 가능합니다. 7일이 지난 경우 반품 신청이 되지 않습니다.[상품 청약 철회 안내] 사용/개봉
+										으로 인한 상품 가치 훼손 시에는 제품 불량시를 제외하고 교환/반품 기간 내라도 교환 및 반품이 되지 않습니다.
+									</dd>
+									<dd>고객 변심에 의한 교환, 반품은 고객께서 배송비를 부담하셔야 합니다. (제품의 하자, 배송 오류는 제외)</dd>
+									<dd>도서/산간/오지 지역의 경우 배송비/반품비를 추가로 부담하실 수 있습니다.</dd>
+								</dl>
+							</div>
+						</div>
+						<!--// deli_info E -->
+					</div>
+					<!--// buyer_wrap E-->
+				</div>
+			</div>
+		</div>
+
+		<!-- sns공유 레이어 -->
+		<div class="modal fade layer_sns">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal_tit">공유하기</h3>
+					</div>
+					<div class="modal-body">
+						<div class="sns_pop">
+							<a href="javascript:;" class="sns_fb" @click="snsShare('facebook')">
+								<img src="/static/images/icon/btn_facebook.png" alt="페이스북">
+							</a>
+							<a href="javascript:;" class="sns_tw" @click="snsShare('twitter')">
+								<img src="/static/images/icon/btn_twitter.png" alt="트위터">
+							</a>
+							<a href="javascript:;" class="sns_ka" @click="snsShare('kakao')">
+								<img src="/static/images/icon/btn_kakao.png" alt="카카오톡">
+							</a>
+							<a href="javascript:;" class="sns_url" @click="snsShare('urlCopy')">
+								<img src="/static/images/icon/btn_url.png" alt="url">
+							</a>
+						</div>
+					</div>
+					<button type="button" class="modal_close" data-dismiss="modal">
+						<span class="screen_out">sns공유 닫기</span>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- 제주/도서산간지역 레이어 -->
+		<div class="modal fade modal_full pop_delivery_location">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal_tit">제주/도서산간지역</h3>
+					</div>
+					<div class="modal-body">
+						<div class="location_top">
+							<select class="custom-select box" id="where" v-model="param.delivery.where">
+								<option value="ADDRESS">주소</option>
+								<option value="ZIPCODE">우편번호</option>
+							</select>
+							<input type="text" class="form-control box" id="query" v-model="param.delivery.query"
+							       @keyup.enter="paging(1,'delivery')">
+							<button type="button" class="search_btn" @click="paging(1,'delivery')">
+								<img src="/static/images/icon/btn_search.png" alt="검색 버튼">
+							</button>
+						</div>
+
+						<template v-if="result.delivery.content.length > 0">
+							<table class="item_info_detail table_detail">
+								<caption>제주/도서산간지역</caption>
+								<colgroup>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+								<tr>
+									<th scope="row">우편번호/주소</th>
+									<th scope="row">제주</th>
+									<th scope="row">도서산간</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr v-for="data in result.delivery.content">
+									<td>
+										<p>{{data.zipcode}}</p>{{data.address}}
+									</td>
+									<td>
+										<template v-if="data.islandType == 'JEJU'">o</template>
+									</td>
+									<td>
+										<template v-if="data.islandType == 'ISLAND'">o</template>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</template>
+						<template v-else>
+							<div class="common_none">
+								<p>검색결과가 없습니다. 검색어에 잘못된 철자가 없는지, 정확한 주소인지 다시 한번 확인해 주세요.</p>
+							</div>
+						</template>
+
+						<pagination :current-page="result.delivery.number+1" :total-pages="result.delivery.totalPages"
+						            :page-target="'delivery'" @change="paging"
+						            v-if="result.delivery.content.length > 0"></pagination>
+					</div>
+					<button type="button" class="modal_close" data-dismiss="modal">
+						<span class="screen_out">제주/도서산간지역 닫기</span>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- 쿠폰다운로드 레이어-->
+		<div class="modal fade modal_full pop_down_coupon">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal_tit">다운로드 가능쿠폰</h3>
+					</div>
+					<div class="modal-body">
+						<button type="button" class="btn btn_lg btn_down_coupon" @click="downloadCoupon('all', 0)"
+						        v-if="result.coupon.content != undefined && result.coupon.content.length > 0">
+							<span>다운로드 가능쿠폰 모두받기</span>
+						</button>
+						<div class="coupon_list"
+						     v-if="result.coupon.content != undefined && result.coupon.content.length > 0">
+							<div class="list_area" v-for="(coupon,index) in result.coupon.content">
+								<div class="tit_area">
+									<p class="tit">{{coupon.couponName}}</p>
+								</div>
+								<p class="explain">{{formatNumber(coupon.couponPay)}}{{coupon.couponPayType == '1' ? '원'
+									: '%'}} 할인</p>
+								<div class="info">
+									<p>
+										<template v-if="coupon.couponApplyType == '0'">
+											제한없음
+										</template>
+										<template v-else-if="coupon.couponApplyType == '2'">
+											다운로드 시점부터 <strong>{{coupon.couponApplyDay}}일</strong> 후까지
+										</template>
+										<template v-else>
+											{{dateFormat(coupon.couponApplyStartDate, 'date')}} ~
+											{{dateFormat(coupon.couponApplyEndDate, 'date')}}
+										</template>
+									</p>
+									<p v-if="coupon.couponPayRestriction > 0">
+										{{formatNumber(coupon.couponPayRestriction)}}원 이상 구매시 사용가능</p>
+								</div>
+								<div class="etc_area">
+									<button type="button" class="btn_coupon_get"
+									        @click="downloadCoupon(coupon.couponId, index)"><span>쿠폰받기</span></button>
+								</div>
+							</div>
+						</div>
+						<div v-else>
+							<div class="common_none">
+								<p>현재 다운로드 가능한 쿠폰이 없습니다.</p>
+							</div>
+						</div>
+						<pagination :current-page="result.coupon.currentPage"
+						            :total-pages="result.coupon.totalPages" :page-target="'coupon'"
+						            @change="paging" v-if="result.coupon.content.length > 0"></pagination>
+					</div>
+					<button type="button" class="modal_close" data-dismiss="modal">
+						<span class="screen_out">다운로드가능쿠폰 닫기</span>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!--리뷰 필터-->
+		<div class="modal fade modal_full pop_rv_myfilter">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal_tit">나와 비슷한 체형의 상품후기 모아보기</h3>
+					</div>
+					<div class="modal-body">
+						<div class="md_rv_myft">
+							<div class="myft_top">
+								<button class="btn_filter_reset" @click="clearReviewFilter">필터 초기화</button>
+							</div><!--// myft_top -->
+							<dl class="myft_list">
+								<template v-for = "(filterGroup, index) in reviewFilters">
+									<dt>{{unescapeHtml(filterGroup.label)}}</dt>
+									<dd>
+										<div class="chk_g">
+											<span  v-for="(filterCode, codeIndex) in filterGroup.codes">
+												<input type="checkbox"
+												       :id="'filter-'+filterGroup.id+'-'+filterCode.id"
+												       :value = "filterCode.id"
+												       v-model="param.filter.filterCodeIds">
+												<label :for="'filter-'+filterGroup.id+'-'+filterCode.id">
+													{{unescapeHtml(filterCode.label)}}
+												</label>
+											</span>
+										</div><!--// chk_g -->
+									</dd>
+								</template><!--// myft_list -->
+							</dl><!--// myft_list -->
+							<div class="row no-gutters btn-group">
+								<div class="col col-md-4">
+									<button type="button" class="btn btn_lg btn_primary" @click="applyReviewFilter">적용하기</button>
+								</div>
+							</div>
+						</div><!--// md_rv_myft -->
+					</div>
+					<button type="button" class="modal_close" data-dismiss="modal">
+						<span class="screen_out">나와 비슷한 체형의 상품후기 모아보기 닫기</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<alert></alert>
+	<layout-footer :new-cart-quantity="newCartQuantity" :new-lately-item-count="newLatelyItemCount" :new-wishlist-count="newWishlistCount"></layout-footer>
+</div>
+
+
+<!-- JavaScript -->
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/swiper.min.js"></script>
+<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/jquery.popupoverlay.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.counterup.min.js"></script>
+<script src="/static/js/item.js"></script>
+<script src="/static/js/header.js"></script>
+<script src="/static/js/footer.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+<script src="/static/js/bootstrap/vendor/clipboard.min.js"></script>
+<script src="/modules/httpVueLoader.js"></script>
+<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+<script type="text/babel" src="/modules/op.vue.js"></script>
+
+<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+<script type="application/javascript">
+	(function(d, s, id){
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) {return;}
+		js = d.createElement(s); js.id = id;
+		js.src = "https://connect.facebook.net/ko_KR/sdk.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+</script>
+<script type="text/babel">
+	var vm = new Vue({
+		el: '#saleson',
+		components: {
+			'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+			'layout-header': httpVueLoader('/components/layouts/header.vue'),
+			'pagination': httpVueLoader('/components/ui/pagination.vue'),
+			'alert': httpVueLoader('/components/layouts/alert.vue'),
+		},
+		data: function () {
+			return {
+				showReviewForm : false,
+				itemUserCode: '',
+				error: {},
+				itemRelations: [],
+				newCartQuantity: 0,
+				newLatelyItemCount: 0,
+				newWishlistCount : 0,
+				latelyItems: [],
+				display: {
+					quantity: 1,
+					presentPrice: 0,
+				},
+				param: {
+					filter: {
+						filterCodeIds: [],
+						initFilterCodeIds: []
+					},
+					order: {
+						arrayRequiredItems: [],
+						campaignCode: null
+					},
+					review: {
+						page: 1,
+						itemsPerPage: 5,
+						itemUserCode: '',
+						size: 5,
+						orderBy:'LIKE_COUNT',
+						fcIds: ''
+					},
+					qna: {
+						page: 1,
+						itemsPerPage: 5,
+						itemUserCode: '',
+						size: 5
+					},
+					coupon: {
+						page: 1,
+						itemsPerPage: 5,
+						itemUserCode: '',
+						size: 5
+					},
+					delivery: {
+						page: 1,
+						itemsPerPage: 5,
+						query: '',
+						where: 'ADDRESS',
+						size: 5
+					},
+					category: {
+						categoryCode: '',
+						page: 1,
+						itemsPerPage: 20,
+					},
+					unRegisterReview: {
+						showStarFlags: [],
+						content: '',
+						subject: '',
+						files: [],
+						fileImages: []
+					}
+				},
+				item: {
+					freeGiftItemList: [],
+					itemImages: [],
+					itemInfos: [],
+					itemOptions: [],
+					itemRelations: []
+				},
+				itemOptionInfo: {
+					optionPrices: [],
+					selectOptionName1: '',
+					selectOptionName2: '',
+					selectOptionName3: '',
+					selectOptionIndex1: '',
+					selectOptionIndex2: '',
+					selectOptionIndex3: '',
+					optionName1: [],
+					optionName2: [],
+					optionName3: [],
+					optionName1Ids: [],
+					optionName2Ids: [],
+					optionName3Ids: [],
+					optionTextVals: [],
+					addOptionList: []
+				},
+				list: [],
+				pointPolicy: {},
+				config: {},
+				cardBenefits: {},
+				seller: {
+					companyName: '',
+					representativeName: '',
+					businessNumber: '',
+					telephoneNumber: '',
+					email: '',
+					faxNumber: '',
+					address: '',
+					addressDetail: ''
+				},
+				userId: 0,
+				result: {
+					review: {
+						currentPage: 1,
+						totalPages: 0,
+						totalElements: 0,
+						content: {}
+					},
+					qna: {
+						currentPage: 1,
+						totalPages: 0,
+						totalElements: 0,
+						content: {}
+					},
+					coupon: {
+						currentPage: 1,
+						totalPages: 0,
+						totalElements: 0,
+						content: {}
+					},
+					delivery: {
+						number: 0,
+						content: {}
+					}
+				},
+				itemQna: {
+					qnaGroup: ''
+				},
+				secretFlag: false,
+				slides: [
+					{
+						imageId: '',
+						image: ''
+					},
+				],
+				category: {
+					groups: []
+				},
+				currentCategories: [],
+				currentChildForMobile: [],
+				current: {
+					categoryLevel: '',
+					groupUrl: '',
+					groupName: '',
+					category1Url: '',
+					category1Name: '',
+					category2Url: '',
+					category2Name: '',
+					category3Url: '',
+					category3Name: '',
+				},
+				breadcrumbs: [],
+				isRestockNotice: '',
+				earnPoint: {
+					levelPoint : 0,
+					point : 0,
+					totalPoint : 0,
+					levelPointRate: 0,
+					pointRate: 0,
+					levelName: ''
+				},
+				reviewFilters: []
+			}
+		},
+		methods: {
+			initUnregisteredItemReviews: function (items) {
+				var contents = '';
+
+				try {
+					if (items != null && items.length > 0) {
+						contents = initContent(items[0]);
+					}
+				} catch (e) {
+					console.log(e)
+				}
+
+				return contents;
+
+				function initContent (item) {
+					return {
+						orderCode : item.orderCode,
+						itemId : item.itemId,
+						itemUserCode : item.itemUserCode,
+						imageSrc : item.imageSrc,
+						itemName : item.itemName,
+						score : 0,
+						content : '',
+						subject : '',
+						files : [],
+						fileImages : [],
+						showStarFlags : [false, false, false, false, false],
+					}
+				}
+			},
+			// 후기작성
+			registerReview : function(){
+				var content = this.param.unRegisterReview;
+
+				if(content.subject === ""){
+					$s.alert("제목을 입력해주세요.");
+					return false;
+				}
+
+				var formData = new FormData();
+				formData.append('subject', content.subject);       // 후기제목
+				formData.append('content', content.content);       // 후기내용
+				formData.append('score', content.score);
+				formData.append('itemId', content.itemId);
+				formData.append('item.itemName', content.itemName);
+				formData.append('orderCode', content.orderCode);
+
+				var files = content.files;
+
+				if (files != null && files.length > 0) {
+					formData.append('itemReviewImageFile', files[0]);
+					for (var i=0; i<files.length; i++) {
+						formData.append('itemReviewImageFiles[' + i + ']', files[i]);
+					}
+				}
+
+				$s.confirm('후기를 작성하시겠습니까?', function() {
+					$s.api.review(formData, function (response) {
+						if (response.status === "OK") {
+							$s.alert("후기가 작성되었습니다.", function () {
+								location.reload();
+							});
+						} else {
+							$s.alert(response);
+						}
+					});
+				});
+			},
+			fileSelect: function (e) {
+				var size = 5;
+				var limit = 4;
+				var extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+
+				var selectFiles = this.param.unRegisterReview.files;
+				var images = this.param.unRegisterReview.fileImages;
+				var fileList = e.target.files;
+
+				// 파일 첨부 개수 체크
+				if (limit < selectFiles.length + fileList.length) {
+					$s.alert('사진은 ' + limit + '장까지 첨부 가능합니다.');
+					return;
+				}
+
+				for (var i=0; i<fileList.length; i++) {
+					var file = fileList[i];
+					var fileExt = fileList[i].name;
+
+					// 사이즈 체크
+					if (fileExt != "") {
+						if (file.size > (size * 1024 * 1024)) {
+							$s.alert("파일크기는 " + size + "MB 이내로 등록 가능합니다.");
+							return;
+						}
+					}
+
+					// 확장자 체크
+					fileExt = fileExt.slice(fileExt.indexOf(".") + 1).toLowerCase();
+					if (!extensions.includes(fileExt)){
+						$s.alert("이미지 파일(jpg, jpeg, png, gif, bmp) 만 등록 가능합니다.");
+						return;
+					}
+
+					// 미리보기 생성
+					try {
+						var reader = new FileReader();
+						var self = this;
+
+						reader.onload = function (ie) {
+							images.push(ie.target.result);
+							self.param.unRegisterReview.fileImages = images;
+						};
+
+						selectFiles.push(file);
+						self.param.unRegisterReview.files = selectFiles;
+
+						reader.readAsDataURL(file);
+					} catch (e) {
+
+					}
+				}
+			},
+
+			fileDelete : function(fileIndex){
+				var files = this.param.unRegisterReview.files;
+				var images = this.param.unRegisterReview.fileImages;
+
+				files.splice(fileIndex,1);
+				images.splice(fileIndex,1);
+			},
+
+			rating : function(starIndex){
+
+				var score = starIndex + 1;
+
+				this.param.unRegisterReview.score = score;
+
+				var showStarFlags = [false, false, false, false, false];
+
+				for(var i = 0; i <= starIndex; i++){
+					showStarFlags[i] = true;
+				}
+
+				this.param.unRegisterReview.showStarFlags = showStarFlags;
+			},
+			closeReviewForm : function () {
+				vm.showReviewForm = false;
+			},
+			writeReview : function () {
+				$s.redirect('/mypage/order.html');
+			},
+			getItemRelations: function () {
+
+				var param = {
+					itemUserCode : this.itemUserCode
+				}
+
+				$s.api.viewItemRelations(param, function (response) {
+					vm.itemRelations = response.list;
+				});
+			},
+			inputQuantity: function (e, index) {
+				var keyValue = e.target.value.replace(/[^0-9]/g, "");
+				var addOptionList = this.itemOptionInfo.addOptionList;
+
+				if (keyValue.substring(0, 1) == 0) {
+					keyValue = keyValue.substring(1, keyValue.length);
+				}
+
+				addOptionList[index].quantity = keyValue;
+
+				if (!this.checkForItem("manual", index)) {
+					return;
+				}
+
+				addOptionList[index].optionPrice = addOptionList[index].tempOptionPrice * addOptionList[index].quantity;
+
+				this.setRequiredItem(index);
+			},
+
+			getItemReviews: function (page) {
+				this.param.review.itemUserCode = this.itemUserCode;
+				this.param.review.page = page;
+
+				$s.api.getItemReviewsForDetail(this.param.review,
+					function (response) {
+						vm.result.review = response;
+					}
+				);
+			},
+			getItemQna: function (page) {
+				this.param.qna.page = page;
+				this.param.qna.itemUserCode = this.itemUserCode;
+				$s.api.getItemQna(this.param.qna,
+					function (response) {
+						vm.result.qna = response;
+					}
+				);
+			},
+			getDownloadCouponList: function (page) {
+				this.param.coupon.itemUserCode = this.itemUserCode;
+				this.param.coupon.page = page;
+				$s.api.downloadItemCouponList(this.param.coupon,
+					function (response) {
+						vm.result.coupon = response;
+					}
+				);
+			},
+			getIslandType: function (page) {
+				this.param.delivery.page = page;
+
+				$s.api.getIslandType(this.param.delivery,
+					function (response) {
+						vm.result.delivery = response.pageContent;
+					}
+				);
+			},
+			paging: function (page, target) {
+
+				if (target == 'review') {
+
+					this.getItemReviews(page);
+
+				} else if (target == 'qna') {
+
+					this.getItemQna(page);
+
+				} else if (target == 'coupon') {
+
+					this.getDownloadCouponList(page);
+
+				} else if (target == 'delivery') {
+
+					this.getIslandType(page);
+
+				} else if (target == 'all') {
+
+					this.getItemReviews(page);
+					this.getItemQna(page);
+					this.getDownloadCouponList(page);
+					this.getIslandType(page);
+
+				}
+			},
+
+			isUserDiscount: function () {
+				return this.item.exceptUserDiscountPresentPrice != this.item.presentPrice;
+			},
+
+			plus: function (index) {
+				var addOptionList = this.itemOptionInfo.addOptionList;
+
+				//$s.log("Min/Max Order Quantity:" + this.item.orderMinQuantity + ":" + this.item.orderMaxQuantity);
+
+				if (!this.checkForItem("plus", index)) {
+					return;
+				}
+
+				addOptionList[index].quantity += 1;
+				addOptionList[index].optionPrice = addOptionList[index].tempOptionPrice * addOptionList[index].quantity;
+
+				this.setRequiredItem(index);
+			},
+
+			minus: function (index) {
+				var addOptionList = this.itemOptionInfo.addOptionList;
+
+				if (!this.checkForItem("minus", index)) {
+					return;
+				}
+
+				addOptionList[index].quantity -= 1;
+				addOptionList[index].optionPrice = addOptionList[index].tempOptionPrice * addOptionList[index].quantity;
+				this.setRequiredItem(index);
+			},
+
+			setRequiredItem: function (index) {
+				var addOptionList = this.itemOptionInfo.addOptionList;
+				var item = this.item.itemId;
+				var option = '';
+				var arrayRequiredItems = this.param.order.arrayRequiredItems;
+				var arrayRequiredItem = arrayRequiredItems[index];
+				var itemPrice = this.item.presentPrice;
+
+				if (this.item.itemOptionFlag == 'N') {
+					if (addOptionList[index] == undefined) {
+						addOptionList.push({
+							'quantity': this.item.orderMinQuantity,
+							'optionPrice': itemPrice,
+							'tempOptionPrice': itemPrice
+						});
+					}
+				} else {
+					option = arrayRequiredItem.substr(arrayRequiredItem.lastIndexOf("||") + 2);
+				}
+
+				var quantity = addOptionList[index].quantity;
+
+				if (arrayRequiredItems.length == 0) {
+					arrayRequiredItems.push(item + '||' + quantity + '||' + option);
+				} else {
+					arrayRequiredItems[index] = item + '||' + quantity + '||' + option;
+				}
+			},
+
+			deleteOption: function (index) {
+				this.itemOptionInfo.addOptionList.splice(index, 1);
+				this.param.order.arrayRequiredItems.splice(index, 1);
+			},
+
+			buyOrder: function () {
+				if (this.checkForItem('buy_now', 0)) {
+
+					var campaignCode = $s.core.getSession('campaign_code');
+					vm.param.order.campaignCode = campaignCode;
+
+					$s.api.buyOrder(vm.param.order, function (response) {
+
+						var url = '/order/step1.html';
+
+						if (!$s.isLogin()) {
+							$s.core.setSession($s.const.BUY_ORDER, JSON.stringify(vm.param.order));
+							url = '/order/no-member.html';
+						}
+
+						$s.redirect(url);
+
+					}, function(error) {
+						$s.alert(error.response.data.message);
+					});
+
+				}
+			},
+
+			addToCart: function () {
+				if (this.checkForItem('cart', 0)) {
+					$s.api.addToCart(vm.param.order, function (response) {
+						if (response.status == 'OK') {
+							$s.api.getCartInfo(function (response) {
+								vm.newCartQuantity = response.cartQuantity;
+							});
+
+							$s.toast('해당 상품이 장바구니 담겼습니다.');
+						}
+					});
+				}
+
+			},
+
+			addToWishList: function () {
+				$s.api.addToWishList(vm.item.itemId, function (response) {
+					if (response.status == 'OK') {
+						$s.toast('해당 상품이 관심상품에 담겼습니다.');
+						$s.api.getQuickInfo(function (data) {
+							vm.newWishlistCount = data.wishlistCount;
+						});
+					}
+				})
+			},
+
+			reviewAssessment: function (index, score) {
+				if (index <= score) {
+					return true;
+				}
+				return false;
+			},
+
+			addTextOption : function(){
+				var optionText = '';
+				var optionData = '';
+				var optionCount = 0;
+				var optionAdditionAmount = 0;
+				var optionMaxQuantity = 9999;
+				var optionTxtName = '';
+				var toi = vm.isMobile==true?$(".option_area .txt_box"):$(".detail_view_wrap .txt_box");
+				var valCheck = true;
+				$(toi).find(".text-option-id").each(function() {
+					var $textOption = $(this).closest('div');
+					var optionName = $textOption.find('.text-option-name').val();
+					var optionValue = $textOption.find('.text-option-value').val();
+					if(optionValue===''){
+						$s.alert(optionName+"의 옵션을 입력해주세요.");
+						valCheck = false;
+						return false;
+					}
+				});
+				if(valCheck){
+					$(toi).find(".text-option-id").each(function() {
+						if (optionCount > 0) {
+							optionTxtName += ',';
+							optionData += '^^^';
+						}
+
+						var $textOption = $(this).closest('div');
+						var optionId = $(this).val();
+						var optionName = $textOption.find('.text-option-name').val();
+						var optionValue = $textOption.find('.text-option-value').val();
+
+						var optionPrice = Number($textOption.find('.text-option-price').val());
+
+						optionData += optionId + '```' + optionValue;
+
+						optionCount++;
+
+						optionTxtName += optionName+":"+optionValue;
+
+						optionAdditionAmount += optionPrice;
+
+						$textOption.find('.text-option-value').val("");
+					});
+
+					// 중복체크
+					var isAlreadyAddition = false;
+					$(".list_in").each(function(){
+						$(this).find("li").each(function(){
+							var currentText = $(this).find('.op_tit').text().replace(/[\r|\n|\t]/g, '');
+
+							if(currentText == optionTxtName){
+								isAlreadyAddition = true;
+								return false;
+							}
+						});
+					});
+
+					if(optionTxtName != "" && !isAlreadyAddition){
+						this.param.order.arrayRequiredItems.push(this.item.itemId + "||" + this.item.orderMinQuantity + "||" + optionData);
+
+						var addOptionList = this.itemOptionInfo.addOptionList;
+						var item = this.item;
+						var itemPrice = item.presentPrice;
+
+						addOptionList.push({
+							'optionName': optionTxtName,
+							'quantity': item.orderMinQuantity,
+							'optionPrice': itemPrice * item.orderMinQuantity,
+							'tempOptionPrice': itemPrice,
+							'optionStockQuantity': item.itemOptions[0].optionStockQuantity
+						});
+					}
+				}
+			},
+
+			addOptionItems: function (index, level) {
+				var checkDuplication = false;
+				var itemOptionInfo = this.itemOptionInfo;
+				var optionId = '';
+
+				if (level === 1) {
+					optionId = itemOptionInfo.optionName1Ids[index];
+				} else if (level === 2) {
+					optionId = itemOptionInfo.optionName2Ids[index];
+				} else if (level === 3) {
+					optionId = itemOptionInfo.optionName3Ids[index];
+				}
+
+				for (var i=0; i<this.param.order.arrayRequiredItems.length; i++) {
+					var requiredItem = this.param.order.arrayRequiredItems[i];
+
+					if (requiredItem.indexOf(optionId) >= 0) {
+						checkDuplication = true;
+						break;
+					}
+				}
+
+				if (!checkDuplication) {
+					this.param.order.arrayRequiredItems.push(this.item.itemId + "||" + this.item.orderMinQuantity + "||" + optionId + "```");
+					this.addOptionList(index, level);
+				}
+
+				// 초기화
+				itemOptionInfo.optionName1 = new Array();
+				itemOptionInfo.optionName1Ids = new Array();
+				itemOptionInfo.optionName2 = new Array();
+				itemOptionInfo.optionName2Ids = new Array();
+				itemOptionInfo.optionName3 = new Array();
+				itemOptionInfo.optionName3Ids = new Array();
+				itemOptionInfo.selectOptionName1 = '';
+				itemOptionInfo.selectOptionName2 = '';
+				itemOptionInfo.selectOptionName3 = '';
+				itemOptionInfo.selectOptionIndex1 = '';
+				itemOptionInfo.selectOptionIndex2 = '';
+				itemOptionInfo.selectOptionIndex3 = '';
+
+				document.getElementsByClassName('option_drop')[0].style.display = 'none';
+				document.getElementsByClassName('option_drop')[1].style.display = 'none';
+				document.getElementsByClassName('select-pc')[0].style.display = 'block';
+
+				this.writeOptionName();
+			},
+
+			writeOptionName: function (level, optionName, index) {
+				level = level || 0;
+				var item = this.item;
+				var itemOptions = this.item.itemOptions;
+				var itemOptionInfo = this.itemOptionInfo;
+				var checkDuplicaion = '';
+
+				var pTagLength = '';
+				var dropdownMenu = document.getElementsByClassName('dropdown_area')[0];
+				if (dropdownMenu) {
+					pTagLength = dropdownMenu.getElementsByClassName('tit').length;
+				}
+
+				if (level === 1) {
+					itemOptionInfo.selectOptionName1 = optionName;
+					itemOptionInfo.selectOptionIndex1 = index;
+					itemOptionInfo.optionName2 = [];
+					itemOptionInfo.optionName3 = [];
+					itemOptionInfo.optionName2Ids = [];
+					itemOptionInfo.optionName3Ids = [];
+
+					if (item.itemOptionType == "S") {
+						this.addOptionItems(index, level);
+						return false;
+					} else {
+						// 다음 옵션 표시
+						this.displayNextOptionGroup(level);
+						itemOptionInfo.optionPrices = [];
+					}
+
+				} else if (level === 2) {
+					itemOptionInfo.selectOptionName2 = optionName;
+					itemOptionInfo.selectOptionIndex2 = index;
+					itemOptionInfo.optionName3 = [];
+					itemOptionInfo.optionName3Ids = [];
+
+					if (item.itemOptionType == "S2") {
+						this.addOptionItems(index, level);
+						return false;
+					} else {
+						this.displayNextOptionGroup(level);
+						itemOptionInfo.optionPrices = [];
+					}
+
+				} else if (level === 3) {
+					itemOptionInfo.selectOptionName3 = optionName;
+					itemOptionInfo.selectOptionIndex3 = index;
+					this.addOptionItems(index, level);
+				}
+
+				for (var i = 0; i < itemOptions.length; i++) {
+					if (level === 0) {
+						itemOptionInfo.itemOptionTitle1 = item.itemOptionTitle1;
+						itemOptionInfo.itemOptionTitle2 = item.itemOptionTitle2;
+						itemOptionInfo.itemOptionTitle3 = item.itemOptionTitle3;
+
+						if (this.item.itemOptionType === "S") {
+							if (checkDuplicaion != itemOptions[i].optionName2) {
+								itemOptionInfo.optionName1.push(itemOptions[i].optionName2);
+								itemOptionInfo.optionPrices.push(itemOptions[i].optionPrice);
+							}
+
+							checkDuplicaion = itemOptions[i].optionName2;
+						} else {
+							if (checkDuplicaion != itemOptions[i].optionName1) {
+								itemOptionInfo.optionName1.push(itemOptions[i].optionName1);
+								itemOptionInfo.optionPrices.push(itemOptions[i].optionPrice);
+							}
+
+							checkDuplicaion = itemOptions[i].optionName1;
+						}
+
+						itemOptionInfo.optionName1Ids.push(itemOptions[i].itemOptionId);
+					} else if (level === 1) {
+						if (checkDuplicaion != itemOptions[i].optionName2 && itemOptions[i].optionName1 == itemOptionInfo.selectOptionName1) {
+							itemOptionInfo.optionName2.push(itemOptions[i].optionName2);
+							itemOptionInfo.optionName2Ids.push(itemOptions[i].itemOptionId);
+						}
+
+						if (itemOptionInfo.selectOptionName1 == itemOptions[i].optionName1) {
+							itemOptionInfo.optionPrices.push(itemOptions[i].optionPrice);
+						}
+						checkDuplicaion = itemOptions[i].optionName2;
+					} else if (level === 2) {
+						if (itemOptions[i].optionName1 == itemOptionInfo.selectOptionName1 && itemOptions[i].optionName2 == itemOptionInfo.selectOptionName2) {
+							itemOptionInfo.optionName3.push(itemOptions[i].optionName3);
+							itemOptionInfo.optionPrices.push(itemOptions[i].optionPrice);
+							itemOptionInfo.optionName3Ids.push(itemOptions[i].itemOptionId);
+						}
+					} else if (level === 3) {
+						if (itemOptions[i].optionName1 == itemOptionInfo.selectOptionName1
+							&& itemOptions[i].optionName2 == itemOptionInfo.selectOptionName2
+							&& itemOptions[i].optionName3 == itemOptionInfo.selectOptionName3) {
+
+							itemOptionInfo.optionPrices.push(itemOptions[i].optionPrice);
+						}
+					}
+
+				}
+			},
+
+			displayNextOptionGroup: function (level) {
+				var itemOptionType = this.item.itemOptionType;
+				var itemOptionInfo = this.itemOptionInfo;
+
+				if (itemOptionType === 'S2') {
+					itemOptionInfo.optionName1 = new Array();
+					itemOptionInfo.optionName1Ids = new Array();
+				} else if (itemOptionType === 'S3') {
+					if (level === 1) {
+						itemOptionInfo.optionName1 = new Array();
+						itemOptionInfo.optionName1Ids = new Array();
+					} else if (level === 2) {
+						itemOptionInfo.optionName2 = new Array();
+						itemOptionInfo.optionName2Ids = new Array();
+					}
+				}
+			},
+
+			addOptionList: function (index, level) {
+				var pTagLength = document.getElementsByClassName('dropdown_area')[0].getElementsByClassName('tit').length;
+				var addOptionList = this.itemOptionInfo.addOptionList;
+				var optionInfo = this.itemOptionInfo;
+				var item = this.item;
+				var itemOptions = this.item.itemOptions;
+				var itemOptionInfo = this.itemOptionInfo;
+				var optionName = '';
+				var optionPrice = optionInfo.optionPrices[index];
+				var itemPrice = item.presentPrice;
+
+				if (pTagLength == level && pTagLength == 1) {
+					// 선택형
+					optionName = item.itemOptions[0].optionName1 + ": " + optionInfo.selectOptionName1;
+				} else if (pTagLength == level && pTagLength >= 2) {
+					// S2
+					optionName = item.itemOptionTitle1 + ": " + optionInfo.selectOptionName1 + " | "
+						+ item.itemOptionTitle2 + ": " + optionInfo.selectOptionName2;
+
+					if (pTagLength == level && pTagLength == 3) {
+						// S3
+						optionName += " | " + item.itemOptionTitle3 + ": " + optionInfo.selectOptionName3;
+					}
+				}
+
+				optionName += optionPrice > 0 ? " (+" + optionPrice + ")" : "";
+
+				addOptionList.push({
+					'optionName': optionName,
+					'quantity': item.orderMinQuantity,
+					'optionPrice': (itemPrice + optionPrice) * item.orderMinQuantity,
+					'tempOptionPrice': itemPrice + optionPrice,
+					'optionStockQuantity': item.itemOptions[index].optionStockQuantity
+				});
+
+				itemOptionInfo.optionName1 = [];
+				itemOptionInfo.optionName2 = [];
+				itemOptionInfo.optionName3 = [];
+
+				for (var i = 0; i < itemOptions.length; i++) {
+					itemOptionInfo.optionName1.push(itemOptions[i].optionName1);
+					itemOptionInfo.optionName1Ids.push(itemOptions[i].itemOptionId);
+				}
+			},
+			checkForItem: function (target, index) {
+
+				var addOptionList = this.itemOptionInfo.addOptionList;
+				var stockQuantity = this.item.stockQuantity;
+
+				// 품절 확인.
+				if (this.item.isItemSoldOut) {
+					$s.alert('해당 상품은 판매 종료 되었습니다.');
+					return false;
+				}
+
+				// 비회원 구매 불가인 경우 로그인 페이지로 이동
+				if (this.checkForNonmemberOrder() == false) {
+					return false;
+				}
+
+				if (target == 'wishlist') {
+					return true;
+				}
+
+				if (target == 'cart' || target == 'buy_now') {
+					if (this.param.order.arrayRequiredItems.length == 0) {
+						$s.alert('상품 필수옵션을 선택하세요.');
+						return false;
+					}
+				} else if (target == 'minus') {
+
+					if (this.item.itemOptionFlag == 'Y') {
+						var optionStockQuantity = this.item.itemOptions[index].optionStockQuantity;
+					}
+
+					if (this.item.orderMinQuantity == addOptionList[index].quantity) {
+						$s.alert('최소 구매 수량은 ' + this.item.orderMinQuantity + '개 입니다.');
+						return false;
+					} else if (addOptionList[index].quantity <= 1) {
+						$s.alert('상품을 1개 이상 선택해주세요.');
+						return false;
+					}
+				} else if (target == 'plus') {
+
+					if (this.item.itemOptionFlag === 'Y') {
+						var optionStockQuantity = this.item.itemOptions[index].optionStockQuantity;
+
+						if (addOptionList[index].quantity > optionStockQuantity && optionStockQuantity != -1) {
+							$s.alert('옵션 별 최대 구매 수량은 ' + optionStockQuantity + '개 입니다.\n구매 수량을 다시 확인해주세요.');
+							addOptionList[index].quantity = optionStockQuantity;
+							return false;
+						}
+					}
+
+					if (this.item.orderMaxQuantity <= addOptionList[index].quantity) {
+						$s.alert('최대 구매 수량은 ' + this.item.orderMaxQuantity + '개 입니다.');
+						addOptionList[index].quantity = this.item.orderMaxQuantity;
+						return false;
+					}
+				} else if (target == 'manual') {
+					if (this.item.itemOptionFlag === 'Y') {
+						var optionStockQuantity = this.item.itemOptions[index].optionStockQuantity;
+
+						if (addOptionList[index].quantity > optionStockQuantity && optionStockQuantity != -1) {
+							$s.alert('옵션 별 최대 구매 수량은 ' + optionStockQuantity + '개 입니다.\n구매 수량을 다시 확인해주세요.');
+							addOptionList[index].quantity = optionStockQuantity;
+							this.setRequiredItem(index);
+							return false;
+						}
+					}
+
+					if (this.item.orderMaxQuantity < addOptionList[index].quantity) {
+						$s.alert('최대 구매 수량은 ' + this.item.orderMaxQuantity + '개 입니다.');
+						addOptionList[index].quantity = this.item.orderMaxQuantity;
+						this.setRequiredItem(index);
+						return false;
+					}
+
+					if (this.item.orderMinQuantity > addOptionList[index].quantity) {
+						$s.alert('최소 구매 수량은 ' + this.item.orderMinQuantity + '개 입니다.');
+						addOptionList[index].quantity = this.item.orderMinQuantity;
+						this.setRequiredItem(index);
+						return false;
+					} else if (addOptionList[index].quantity < 1) {
+						$s.alert('상품을 1개 이상 선택해주세요.');
+						addOptionList[index].quantity = 1;
+						this.setRequiredItem(index);
+						return false;
+					}
+				} else {
+					$s.alert('처리할 수 없습니다.');
+					return false;
+				}
+
+				return true;
+			},
+			checkForNonmemberOrder: function () {
+				var nonmemberOrderType = this.item.nonmemberOrderType;
+
+				if (nonmemberOrderType != '1') {
+					// if (this.userId <= 0 && nonmemberOrderType == '1') {
+					var message = '회원만 구매가 가능합니다. 로그인 페이지로 이동하시겠습니까?';	// 회원만 구매가 가능합니다. 로그인 페이지로 이동하시겠습니까?
+					if (confirm(message)) {
+						$s.redirect($s.pages.LOGIN + "?target=" + encodeURIComponent($s.requestContext.requestFullUri));
+					}
+					return false;
+				}
+			},
+
+			snsShare: function (target) {
+
+				var title = this.item.itemName;
+				var description = this.item.itemSummary;
+				var imageUrl = this.itemImage(this.item.imageSrc);
+				var link = this.item.eventViewUrl;
+
+				if (target == 'facebook') {
+					$s.api.social.facebook(title, description, imageUrl, link);
+				} else if (target == 'twitter') {
+					$s.api.social.twitter(title, description, imageUrl, link);
+				} else if (target == 'kakao') {
+					$s.api.social.kakao(title, description, imageUrl, link);
+				} else if (target == 'urlCopy') {
+					var temp = document.createElement('input');
+					temp.classList.add('on');
+					temp.value = link;
+
+					document.getElementById('saleson').appendChild(temp);
+					temp.select();
+					document.execCommand('copy');
+
+					$s.alert('링크가 복사되었습니다.');
+				} else {
+					$s.alert(target + '는 추가작업이 필요합니다.');
+				}
+			},
+
+			timeFormat: function (date) {
+				return date.replace(/(\d{2})(\d{2})(\d{2})/, '$1:$2:$3');
+			},
+			downloadCoupon: function (downloadTargetId, index) {
+				var itemCoupons = vm.result.coupon.content;
+
+				// 전체 쿠폰 일괄발급
+				if (downloadTargetId == 'all') {
+
+					var param = {
+						itemUserCode: vm.itemUserCode
+					}
+
+					$s.api.downloadAllItemCouponList(param, function (response) {
+						vm.paging(1, 'coupon');
+						$s.alert('쿠폰 모두받기가 완료 되었습니다.');
+					});
+
+				} else {
+					var param = {
+						'couponId': downloadTargetId
+					};
+
+					$s.api.couponDownload(param, function (response) {
+						if (response.status === 'OK') {
+							itemCoupons.splice(index, 1);
+						}
+
+						$s.alert(response.message);
+					});
+
+					this.paging(this.param.coupon.page, 'coupon');
+				}
+			},
+			registerQna: function () {
+				this.itemQna.itemId = this.item.itemId;
+
+				if ($s.isLogin()) {
+					$s.api.createItemQna(this.itemQna, function (response) {
+						if (response.status === 'OK') {
+							$s.alert('상품Q&A가 등록되었습니다.');
+							vm.paging(vm.param.coupon.page, 'qna');
+
+							vm.itemQna.qnaGroup = '';
+							vm.itemQna.question = '';
+							vm.itemQna.subject = '';
+
+							document.getElementById('qna_write').style.display = 'none';
+						}
+					});
+				} else {
+					$s.alert('로그인이 필요 합니다.');
+					return;
+				}
+			},
+			telLink: function () {
+				location.href = 'tel:' + this.seller.telephoneNumber;
+			},
+			getNewLatelyItems: function () {
+				var lately = $s.core.getSession('lately_item');
+
+				if (typeof lately == 'undefined' || lately == null) {
+					this.latelyItems = [];
+				} else {
+					this.latelyItems = JSON.parse(lately);
+				}
+
+				this.newLatelyItemCount = this.latelyItems.length;
+			},
+			getCurrentCategories: function () {
+				var breadcrumbs = vm.breadcrumbs[0];
+
+				if (breadcrumbs !== undefined) {
+					vm.breadcrumbs = breadcrumbs;
+					vm.current.groupUrl = breadcrumbs.groupUrl;
+					vm.current.groupName = breadcrumbs.groupName;
+					vm.current.category1Url = breadcrumbs.breadcrumbCategories[0].categoryUrl;
+					vm.current.category1Name = breadcrumbs.breadcrumbCategories[0].categoryName;
+					vm.current.categoryLevel = "1";
+
+					if (breadcrumbs.breadcrumbCategories[1] !== undefined) {
+						vm.current.category2Url = breadcrumbs.breadcrumbCategories[1].categoryUrl;
+						vm.current.category2Name = breadcrumbs.breadcrumbCategories[1].categoryName;
+						vm.current.categoryLevel = "2";
+					} else {
+						vm.current.category2Name = "전체";
+					}
+
+					if (breadcrumbs.breadcrumbCategories[2] !== undefined) {
+						vm.current.category3Url = breadcrumbs.breadcrumbCategories[2].categoryUrl;
+						vm.current.category3Name = breadcrumbs.breadcrumbCategories[2].categoryName;
+						vm.current.categoryLevel = "3";
+					} else {
+						vm.current.category3Name = "전체";
+					}
+
+					var currentCategories = [];
+
+					currentCategories.push({
+						'title': vm.current.groupName,
+						'codes': vm.category.groups
+					});
+
+					currentCategories.push({
+						'title': vm.current.category1Name,
+						'codes': vm.childCategories(vm.current.groupUrl)
+					});
+
+					currentCategories.push({
+						'title': vm.current.category2Name,
+						'codes': vm.childCategories(vm.current.groupUrl, vm.current.category1Url)
+					});
+
+					if (vm.current.categoryLevel === '2' || vm.current.categoryLevel === '3') {
+						currentCategories.push({
+							'title': vm.current.category3Name,
+							'codes': vm.childCategories(vm.current.groupUrl, vm.current.category1Url, vm.current.category2Url)
+						});
+					}
+
+					var childCategories = vm.childCategories(breadcrumbs.groupUrl, breadcrumbs.categoryUrl1, breadcrumbs.categoryUrl2);
+					vm.currentCategories = currentCategories;
+
+					var categoryName = vm.currentCategories[vm.current.categoryLevel].title;
+					var categories = vm.currentCategories[vm.current.categoryLevel].codes
+					var categoryCode = '';
+
+					for (var i = 0; i < categories.length; i++) {
+						var category = categories[i];
+
+						if (category.categoryId == vm.breadcrumbs.categoryClass) {
+							categoryCode = category.url;
+						}
+					}
+
+					var currentChildForMobile = {
+						categoryName: categoryName,
+						categoryCode: vm.currentCategories[vm.current.categoryLevel].codes,
+						categories: categories,
+						childCategories: childCategories
+					}
+					vm.currentChildForMobile = currentChildForMobile;
+				}
+			},
+			link: function (url, index) {
+				if (index === 0) {
+					$s.redirect('/category?code=' + this.childCategories(url)[0].url);
+				} else {
+					$s.redirect('/category?code=' + url);
+				}
+			},
+			selectOptionTitle: function (level) {
+				var itemOptions = this.item.itemOptions;
+				var itemOptionInfo = this.itemOptionInfo;
+
+				if (level === 1) {
+					// 초기화
+					itemOptionInfo.optionName1 = new Array();
+					itemOptionInfo.optionName1Ids = new Array();
+					itemOptionInfo.optionName2 = new Array();
+					itemOptionInfo.optionName2Ids = new Array();
+					itemOptionInfo.optionName3 = new Array();
+					itemOptionInfo.optionName3Ids = new Array();
+					itemOptionInfo.selectOptionName1 = '';
+					itemOptionInfo.selectOptionName2 = '';
+					itemOptionInfo.selectOptionName3 = '';
+					itemOptionInfo.selectOptionIndex1 = '';
+					itemOptionInfo.selectOptionIndex2 = '';
+					itemOptionInfo.selectOptionIndex3 = '';
+
+					this.writeOptionName();
+
+				} else if (level === 2) {
+					itemOptionInfo.optionName3 = new Array();
+					itemOptionInfo.optionName3Ids = new Array();
+					itemOptionInfo.selectOptionName3 = '';
+					itemOptionInfo.selectOptionIndex2 = '';
+					itemOptionInfo.selectOptionIndex3 = '';
+
+					this.writeOptionName(1, this.itemOptionInfo.selectOptionName1, itemOptionInfo.selectOptionIndex1);
+				}
+			},
+
+			getRestockNotice: function(itemId) {
+				var param = {
+					'itemId' : itemId
+				}
+				$s.api.getRestockNotice(param, function (response) {
+					vm.isRestockNotice = response.isRestockNotice;
+				});
+			},
+
+			restockNotice: function() {
+				if (vm.isRestockNotice === true || document.getElementById('restock').getAttribute('class') === 'restock on') {
+					$s.alert('이미 신청한 상태입니다.');
+					return false;
+				}
+
+				if ($s.isLogin() === false) {
+					$s.alert('로그인 후 이용이 가능합니다.', function () {
+						$s.redirect($s.pages.LOGIN + '?target=' + encodeURIComponent($s.requestContext.requestFullUri));
+					});
+				} else {
+					var param = {
+						'itemId' : vm.item.itemId
+					}
+					$s.api.restockNotice(param, function (response) {
+						if (response.status === 'OK'){
+							document.getElementById('restock').setAttribute('class', 'restock on');
+							$s.alert('재입고 알림을 신청했습니다.');
+						}
+					});
+				}
+			},
+
+			addItemReviewLike: function(index) {
+
+				var review = vm.result.review.content[index],
+					likeCount = review.likeCount;
+
+				$s.api.addItemReviewLike(review.itemReviewId, function (response) {
+
+					var message = '';
+
+					if (response.flag) {
+						message = '해당 리뷰가 도움이 되었습니다.';
+						review.likeCount = likeCount + 1;
+					} else {
+						message = '이미 도움을 주셨습니다.';
+					}
+
+					$s.alert(message);
+				});
+			},
+			selectReviewOrderBy: function(e) {
+
+				var value = e.target.value;
+
+				this.param.review.orderBy = value;
+				this.paging(1, 'review');
+			},
+			isDisplayReviewInfo: function(index) {
+
+				var review = vm.result.review.content[index];
+
+				return review.filters.length > 0 || review.displayOptionsFlag;
+			},
+
+			validFilter: function (groupId, codeId) {
+				var group = this.getFilterGroup(groupId);
+
+				if (group == null) {
+					return false;
+				}
+
+				var code = this.getFilterCode(groupId, codeId);
+
+				if (code == null) {
+					return false;
+				}
+
+				return true;
+			},
+
+			getFilterGroup: function (groupId) {
+
+				var groups = this.reviewFilters;
+
+				if (groups != null && groups.length > 0) {
+
+					for (var i=0; i<groups.length; i++) {
+
+						if (groupId == groups[i].id) {
+							return groups[i];
+						}
+
+					}
+				}
+
+				return null;
+			},
+
+			getFilterCode: function (groupId, codeId) {
+
+				var group = this.getFilterGroup(groupId);
+
+				if (group == null) {
+					return null;
+				}
+
+				var codes = group.codes;
+
+				if (codes != null && codes.length > 0) {
+
+					for (var i=0; i<codes.length; i++) {
+
+						if (codeId == codes[i].id) {
+							return codes[i];
+						}
+
+					}
+				}
+
+				return null
+			},
+
+			getFilterGroupName: function(groupId) {
+
+				var group = this.getFilterGroup(groupId);
+
+				if (group != null) {
+					return this.unescapeHtml(group.label);
+				}
+
+				return '';
+			},
+			getFilterCodeName: function(groupId, codeId) {
+
+				var code = this.getFilterCode(groupId, codeId);
+
+				if (code != null) {
+					return this.unescapeHtml(code.label);
+				}
+
+				return '';
+			},
+
+			openReviewFilter: function() {
+				var filters = this.param.filter.initFilterCodeIds;
+				this.param.filter.filterCodeIds = filters;
+			},
+			closeReviewFilter: function() {
+				$('.pop_rv_myfilter').modal("hide");
+			},
+			applyReviewFilter: function() {
+				var filters = this.param.filter.filterCodeIds;
+				this.param.filter.initFilterCodeIds = filters;
+
+				this.param.review.fcIds = filters.join('||');
+				this.paging(1, 'review');
+				this.closeReviewFilter();
+			},
+			clearReviewFilter: function() {
+				this.param.filter.filterCodeIds = [];
+				this.param.filter.initFilterCodeIds = [];
+				this.param.review.fcIds = '';
+			}
+		},
+		watch: {
+			secretFlag: function (value) {
+				var result = 'N';
+
+				if (value == true) {
+					result = 'Y';
+				}
+				this.itemQna.secretFlag = result;
+			},
+		},
+		computed: {
+			ratingStarHtml: function () {
+				var maxScore = 5,
+					ratingScore = Math.ceil(Number(this.item.reviewScore)),
+					subScore = maxScore - ratingScore;
+
+				if (ratingScore > maxScore) ratingScore = maxScore;
+
+				var ratingStarHtml = '';
+
+				for (var i = 0; i < ratingScore; i++) {
+					ratingStarHtml += "\<span class='on'\>\<\/span\>";
+				}
+
+				if (subScore > 0) {
+					for (var i = 0; i < subScore; i++) {
+						ratingStarHtml += "\<span\>\<\/span\>";
+					}
+				}
+				return ratingStarHtml;
+			},
+			ratingStarScore: function () {
+				var maxScore = 5,
+					score = Number(this.item.reviewScore).toFixed(1);
+				if (score > maxScore) score = maxScore;
+
+				return score;
+			},
+			total: function () {
+
+				var itemPrice = this.item.presentPrice;
+
+				return this.display.quantity * itemPrice;
+			},
+
+			optionItemTotal: function () {
+
+				var addOptionList = this.itemOptionInfo.addOptionList;
+				var sum = 0;
+				if (typeof addOptionList !== 'undefined') {
+					for (var i = 0; i < addOptionList.length; i++) {
+						sum += addOptionList[i].optionPrice;
+					}
+				}
+				return sum;
+			},
+			pointInfoText: function () {
+
+				var earnPoint = this.earnPoint;
+				var text = '';
+
+				if (typeof earnPoint != 'undefined') {
+
+					var pointText = '';
+					var levelPointText = '';
+
+					if (earnPoint.point > 0 && earnPoint.pointRate > 0) {
+						pointText = '기본적립 '+earnPoint.pointRate+'%';
+					}
+					if (earnPoint.levelPoint > 0 && earnPoint.levelPoint > 0) {
+						levelPointText = earnPoint.levelName+'회원 추가적립 '+earnPoint.levelPointRate+'%';
+					}
+
+					/*text += (earnPoint.pointRate + earnPoint.levelPointRate) + '% ';*/
+
+					text += this.formatNumber(earnPoint.totalPoint) + 'P 적립 ';
+
+					text += '(';
+
+					if (pointText != '' && levelPointText != '') {
+						text += pointText + ' + ' + levelPointText;
+					} else if (pointText == '' && levelPointText != '') {
+						text += levelPointText;
+					} else if (pointText != '' && levelPointText == '') {
+						text += pointText;
+					}
+
+					text += ')';
+				}
+				return text;
+			}
+		},
+		updated: function() {
+			this.$nextTick(function () {
+				if (itemSlider != null) {
+					itemSlider.update();
+				}
+
+				if (viewThumbs != null) {
+					viewThumbs.update();
+				}
+
+				initializeItemsEvent();
+			});
+		},
+		mounted: function() {
+			this.$nextTick(function () {
+
+				Saleson.init();
+				var code = $s.core.getParameter('code');
+
+				if (code == '') {
+					$s.notFoundException();
+					return;
+				}
+
+				this.itemUserCode = code;
+
+				this.categoryInfo(this);
+				this.deleteOption(0);
+				var self = this;
+				$s.api.getItem(code, function (response) {
+					var item = response.item;
+					console.log('orderMaxQuantity : ' + item.orderMaxQuantity)
+					vm.item = item;
+					vm.list = response.list;
+					vm.pointPolicy = response.pointPolicy;
+					vm.config = response.config;
+					vm.cardBenefits = response.cardBenefits;
+					vm.seller = response.seller;
+					vm.userId = response.userId;
+					vm.breadcrumbs = response.breadcrumbs;
+					vm.isRestockNotice = response.isRestockNotice;
+					vm.earnPoint = response.earnPoint;
+					vm.reviewFilters = response.reviewFilters;
+
+					var slides = new Array();
+
+					for (var i = 0; i < item.itemImages.length; i++) {
+						var slide = {
+							imageId: item.itemImages[i].itemImageId,
+							image: item.itemImages[i].imageSrc
+						};
+
+						slides.push(slide);
+					}
+
+					vm.slides = slides;
+					// 최대 / 최소 구매수량쿠폰명
+					if (item.orderMinQuantity == -1) item.orderMinQuantity = 1;
+					if (item.orderMaxQuantity == -1) item.orderMaxQuantity = 999;
+
+					vm.display.quantity = item.orderMinQuantity;
+
+					if (item.itemOptionFlag === 'N' && !item.itemSoldOut) {
+						vm.setRequiredItem(0);
+					}
+
+					vm.writeOptionName();
+
+					vm.addlatelyItem(item.itemId);
+					vm.getNewLatelyItems();
+					vm.getCurrentCategories();
+					vm.getRestockNotice(item.itemId);
+
+					vm.makeOpenGraphTag($s.requestContext.href,item.itemName, vm.itemImage(item.imageSrc), item.itemSummary);
+					// vm.setPageInfo(item.itemName, item.itemSummary, '');
+
+					$s.ga.detail(item.itemUserCode);
+					$s.ev.log.item(item.itemUserCode);
+				}, function (error) {
+					if ('BAD_REQUEST_NO_ITEM' == error.response.data.code) {
+						$s.alert(error.response.data.message, function () {
+							$s.redirect($s.pages.INDEX);
+						});
+						// modal alert 바깥영역 클릭해도 이전페이지로 이동
+						$('.items_detail_wrap').on('click', '#op-alert', function(){
+							history.back();
+						});
+					}
+				});
+
+				this.getItemRelations();
+				this.paging(1, 'all');
+
+				document.getElementById('saleson').style.display = 'block'
+
+				resizeEvent();
+			});
+
+		},
+	});
+
+	function isMobile(){
+		if (0 < $(".items_detail_wrap").length) {
+			var winW = $(window).width();
+			if (winW < 768) {
+				vm.isMobile = true;
+			} else {
+				vm.isMobile = false;
+			}
+		}
+	}
+
+	function resizeEvent() {
+		$(window).on('resize', function() {
+			isMobile();
+		});
+		isMobile();
+	}
+</script>
+
+
+</body>
+</html>
