@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ko" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="../../../../favicon.ico">
+        <title>SalesOn Demo</title>
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+        <!-- Custom styles for this template -->
+        <link rel="stylesheet" href="/static/css/swiper.min.css">
+        <link rel="stylesheet" href="/static/css/common.css">
+        <link rel="stylesheet" href="/static/css/layout.css">
+        <link rel="stylesheet" href="/static/css/item.css">
+        <link rel="stylesheet" href="/static/css/order.css">
+        <link rel="stylesheet" href="/static/css/mypage.css">
+        <link rel="stylesheet" href="/static/css/customer.css">
+        <link rel="stylesheet" href="/static/css/popup.css">
+    </head>
+    <body>
+        <div id="saleson" v-cloak>
+            <layout-header></layout-header>
+            <section class="contents myinfo_contents">
+                <div class="tit_wrap">
+                    <h2 class="tit">내 정보 관리</h2>
+                </div>
+                <div class="info_wrap">
+                    <div class="container">
+                        <div class="row no-gutters justify-content-center" v-cloak>
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <form class="needs-validation" @submit.prevent="login" v-if="param.modifyResult === ''">
+                                    <div class="tab-content">
+                                        <div id="general_member" class="tab-pane fade show active">
+                                            <div class="info_txt">
+                                                <p>개인정보를 안전하게 보호하기 위해 <br>비밀번호를 다시 한번 입력해주세요</p>
+                                            </div>
+                                            <div class="form_wrap_line">
+                                                <div class="form-group">
+                                                    <input type="password" id="password_confirm" class="form-control line" placeholder="비밀번호를 입력해주세요" title="비밀번호를 입력해주세요" required>
+                                                </div>
+                                            </div>
+                                            <div class="btn-group">
+                                                <button type="submit" class="btn btn_lg btn_primary">확인</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="form_input" v-else-if="param.modifyResult === '1'">
+                                    <form class="needs-validation" @submit.prevent="submit">
+                                        <fieldset>
+                                            <legend>회원정보 수정</legend>
+                                            <div class="myinfo_area">
+                                                <div class="form_wrap_line">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control line" placeholder="이름" title="이름" v-model="param.userName" required>
+                                                    </div>
+                                                    <div class="radio_wrap">
+                                                        <div class="radio_area">
+                                                            <input type="radio" id="woman" name="gender" value="F" v-model="param.gender">
+                                                            <label for="woman">여성</label>
+                                                        </div>
+                                                        <div class="radio_area">
+                                                            <input type="radio" id="man" name="gender" value="M" v-model="param.gender">
+                                                            <label for="man">남성</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control line" placeholder="아이디" title="아이디" v-model="param.loginId" :readonly="!param.sns" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control line" placeholder="이메일" title="이메일" v-model="param.email" maxlength="50" @change="valid($event, validate.email)" required>
+                                                        <div class="invalid-feedback">{{validate.emailMessage}}</div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <select class="custom-select line" title="년" v-model="param.birthdayYear">
+                                                                    <option v-for="(n, i) in 100" :value="param.years-i">{{param.years - i}}년</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <select class="custom-select line" title="월" v-model="param.birthdayMonth">
+                                                                    <option v-for="i in 12" :value="i" required>{{i}}월</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <select class="custom-select line" title="일" v-model="param.birthdayDay">
+                                                                    <option v-for="i in 31" :value="i">{{i}}일</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="radio_wrap">
+                                                        <div class="radio_area">
+                                                            <input type="radio" id="birth" name="date_birth" value="1" v-model="param.birthdayType">
+                                                            <label for="birth">양력</label>
+                                                        </div>
+                                                        <div class="radio_area">
+                                                            <input type="radio" id="lunar" name="date_birth" value="2" v-model="param.birthdayType">
+                                                            <label for="lunar">음력</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="sns_wrap" v-if="!param.sns">
+                                                        <ul class="row no-gutters">
+                                                            <li class="col-4">
+                                                                <div id="naver_id_login">
+                                                                    <a href="javascript:void(0);" id="naver" class="naver" :class="{'on' : (snsInfo.naver > 0)}" @click="connectSns('naver', snsInfo.naver)"> <!-- 연동시 class="on" 추가 -->
+                                                                        <span class="screen_out">네이버</span>
+                                                                    </a>
+                                                                    <div id="naverIdLogin" data-page-type="mypage" style="display:none;"></div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="col-4">
+                                                                <a href="javascript:void(0);" id="facebook" class="facebook" :class="{'on' : (snsInfo.facebook > 0)}" @click="connectSns('facebook', snsInfo.facebook)"> <!-- 연동시 class="on" 추가 -->
+                                                                    <span class="screen_out">페이스북</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="col-4">
+                                                                <a href="javascript:void(0);" id="kakao" class="kakao" :class="{'on' : (snsInfo.kakao > 0)}" @click="connectSns('kakao', snsInfo.kakao)"> <!-- 연동시 class="on" 추가 -->
+                                                                    <span class="screen_out">카카오</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="myinfo_area">
+                                                <div class="form_wrap_line">
+                                                    <div class="form-group">
+                                                        <input type="password" class="form-control line _password" placeholder="비밀번호를 8~20자 이내로 입력하세요" title="비밀번호를 8~20자 이내로 입력하세요" v-model="param.password" @change="valid($event, validate.password)" maxlength="20" :required="param.sns">
+                                                        <div class="invalid-feedback">{{validate.passwordMessage}}</div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="password" class="form-control line _password" placeholder="비밀번호를 다시한번 입력하세요" title="비밀번호를 다시한번 입력하세요" v-model="param.passwordConfirm" @change="validfeed($event, passwordConfirmFlag)" maxlength="20" :required="param.sns">
+                                                        <div class="invalid-feedback">{{validate.passwordConfirmMessage}}</div>
+                                                    </div>
+                                                    <div class="form-group phone_area">
+                                                        <div class="row no-gutters">
+                                                            <div class="col-4 col-md-2">
+                                                                <select class="custom-select line" v-model="param.frontPhoneNumber">
+                                                                    <option v-for="data in param.phoneCodes" :value="data.detail">{{data.label}}</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-8 col-md-10">
+                                                                <input type="number" class="form-control line" placeholder="'-'없이 숫자만 입력" title="휴대폰번호" v-model="param.backPhoneNumber" @change="valid($event, validate.numberOnly)" maxlength="8" required>
+                                                                <div class="invalid-feedback">{{validate.numberOnlyMessage}}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group address_area">
+                                                        <div class="input" v-html="param.addressInfo"></div>
+                                                        <span id="address_placeholder" class="placeholder">우편번호 찾기</span>
+                                                        <button type="button" class="btn_address" @click="openDaumPostcode()"><img class="img-fluid" src="/static/images/icon/btn_address.png" alt="주소찾기"></button>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control line" placeholder="상세주소" title="상세주소" v-model="param.addressDetail" maxlength="150" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="myinfo_area">
+                                                <h3 class="info_tit">SMS 수신동의</h3>
+                                                <div class="txt_area">
+                                                    <p>수신동의시 쇼핑몰에서 제공하는 이벤트 및 다양한 정보를 SMS/E-mail로 받아볼 수 있습니다.</p>
+                                                    <p>(단, 회원가입, 거래정보-결제/배송/교환/환불 등과 같은 운영정보는 수신동의 여부와 관계없이 발송됩니다.)</p>
+                                                </div>
+                                                <div class="radio_wrap">
+                                                    <div class="radio_area">
+                                                        <input type="radio" id="reception1" value="0" v-model="param.receiveSms">
+                                                        <label for="reception1">수신</label>
+                                                    </div>
+                                                    <div class="radio_area">
+                                                        <input type="radio" id="reception2" value="1" v-model="param.receiveSms">
+                                                        <label for="reception2">수신안함</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="myinfo_area">
+                                                <h3 class="info_tit">E-mail 수신동의</h3>
+                                                <div class="txt_area">
+                                                    <p>수신동의시 쇼핑몰에서 제공하는 이벤트 및 다양한 정보를 SMS/E-mail로 받아볼 수 있습니다.</p>
+                                                    <p>(단, 회원가입, 거래정보-결제/배송/교환/환불 등과 같은 운영정보는 수신동의 여부와 관계없이 발송됩니다.)</p>
+                                                </div>
+                                                <div class="radio_wrap">
+                                                    <div class="radio_area">
+                                                        <input type="radio" id="reception2-1" value="0" v-model="param.receiveEmail">
+                                                        <label for="reception2-1">수신</label>
+                                                    </div>
+                                                    <div class="radio_area">
+                                                        <input type="radio" id="reception2-2" value="1" v-model="param.receiveEmail">
+                                                        <label for="reception2-2">수신안함</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row no-gutters btn-group">
+                                                    <div class="col-6">
+                                                        <button type="submit" class="btn btn_lg btn_primary">수정완료</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="link_secession">
+                                                <a href="/users/secede.html">회원탈퇴</a>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                        </div> <!--// col-12 E -->
+                    </div>
+                </div>
+            </section> <!--// contents E -->
+
+            <layout-footer></layout-footer>
+
+            <layout-address></layout-address>
+        </div>
+
+        <script src="/static/js/jquery-3.4.1.min.js"></script>
+        <script src="/static/js/swiper.min.js"></script>
+        <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+        <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.popupoverlay.js"></script>
+        <script src="/static/js/jquery.waypoints.min.js"></script>
+        <script src="/static/js/jquery.counterup.min.js"></script>
+        <script src="/static/js/common.js"></script>
+        <script src="/static/js/header.js"></script>
+        <script src="/static/js/footer.js"></script>
+
+        <!-- SNS 계정 연동 -->
+        <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+        <script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js" charset="utf-8"></script>
+        <script src="/static/js/sns.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+        <script src="/modules/httpVueLoader.js"></script>
+        <script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+        <script type="text/babel" src="/modules/op.vue.js"></script>
+        <script type="text/javascript">
+            var daumApiUrl = 'http://dmaps.daum.net/map_js_init/postcode.v2.js';
+            if (window.location.protocol == 'https:') {
+                daumApiUrl = 'https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js';
+            }
+            document.write('<script src="'+ daumApiUrl +'">' + '</' + 'script>');
+        </script>
+        <script type="text/babel">
+            var vm = new Vue({
+                el: '#saleson',
+                components: {
+                    'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+                    'layout-header': httpVueLoader('/components/layouts/header.vue'),
+                    'layout-address': httpVueLoader('/components/ui/daum/address-layer.vue')
+                },
+                data: {
+                    param: {
+                        sns: false,
+                        modifyResult: "",
+                        password: "",
+                        passwordConfirm: "",
+                        userName: "",
+                        email: "",
+                        phoneNumber: "",
+                        frontPhoneNumber: "",
+                        backPhoneNumber: "",
+                        gender: "F",
+                        birthdayYear: "",
+                        birthdayMonth: "1",
+                        birthdayDay: "1",
+                        birthdayType: "1",
+                        post: "",
+                        newPost: "",
+                        address: "",
+                        addressDetail: "",
+                        addressInfo: "",
+                        receiveSms: "0",
+                        receiveEmail: "0",
+                        years: 0
+                    },
+                    snsInfo: {
+                        naver: 0,
+                        facebook: 0,
+                        kakao: 0
+                    },
+                    validate: {
+                        email: $s.validator.patterns.email,
+                        password: $s.validator.patterns.password,
+                        numberOnly: $s.validator.patterns.number_only,
+
+                        emailMessage: $s.validator.messages.email,
+                        passwordMessage: $s.validator.messages.password,
+                        passwordConfirmMessage: $s.validator.messages.password_confirm,
+                        numberOnlyMessage: $s.validator.messages.number_only
+                    }
+                },
+                methods: {
+                    checkPassword: function() {
+                        $s.api.checkPassword(vm.param,
+                            function (response) {
+                                if (response.status === "OK") {
+                                    vm.param.modifyResult = "1";
+                                    vm.getMember(false);
+                                }
+                            }, function (error) {
+                                $s.alert(error.response.data.description);
+                            }
+                        );
+                    },
+                    login: function() {
+                        vm.param.password = $("#password_confirm").val();
+                        if (vm.param.password === "") {
+                            $s.alert("비밀번호를 입력해주세요.");
+                            return false;
+                        }
+
+                        vm.checkPassword();
+                    },
+                    getMember: function(isSns) {
+                        $s.api.getMember(
+                            function (response) {
+                                vm.param = response.info;
+                                vm.param.modifyResult = "1";
+                                vm.param.sns = isSns;
+
+                                if (isSns) {
+                                    vm.param.loginId = vm.param.email;
+                                }
+
+                                if (vm.param.address != "" && vm.param.address != undefined) {
+                                    document.getElementById("address_placeholder").textContent = "";
+                                }
+
+                                var date = new Date();
+                                vm.param.years = date.getFullYear();
+                            }
+                        );
+                    },
+                    openDaumPostcode: function () {
+                        var child = Vue.child("layout-address");
+                        if (child != null) {
+                            child.openDaumAddress(function(response) {
+                                vm.param.post = response.zipcode;
+                                vm.param.newPost = response.newZipcode;
+                                vm.param.address = response.jibunAddress;
+
+                                vm.param.addressInfo = "[" + response.newZipcode + "] " + response.jibunAddress;
+
+                                document.getElementById("address_placeholder").textContent = "";
+                            });
+                        }
+                    },
+                    submit: function () {
+                        if (!vm.checkfeed('.form_input')) {
+                            return false;
+                        }
+
+                        if (vm.param.frontPhoneNumber != "" && vm.param.frontPhoneNumber != undefined
+                            && vm.param.backPhoneNumber != "" && vm.param.backPhoneNumber != undefined) {
+                            vm.param.phoneNumber = vm.param.frontPhoneNumber + vm.param.backPhoneNumber;
+                        }
+
+                        $s.api.updateMember(vm.param,
+                            function (response) {
+                                if (response.status === "OK") {
+                                    $s.alert('수정되었습니다.', function () {
+                                        $s.redirect($s.pages.INDEX);
+                                    });
+                                }
+                            }, function (error) {
+                                $s.alert(error.response.data.description);
+                            }
+                        );
+                    },
+                    connectSns: function (snsType, snsUserId) {
+                        connectSns(snsType, snsUserId, "mypage");
+                    }
+                },
+                computed: {
+                    passwordConfirmFlag: function () {
+                        return this.param.password === this.param.passwordConfirm;
+                    }
+                },
+                mounted: function() {
+                    this.$nextTick(function () {
+
+                        Saleson.init();
+
+                        $s.api.getSnsInfo(
+                            function (response) {
+                                vm.snsInfo = response.info;
+                                if (response.sns) {
+                                    vm.param.modifyResult = "1";
+                                    vm.getMember(true);
+                                }
+                            }
+                        );
+                    });
+                }
+            });
+        </script>
+    </body>
+</html>
