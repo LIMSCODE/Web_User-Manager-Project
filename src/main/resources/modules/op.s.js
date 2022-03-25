@@ -1,11 +1,5 @@
-/**
- * SalesOn3 API Client
- *
- * @Date 2019.10.07.
- * @Author skc@onlinepowers.com
- * @type {{exception: Saleson.exception, redirect: Saleson.redirect, init: Saleson.init, debug: Saleson.debug, const: {SAVED_LOGIN_ID: string, CATEGORY: string, TOKEN: string}, notFoundException: Saleson.notFoundException, log: Saleson.log, callbackAlert: Saleson.callbackAlert, error: Saleson.error, confirm: Saleson.confirm, isLogin: (function(): (*|boolean)), authenticationException: Saleson.authenticationException, pages: {LOGIN: string, INDEX: string, isAllowAnonymous: (function(): boolean)}, handleException: Saleson.handleException, requestContext: {}, alert: Saleson.alert, config: {cdnDomain: string, apiDomain: string, HMACSecretKey: string}}}
- */
-var $s = Saleson = {
+
+var $s = S = {
 	config: {
 		apiDomain: API_DOMAIN,
 		cdnDomain: CDN_DOMAIN,
