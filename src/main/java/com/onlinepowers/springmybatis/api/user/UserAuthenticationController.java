@@ -43,9 +43,9 @@ public class UserAuthenticationController {
 	 * @return
 	 */
 	@PostMapping("/login")
-	public String login(@RequestBody User loginRequest, HttpSession session, Model model) {
+	public String login(@ModelAttribute User loginRequest, HttpSession session, Model model) {
 
-		//html- @requestBody 사용 / npm vue에서 로그인하려면 @RequestBody없앰
+		//jsp-@ModelAttribute 사용 / html- @requestBody 사용 / npm vue에서 로그인하려면 @RequestBody없앰
 
 		log.debug("로그인 컨트롤러 진입");
 

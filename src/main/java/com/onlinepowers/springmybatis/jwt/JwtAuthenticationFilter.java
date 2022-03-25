@@ -36,8 +36,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		int isLoginUrl = request.getRequestURI().indexOf("/login"); //로그인이 아닐때
 		int isCreateUrl = request.getRequestURI().indexOf("/user/create");   //회원가입아닐떄
+		int isCreateIdUrl = request.getRequestURI().indexOf("/api/user/check-id");
 
-		if (request.getRequestURI().startsWith("/api") && isLoginUrl == -1 && isCreateUrl == -1) {       //api이고 인증컨트롤러가 아닐때
+		if (request.getRequestURI().startsWith("/api") && isLoginUrl == -1 && isCreateUrl == -1 && isCreateIdUrl == -1) {       //api이고 인증컨트롤러가 아닐때
 
 			try {
 				String token = getToken(request);   //아래의 getToken함수 실행

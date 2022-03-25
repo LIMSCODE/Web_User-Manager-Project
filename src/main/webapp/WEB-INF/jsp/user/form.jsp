@@ -302,8 +302,8 @@
 	            },
                 success : function(token) {
                     var expireDay = 24 * 60 * 60 * 1000; //1일
-                    document.cookie = "X-AUTH-TOKEN=" + token + expireDay +"; path=/";  //쿠키에 토큰 저장
-                    window.location.href="/";
+                    //document.cookie = "X-AUTH-TOKEN=" + token + expireDay +"; path=/";  //쿠키에 토큰 저장
+                    //window.location.href="/";
                 },
                 error : function() {
                     alert("실패");

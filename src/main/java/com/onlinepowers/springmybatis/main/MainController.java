@@ -44,7 +44,7 @@ public class MainController {
 		}
 
 		if (UserUtils.isUserLogin(session)) {
-			log.debug("메인=============" + securityUser.getUser().getUserRole());
+			//log.debug("메인=============" + securityUser.getUser().getUserRole());
 
 			model.addAttribute("loginUser", loginUser);
 			return "/main/user";    //null이 아니면 정보수정 뜨고, null이면 회원가입 뜬다.

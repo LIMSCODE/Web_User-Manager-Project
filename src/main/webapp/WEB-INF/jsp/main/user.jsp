@@ -25,8 +25,8 @@
 
     <sec:authorize access="!isAuthenticated()">
     <span>
-         <a class="btn" href="/user/login" >로그인하기</a>
-         <a class="btn" href="/user/create" >회원가입</a>
+         <a class="btn" href="/user/login" >로그인하기123</a>
+         <a class="btn" href="/user/create" >회원가입123</a>
     </span>
     </sec:authorize>
 
