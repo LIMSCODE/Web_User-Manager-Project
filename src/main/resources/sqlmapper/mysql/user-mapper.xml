@@ -225,7 +225,6 @@
         WHERE USER_ID=#{userId};
     </update>
 
-
     <select id="getUserCountByLoginId" resultType = "INT">
         SELECT
             COUNT(*)

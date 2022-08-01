@@ -59,6 +59,7 @@
 				}
 			}
 
+
 			try {
 				// firefox may fail sheet.cssRules with InvalidAccessError
 				process();
